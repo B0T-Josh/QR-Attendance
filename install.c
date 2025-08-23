@@ -36,12 +36,16 @@ bool printBool(char *msg, bool res) {
 }
 
 bool change(char *path) {
-    if(chdir(path) == 0) return printBool(("%s", path), true);
+    char string[1024];
+    snprintf(string, 1024, "Change directory to %s", path);
+    if(chdir(path) == 0) return printBool(("%s", string), true);
     else return printBool(("%s", path), false);
 }
 
 bool run(char *command) {
-    if(system(command) == 0) return printBool(("%s", command), true);
+    char string[1024];
+    snprintf(string, 1024, "Running %s", command);
+    if(system(command) == 0) return printBool(("%s", string), true);
     else return printBool(("%s", command), false);
 }
 
@@ -69,4 +73,3 @@ bool install(char *lang) {
         } else return printBool("There is an error on changin directory to root", false);
     } else return printBool("There is an error", false);
 }
-
