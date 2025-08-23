@@ -2,7 +2,8 @@
 
 ## Important Note: 
 
-if you are new, execute install.exe first to install the start up dependencies
+if you are new, execute install.exe first to install the start up dependencies<br>
+put this inside your settings.json in your vscode settings "python.terminal.activateEnvironment": false, <br>
 
 # GitUpdate
 
