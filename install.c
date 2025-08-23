@@ -36,13 +36,13 @@ bool printBool(char *msg, bool res) {
 }
 
 bool change(char *path) {
-    if(chdir(path) == 0) return printBool(("Successful on changing to %s", path), true);
-    else return printBool(("There is an error on changing directory to %s", path), false);
+    if(chdir(path) == 0) return printBool(("%s", path), true);
+    else return printBool(("%s", path), false);
 }
 
 bool run(char *command) {
-    if(system(command) == 0) return printBool(("Successful on running %s", command), true);
-    else return printBool(("There is an error on running %s", command), false);
+    if(system(command) == 0) return printBool(("%s", command), true);
+    else return printBool(("%s", command), false);
 }
 
 bool install(char *lang) {
