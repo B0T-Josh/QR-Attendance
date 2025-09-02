@@ -60,5 +60,5 @@ Push everytime you finish a file
 
 ### Running server
 
-To run the node server use npm run dev or use the run.exe inside the attendance folder.<br>
+To run the node server use npm run dev or use the run.bat inside the attendance folder.<br>
 To run a live server, you just need to navigate inside attendance and type "npm run dev" or just type "run".<br>
