@@ -1,10 +1,5 @@
 # Student Log Book
 
-## Important Note: 
-
-if you are new, execute install.exe first to install the start up dependencies<br>
-put this inside your settings.json in your vscode settings "python.terminal.activateEnvironment": false, <br>
-
 # GitUpdate
 
 ## Important note: Study git first
@@ -63,24 +58,7 @@ Push everytime you finish a file
 9. Click Ok until all apps is closed.
 10. Open your CMD and type update. A guide should output when you type it.
 
-# Backend 
+### Running server
 
-## env.bat
-
-This is a .bat file that will run your virtual environment automatically.
-
-## manage.c/manage.exe
-
-This is a shortcut program to execute manage.py
-
-### Usage:
-<pre>
-manage [command] 
-
-Command:
-manage -r //Start a local server
-manage -M //Make changes available for migration
-manage -M [app_name]//Make specific changes available for migration
-manage -m //Execute migration
-manage -f //Deletes all data from all tables
-</pre>
+To run the node server use npm run dev or use the run.exe inside the attendance folder.<br>
+To run a live server, you just need to navigate inside attendance and type "npm run dev" or just type "run".<br>
