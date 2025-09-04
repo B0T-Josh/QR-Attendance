@@ -10,7 +10,7 @@ Options:
 Usage:
         - install /modules
         - install /node
-<pre>
+</pre>
 
 # GitUpdate
 
