@@ -1,6 +1,16 @@
 # Student Log Book
 
 For first time users, run install.exe on terminal by typing "install" on terminal. If using Powershell as terminal instead of CMD, type "./install" instead.<br>
+<pre>
+Syntax:
+        install [option]
+Options:
+        - /modules - Install node_modules and dependencies
+        - /node - Install Node.js and the node _modules included it's dependencies
+Usage:
+        - install /modules
+        - install /node
+<pre>
 
 # GitUpdate
 
