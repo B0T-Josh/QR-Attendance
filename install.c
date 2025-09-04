@@ -51,7 +51,7 @@ int start(char *method) {
             if(readFile()) return messageInt("Installed successfully\n", 1);
             else return messageInt("Installation failed\n", 0);
         } return messageInt("Failed to change directory to attendance", 0);
-    } else if(strcmp(method, "/node")) {
+    } else if(strcmp(method, "/node") == 0) {
         if(chdir("Node") == 0) {
             if(system("node-v22.17.0-x64.msi") == 0) {
                 if(chdir("../attendance") == 0) {
