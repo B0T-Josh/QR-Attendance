@@ -17,11 +17,8 @@ export default function QRCodeScanner() {
 
     scanner.render(
       (decodedText) => {
-        alert("✅ QR decoded:" + decodedText);
+        alert("")
         setScannedData(decodedText);
-      },
-      (error) => {
-        // fires often while scanning; keep it quiet
       }
     );
 
