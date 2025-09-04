@@ -54,7 +54,7 @@ int start(char *method) {
     } else if(strcmp(method, "/node") == 0) {
         if(chdir("Node") == 0) {
             if(system("node-v22.17.0-x64.msi") == 0) {
-                printf("Restart your VS Code\n");
+                printf("Restart your VS Code and run \"install /modules\" on terminal\n");
                 printf("Press enter to continue.\n");
                 getchar();
                 return 1;

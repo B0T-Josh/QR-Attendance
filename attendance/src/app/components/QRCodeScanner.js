@@ -15,9 +15,8 @@ export default function QRCodeScanner() {
       /* verbose= */ false
     );
 
-    scanner.render(
-      (decodedText) => {
-        alert("")
+    scanner.render((decodedText) => {
+        alert("Decoded text: " + decodedText);
         setScannedData(decodedText);
       }
     );
@@ -50,7 +49,6 @@ export default function QRCodeScanner() {
     <div className="flex flex-col items-center p-4 border rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
       <div id="reader" style={{ width: "300px" }}></div>
-
       <div className="mt-4 p-2 border rounded w-full">
         {content}
       </div>
