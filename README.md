@@ -1,5 +1,7 @@
 # Student Log Book
 
+For first time users, run install.exe on terminal by typing "install" on terminal. If using Powershell as terminal instead of CMD, type "./install" instead.<br>
+
 # GitUpdate
 
 ## Important note: Study git first
