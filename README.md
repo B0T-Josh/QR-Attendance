@@ -42,7 +42,7 @@ option  - if -a is chosen, type the name of the file that you wanted to add chan
         - if -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
 usage:
 * update -a [filename] / . (to add all changes)
-* update -a [filename] / . (to add all changes)
+* update -A to exeute push and pull in one go
 * update -c [comment/message]
 * update -p
 * update -f
