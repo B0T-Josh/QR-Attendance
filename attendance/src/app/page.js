@@ -1,9 +1,10 @@
-import QRCodeGenerator from "../app/components/QRCodeGenerator.js";
+import QRCodeGenerator from "../app/components/QRGenerator.js";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center gap-8 p-8">
+    <div>
       <QRCodeGenerator />
-    </main>
+      <a href="/scanner">Scan QR</a>
+    </div>
   );
 }
