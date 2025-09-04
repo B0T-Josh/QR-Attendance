@@ -5,8 +5,8 @@ For first time users, run install.exe on terminal by typing "install" on termina
 Syntax:
         install [option]
 Options:
-        - /modules - Install node_modules and dependencies
-        - /node - Install Node.js and the node _modules included it's dependencies
+        - /modules - Install node_modules and dependencies      
+        - /node - Install Node.js
 Usage:
         - install /modules
         - install /node

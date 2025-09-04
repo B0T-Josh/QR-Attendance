@@ -54,12 +54,10 @@ int start(char *method) {
     } else if(strcmp(method, "/node") == 0) {
         if(chdir("Node") == 0) {
             if(system("node-v22.17.0-x64.msi") == 0) {
-                if(chdir("../attendance") == 0) {
-                    if(readFile()) {
-                        if(system("npm run dev") == 0) return messageInt("Installation complete\n", 1);
-                        else return messageInt("Installation failed\n", 0);
-                    } else messageInt("Installation failed\n", 0);
-                } return messageInt("Failed to change directory to attendance", 0);
+                printf("Restart your VS Code\n");
+                printf("Press enter to continue.\n");
+                getchar();
+                return 1;
             } else return messageInt("Failed to install node", 0);
         } else return messageInt("Failed to change directory to node", 0);
     } else return printErr();
@@ -70,7 +68,7 @@ int printErr() {
     printf("\tinstall [option]\n");
     printf("Options:\n");
     printf("\t- /modules - Install node_modules and dependencies\n");
-    printf("\t- /node - Install Node.js and the node _modules included it's dependencies\n");
+    printf("\t- /node - Install Node.js\n");
     printf("Usage:\n");
     printf("\t- install /modules\n");
     printf("\t- install /node\n");
