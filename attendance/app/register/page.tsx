@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { addUser, addTeacher, addSubject } from "../api/endpoints";
+import { addUser } from "../api/endpoints";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

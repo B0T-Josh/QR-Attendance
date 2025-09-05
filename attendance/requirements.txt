@@ -1,0 +1,3 @@
+node
+html5-qrcode 
+qrcode.react
