@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function registerPage() {
+export default function RegisterPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {

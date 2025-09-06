@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-export default function logIn() {
+export default function LogIn() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function logIn() {
 
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
           Don't have an account? 
-          <Link href="/register" className="ml-1 text-[#8854cc] hover:text-purple-600">
+          <Link href="/register" className="ml-1 text-purple-800 hover:text-purple-600">
             Sign Up
           </Link>
         </h3>
