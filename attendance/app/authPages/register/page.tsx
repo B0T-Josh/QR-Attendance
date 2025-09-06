@@ -61,13 +61,28 @@ export default function RegisterPage() {
         </h1>
         <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="subjects" onChange={handleChange}/>
 
+<<<<<<< HEAD:attendance/app/register/page.tsx
         {/* <Link href="/authenticationPages/loginPage"> */}
+=======
+        <Link href="/authPages/login">
+>>>>>>> origin/main:attendance/app/authPages/register/page.tsx
           <div className="mt-6 transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
             <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit} disabled={loading}>
               Register
             </button>
           </div>
+<<<<<<< HEAD:attendance/app/register/page.tsx
         {/* </Link> */}
+=======
+        </Link>
+
+        <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
+          Already have an account? 
+          <Link href="/authPages/login" className="ml-1 text-purple-800 hover:text-purple-600">
+            Sign In
+          </Link>
+        </h3>
+>>>>>>> origin/main:attendance/app/authPages/register/page.tsx
       </div>
     </div>
   );
