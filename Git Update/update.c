@@ -80,7 +80,8 @@ bool updateAll() {
 }
 
 void printError() {
-    printf("Syntax:\nupdate <command> <option>\n"); 
+    printf("Syntax:\n"); 
+    printf("update <command> <option>\n");
     printf("command - ['-a', '-c', '-p', '-f', '-m', '-A']\n");
     printf("option - if -a is chosen, type the name of the file that you wanted to add changes into.\n");
     printf("       - if -c is chosen, type the message for the commit.\n");
@@ -95,7 +96,7 @@ void printError() {
     printf("update -f <branch>\n");
     printf("update -m <branch>\n");
     printf("proper usage:\n");
-    printf("update -f -m\n");
+    printf("update -f <branch> -m <branch>\n");
     printf("update -a <filename/.> -c <comment/message> -p <branch>\n");
     printf("update -A\n");
     printf("\nImportant note:\nMake sure to fetch and merge before you work on any file.\n");
