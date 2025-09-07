@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "html5-qrcode": "^2.3.8",
-    "qrcode.react": "^4.2.0",
-    "tailwind-scrollbar-hide": "^4.0.0"
+    "qrcode.react": "^4.2.0"
   }
 }
