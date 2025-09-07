@@ -5,7 +5,7 @@
 
 bool addChange(char *file);
 bool commit(char *comment);
-bool fetch();
+bool fetch(char *branch);
 bool merge(char *branch);
 bool upload(char *branch);
 void printError();
@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
                     return 1;
                 }
             } else if(strncmp(argv[i], "-f", 2) == 0) {
-                if(fetch()) {
+                if(fetch(argv[i+1])) {
                     printf("Fetch successful\n");
                 } else {
                     printf("Failed to fetch origin \n"); 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 }
 
 bool updateAll() {
-    if(fetch()) {
+    if(fetch("main")) {
         if(merge("main")) {
             if(addChange(".")) {
                 if(commit("Update")) {
@@ -92,7 +92,7 @@ void printError() {
     printf("update -a <filename> / . (to add all changes)\n");
     printf("update -c <comment/message>\n");
     printf("update -p <branch>\n");
-    printf("update -f\n");
+    printf("update -f <branch>\n");
     printf("update -m <branch>\n");
     printf("proper usage:\n");
     printf("update -f -m\n");
@@ -102,8 +102,10 @@ void printError() {
     printf("Push everytime you finish a file\n");
 }
 
-bool fetch() {
-    if(system("git fetch origin") == 0) {
+bool fetch(char *branch) {
+    char command[256];
+    sprintf(command, "git fetch origin %s", branch);
+    if(system(command) == 0) {
         return true;
     }
     return false;
