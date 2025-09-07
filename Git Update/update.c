@@ -80,7 +80,8 @@ bool updateAll() {
 }
 
 void printError() {
-    printf("Syntax:\nupdate <command> <option>\n"); 
+    printf("Syntax:\n"); 
+    printf("update <command> <option>\n");
     printf("command - ['-a', '-c', '-p', '-f', '-m', '-A']\n");
     printf("option - if -a is chosen, type the name of the file that you wanted to add changes into.\n");
     printf("       - if -c is chosen, type the message for the commit.\n");
