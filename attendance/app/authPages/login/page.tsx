@@ -65,7 +65,7 @@ export default function LogIn() {
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
           <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
-            makati burat ni aldrin
+            Log In
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
