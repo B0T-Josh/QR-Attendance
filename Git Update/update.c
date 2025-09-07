@@ -95,7 +95,7 @@ void printError() {
     printf("update -f <branch>\n");
     printf("update -m <branch>\n");
     printf("proper usage:\n");
-    printf("update -f -m\n");
+    printf("update -f <branch> -m <branch>\n");
     printf("update -a <filename/.> -c <comment/message> -p <branch>\n");
     printf("update -A\n");
     printf("\nImportant note:\nMake sure to fetch and merge before you work on any file.\n");
