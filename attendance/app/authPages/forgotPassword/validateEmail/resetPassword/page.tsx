@@ -9,7 +9,6 @@ export default function ForgotPassword() {
   useEffect(() => {
     setLoaded(true);
   }, []);
-
   return (
     <div className="flex items-center justify-center min-h-screen">
         <div className="space-y-4 w-80">
