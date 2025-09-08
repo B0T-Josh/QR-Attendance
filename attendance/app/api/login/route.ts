@@ -16,7 +16,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error?.message || "Authentication failed" }, { status: 401 });
     }
 
-    // ⚠️ In production: hash + compare with bcrypt/argon2
     if (data.password !== password) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }

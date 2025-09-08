@@ -69,3 +69,32 @@ export async function getProfile(id: number) {
         return [{ id: 0, name: ""}];
     }
 }
+
+export async function addRecord(info: any) {
+    try {
+        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject});
+        return true;
+    } catch(error) {
+        alert(error);
+        return false;
+    }
+}
+
+export async function scanned(info: any) {
+    try {
+        const res = await fetch("/api/addRecord", {
+            method: "POST",
+            headers: {"Content-type": "application/json"},
+            body: JSON.stringify(info)
+        });
+        if(!res.ok) {
+            alert(`There is an error: ${JSON.stringify(res)}`);
+            return false;
+        } else {
+            return true;
+        }
+    } catch(error) {
+        alert(error);
+        return false;
+    }
+}
