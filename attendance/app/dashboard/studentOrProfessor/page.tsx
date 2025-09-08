@@ -30,7 +30,7 @@ export default function StudentOrProfessor() {
                         </svg>
                     </Link>
 
-                    <h1 className="text-xl">Student</h1>
+                    <h1 className="text-xl font-bold">Student</h1>
                 </div>
 
                 <div className={`flex flex-col items-center gap-8 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
@@ -46,7 +46,7 @@ export default function StudentOrProfessor() {
                         </svg>
                     </Link>
 
-                    <h1 className="text-xl">Professor</h1>
+                    <h1 className="text-xl font-bold">Professor</h1>
                 </div>
             </div>
         </div>
