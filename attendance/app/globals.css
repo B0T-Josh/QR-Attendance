@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: #b9b9b9;
+    --foreground: #171717;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
@@ -31,8 +31,8 @@
     --radius: 0.5rem;
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: #222222;
+    --foreground: #ededed;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
@@ -58,11 +58,24 @@
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #222222;
+    --foreground: #ededed;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    background: var(--background);
+    color: var(--foreground);
   }
 }
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+} 
