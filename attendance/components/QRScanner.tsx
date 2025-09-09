@@ -43,11 +43,7 @@ export default function QRScanner() {
         const [name, student_id] = scannedData.split(", ");
         const handleAdd = async (data: any) => {
             console.log(`Adding ${data.name} ${data.student_id} ${data.subject}`);
-            if (await scanned({ name: data.name, student_id: data.student_id, subject: data.subject })) {
-                alert(`Attendance for ${data.name} is recorded`);
-            } else {
-                alert(`Attendance recording for ${data.name} was unsuccessful`);
-            }
+            await scanned({ name: data.name, student_id: data.student_id, subject: data.subject })
         };
         handleAdd({ name: name, student_id: student_id, subject: subject });
     }, [scannedData]);

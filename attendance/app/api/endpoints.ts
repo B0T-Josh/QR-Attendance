@@ -9,12 +9,12 @@ export async function addUser(info: any) {
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
         if(error) {
-            console.log(error.message);
+            console.log(error);
             return false;
         }
         const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
         if(err) {
-            console.log(err.message);
+            console.log(err);
             return false;
         }
         if(await addTeacher(supabase, info, prof.id)){
@@ -30,7 +30,7 @@ export async function addTeacher(supabase: any, info: any, id: number) {
     try {
         const { error: err } = await supabase.from('teacher').insert([{id: id, name: info.name}]);
         if(err) {
-            console.log(err.message);
+            console.log(err);
             return false;
         }else return true;
     } catch (error) {
@@ -45,7 +45,7 @@ export async function addSubject(supabase: any, info: any, name: string, id: num
         for(const element of subjects) {
             const {error: err} = await supabase.from('subject').insert([{name: element, teacher_name: name, teacher_id: id}]);
             if(err) {
-                console.log(err.message);
+                console.log(err);
                 return false;
             }
         }
@@ -93,10 +93,12 @@ export async function scanned(info: any) {
             headers: {"Content-type": "application/json"},
             body: JSON.stringify(info)
         });
+        const data = await res.json();
         if(!res.ok) {
-            alert(`There is an error: ${JSON.stringify(res)}`);
+            alert(`${data.error}`);
             return false;
         } else {
+            alert(`${data.success}`);
             return true;
         }
     } catch(error) {
@@ -115,6 +117,31 @@ export async function verificationFromUser(info: any) {
     }
 }
 
-export async function checkDate(info: any) {
+export async function timeOut(info: any) {
     const date = new Date();
+    const formatted = date.toISOString().split("T")[0];
+    const time =
+        String(date.getHours()).padStart(2, "0") + ":" +
+        String(date.getMinutes()).padStart(2, "0") + ":" +
+        String(date.getSeconds()).padStart(2, "0") + "." +
+        String(date.getMilliseconds()).padStart(3, "0");
+    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject).single();
+    if(data) {
+        await supabase.from('attendance').update({time_out: time}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
+
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export async function   checkDate(info: any) {
+    const date = new Date();
+    const formatted = date.toISOString().split("T")[0];
+    const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subject).single();
+    if(data === null) {
+        return false;
+    } else {
+        return true;
+    }
 }
