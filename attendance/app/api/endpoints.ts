@@ -126,9 +126,8 @@ export async function timeOut(info: any) {
         String(date.getSeconds()).padStart(2, "0") + "." +
         String(date.getMilliseconds()).padStart(3, "0");
     const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject).single();
-    if(data) {
+    if(data?.time_out === null) {
         await supabase.from('attendance').update({time_out: time}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
-
         return true;
     } else {
         return false;
