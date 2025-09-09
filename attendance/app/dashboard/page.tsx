@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Popup from "@/components/Popup"
 
 export function getId() {
@@ -10,7 +9,6 @@ export function getId() {
 
 export default function Dashboard() {
   const [verification, setVerification] = useState(true);
-  const router = useRouter();
   
   let id: string; 
 

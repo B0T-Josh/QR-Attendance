@@ -79,7 +79,6 @@ export async function addRecord(info: any) {
 export async function addVerification(info: any) {
     try {
         await supabase.from('account').update({verification: info.verification}).eq('id', info.id);
-        const { data } =  await supabase.from('account').select("verification").eq('id', info.id);
         return true;
     } catch(error) {
         console.log(error);
