@@ -1,18 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { verificationFromUser } from "../api/endpoints";
-import { useRouter } from "next/navigation";
 import Popup from "@/components/Popup"
 
-function getId() {
+export function getId() {
   return localStorage.getItem('id');
 }
 
 export default function Dashboard() {
-  const [verification, setVerification] = useState(false);
-  const [verificationCode, setVerificationCode] = useState<string | null>(null);
-  const router = useRouter();
+  const [verification, setVerification] = useState(true);
   
   let id: string; 
 
@@ -20,29 +16,48 @@ export default function Dashboard() {
     id = getId() || "0";
   }
 
+  async function handleData() {
+    if(id === null || id === '0') return;
+    const res = await fetch("/api/getVerification", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: id})
+    });
+    if(res.ok) {
+      const data = await res.json();
+      if(data.verification) {
+        setVerification(false);
+      } else {
+        setVerification(true);
+      }
+    }
+    return res;
+  }
+
   useEffect(() => {
     handleId();
     if(id === null) {
       alert("Unauthorized user. Log in first");
-      return; 
     } else {
-      fetch("/api/getVerification")
-      .then(res => res.json())
-      .then(data => setVerificationCode(data.verification));
-      console.log(verificationCode);
+      handleData();
     }
   }, []);
 
   let content;
 
   if(verification) {
-    content = <Popup />
+    content = (
+      <div className="border-2 rounded-lg">
+        <button className="border w-5 h-8 rounded" onClick={() => {setVerification(false)}}>x</button>
+        <Popup />
+      </div>
+      )
   } else {
     content = <p>Has verification</p>
   }
 
   return (
-    <div>
+    <div className="fixed inset-0 flex flex-col justify-center items-center h-screen position-absolute">
       {content}
     </div>
   );

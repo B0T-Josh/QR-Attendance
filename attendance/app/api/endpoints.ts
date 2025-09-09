@@ -59,7 +59,7 @@ export async function addSubject(supabase: any, info: any, name: string, id: num
 export async function getVerification(id: number) {
     try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
-        return data?.verification;
+        return data;
     } catch (error) {
         console.log(error);
         return null;
@@ -72,6 +72,16 @@ export async function addRecord(info: any) {
         return true;
     } catch(error) {
         alert(error);
+        return false;
+    }
+}
+
+export async function addVerification(info: any) {
+    try {
+        await supabase.from('account').update({verification: info.verification}).eq('id', info.id);
+        return true;
+    } catch(error) {
+        console.log(error);
         return false;
     }
 }
@@ -98,7 +108,7 @@ export async function scanned(info: any) {
 
 export async function verificationFromUser(info: any) {
     try {
-        const data = await getVerification(info.id);
+        const data = await getVerification(info);
         return data;
     } catch(error) {
         console.log(error);
