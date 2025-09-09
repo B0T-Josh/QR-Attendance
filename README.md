@@ -29,6 +29,7 @@ Usage:
 * git add [file_name] //this loads the changes to be prepared to be committed
 * git commit -m [comment] //this saves your changes on your local repository
 * git push origin main //this uploads your changes to the online remote repository
+* git checkout [branch] //use the branch that was indicated
 
 ### Update usage:
 <pre>
@@ -55,6 +56,15 @@ update -A
 Important note:
 Make sure to fetch and merge before you work on any file.
 Push everytime you finish a file
+</pre>
+
+### Use usage:
+
+This is a shortcut for "git checkout [branch]" to use your own branch.
+
+<pre>
+Syntax:
+        use [branch]
 </pre>
 
 ### Installation guide:

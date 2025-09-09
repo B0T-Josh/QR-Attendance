@@ -1,59 +1,65 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getProfile } from "../api/endpoints";
-import { useRouter } from "next/navigation";
+import Popup from "@/components/Popup"
 
-function getId() {
-    let id = localStorage.getItem("id");
-    return id;
+export function getId() {
+  return localStorage.getItem('id');
 }
 
-type Profile = {
-  id: number;
-  name: string;
-};
-
 export default function Dashboard() {
-  const router = useRouter();
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [verification, setVerification] = useState(true);
+  
+  let id: string; 
 
-  const id = getId();
+  function handleId() {
+    id = getId() || "0";
+  }
+
+  async function handleData() {
+    if(id === null || id === '0') return;
+    const res = await fetch("/api/getVerification", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: id})
+    });
+    if(res.ok) {
+      const data = await res.json();
+      if(data.verification) {
+        setVerification(false);
+      } else {
+        setVerification(true);
+      }
+    }
+    return res;
+  }
 
   useEffect(() => {
-    if (id === null) {
-      router.push('/authPages/login');
-      return;
+    handleId();
+    if(id === null) {
+      alert("Unauthorized user. Log in first");
+    } else {
+      handleData();
     }
+  }, []);
 
-    const fetchData = async () => {
-      const data = await getProfile(parseInt(id));
-        if (data === null) {
-            alert("Unauthorized user");
-            router.push("/authPages/login");
-        } else {
-            const profiles = Array.isArray(data[0]) ? data[0] : data;
-            setProfiles(profiles as Profile[]);
-        }
-    };
+  let content;
 
-    fetchData();
-  }, [id, router]);
+  if(verification) {
+    content = (
+      <div className="border-2 rounded-lg">
+        <button className="border w-5 h-8 rounded" onClick={() => {setVerification(false)}}>x</button>
+        <Popup />
+      </div>
+      )
+  } else {
+    content = <p>Has verification</p>
+  }
 
   return (
-  <div>
-    {profiles.length > 0 ? (
-      <ul>
-        {profiles.map((profile) => (
-          <li key={profile.id}>
-            ID: {profile.id}, Name: {profile.name}
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <div>Loading...</div>
-    )}
-  </div>
-);
+    <div className="fixed inset-0 flex flex-col justify-center items-center h-screen position-absolute">
+      {content}
+    </div>
+  );
 
 }
