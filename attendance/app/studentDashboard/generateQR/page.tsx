@@ -1,15 +1,10 @@
 'use client';
 
-import Sidebar from "@/components/Sidebar";
 import QRGenerator from "@/components/QRGenerator";
 
 export default function StudentRecords() {
     return (
         <div className="flex">
-            <div className="z-50">
-                <Sidebar />
-            </div>
-            
             <div>
                 <QRGenerator />
             </div>

@@ -18,7 +18,7 @@ export default function StudentOrProfessor() {
             </h1>
             <div className="flex flex-col md:flex-row items-center justify-center gap-24 h-screen transition-all">
                 <div className={`flex flex-col items-center gap-8 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
-                    <Link href={"/dashboard/studentDashboard"}>
+                    <Link href={"/studentDashboard/generateQR"}>
                         <svg xmlns="http://www.w3.org/2000/svg" 
                             height="216px" 
                             viewBox="0 -960 960 960" 
@@ -34,7 +34,7 @@ export default function StudentOrProfessor() {
                 </div>
 
                 <div className={`flex flex-col items-center gap-8 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
-                    <Link href={"/dashboard/professorDashboard"}>
+                    <Link href={"/authPages/login"}>
                         <svg xmlns="http://www.w3.org/2000/svg" 
                             height="216px" 
                             viewBox="0 -960 960 960"
