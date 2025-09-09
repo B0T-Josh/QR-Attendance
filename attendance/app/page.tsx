@@ -7,6 +7,7 @@ import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-ste
 import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
 import { hasEnvVars } from "@/lib/utils";
 import Link from "next/link";
+import BasicTable from "../components/table"; // <-- Fix import path
 
 export default function Home() {
   return (
@@ -45,6 +46,11 @@ export default function Home() {
           </p>
           <ThemeSwitcher />
         </footer>
+      </div>
+
+      <div>
+        <h1>Sample Table</h1>
+        <BasicTable />
       </div>
     </main>
   );
