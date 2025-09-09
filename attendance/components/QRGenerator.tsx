@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 export default function QRGenerator() {
@@ -7,6 +7,7 @@ export default function QRGenerator() {
         name : "",
         student_id : ""
     });
+    const [content, setContent] = useState<string | "">("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -15,6 +16,10 @@ export default function QRGenerator() {
             [name]: value,
         }));
     };
+    
+    useEffect(() => {
+        setContent(`Encoded: ${profile.name}, ${profile.student_id}`);
+    }, [profile])
 
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8">
@@ -27,11 +32,7 @@ export default function QRGenerator() {
                 </div>
                 <div className="border rounded-lg p-1 w-[17rem]">
                         <p className="mt-2 text-sm text-gray-600">
-                            Encoded: {(profile.name && profile.student_id) ? (
-                                <p>{profile.name + ", " + profile.student_id}</p>
-                            ) : (
-                                <p>No data...</p>
-                            )}
+                            {content}
                         </p>
                 </div>
             </div>
