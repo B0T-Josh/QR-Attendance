@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { DeployButton } from "@/components/deploy-button";
 import { EnvVarWarning } from "@/components/env-var-warning";
 import { AuthButton } from "@/components/auth-button";
@@ -55,3 +56,10 @@ export default function Home() {
     </main>
   );
 }
+=======
+import { redirect } from "next/navigation";
+
+export default function Home() {
+  redirect("/authPages/login");
+}
+>>>>>>> josh

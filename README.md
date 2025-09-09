@@ -24,7 +24,7 @@ Usage:
 ### Git basic usage:
 
 * git fetch origin //this connects your version to the online remote repository
-* git merge origin/main //this merges the repository version to your local repository
+* git merge main //this merges the repository version to your local repository
 * git pull //is a command that fetches and merge with the online remote repository
 * git add [file_name] //this loads the changes to be prepared to be committed
 * git commit -m [comment] //this saves your changes on your local repository
@@ -32,25 +32,25 @@ Usage:
 
 ### Update usage:
 <pre>
-update [command] [option] 
+update [command] [option]
 command - ['-a', '-c', '-p', '-f', '-m', '-A']
-option  - if -a is chosen, type the name of the file that you wanted to add changes into.
-        - if -c is chosen, type the message for the commit.
-        - if -p is chosen, you don't need to type anything after it. This pushes your updates to the remote branch
-        - if -f is chosen, you don't need to type anything after it. This fetches updates from the remote branch
-        - if -m is chosen, you don't need to type anything after it. This merges your local repository with the updates from the remote branch
-        - if -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
+option - if -a is chosen, type the name of the file that you wanted to add changes into.
+       - if -c is chosen, type the message for the commit.
+       - if -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
+       - if -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
+       - if -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
+       - if -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
 usage:
-* update -a [filename] / . (to add all changes)
-* update -A to exeute push and pull in one go
-* update -c [comment/message]
-* update -p
-* update -f
-* update -m
+update -a [filename] / . (to add all changes)
+update -a [filename] / . (to add all changes)
+update -c [comment/message]
+update -p [branch]
+update -f [branch]
+update -m [branch]
 proper usage:
-* update -f -m
-* update -a [filename/.] -c [comment/message] -p
-* update -A
+update -f -m
+update -a [filename/.] -c [comment/message] -p [branch]
+update -A
 
 Important note:
 Make sure to fetch and merge before you work on any file.
@@ -69,6 +69,12 @@ Push everytime you finish a file
 8. Click Ok and do the same on the path on the bottom side.
 9. Click Ok until all apps is closed.
 10. Open your CMD and type update. A guide should output when you type it.
+
+---------------------------------------------------------------------------------------------------------------------------------- 
+
+1. Download the zip file to your desired path.
+2. Unzip the zip file.
+3. Copy the update.exe and paste it on C:/Windows path.
 
 ### Running server
 
