@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import QRGenerator from "./QRGenerator";
+import QRGenerator from "@/components/QRGenerator";
 
 export default function StudentRecords() {
     return (

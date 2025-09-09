@@ -60,13 +60,13 @@ export async function addSubject(supabase: any, info: any, name: string, id: num
     return true;
 }
 
-export async function getProfile(id: number) {
+export async function getVerification(id: number) {
     try {
-        const { data } = await supabase.from('teacher').select('*');
-        return [data || { id: 0, name: ""}];
+        const { data } = await supabase.from('teacher').select('verification').eq('id', id).single();
+        return [data || { data: null }];
     } catch (error) {
         console.log(error);
-        return [{ id: 0, name: ""}];
+        return [{ data: null }];
     }
 }
 

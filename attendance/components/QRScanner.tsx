@@ -4,8 +4,8 @@ import { Html5QrcodeScanner } from "html5-qrcode"
 import { scanned } from "@/app/api/endpoints";
 
 export default function QRScanner() {
-    const [scannedData, setScannedData] = useState<string>("");
-    const [subject, setSubject] = useState<string>("");
+    const [scannedData, setScannedData] = useState<string | null>(null);
+    const [subject, setSubject] = useState<string | null>(null);
 
     useEffect(() => {
         const scanner = new Html5QrcodeScanner("reader", {
@@ -28,7 +28,7 @@ export default function QRScanner() {
         }
     }, []);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value);
     }
 
@@ -52,9 +52,9 @@ export default function QRScanner() {
     }, [scannedData]);
 
     return (
-        <div className="flex justify-center items-center h-screen">
+        <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
-                <input type="text" onChange={handleChange} name="subject" value={subject} placeholder="Subject"/>
+                <input type="text" onChange={handleChange} name="subject" value={subject || ""} placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
                 <div id="reader" style={{ width: "300px" }}></div>
             </div>

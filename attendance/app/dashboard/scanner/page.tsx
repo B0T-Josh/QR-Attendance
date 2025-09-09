@@ -1,6 +1,6 @@
 'use client';
 
-import QRScanner from "./QRScanner"
+import QRScanner from "@/components/QRScanner"
 import Sidebar from "@/components/Sidebar";
 
 export default function StudentRecords() {

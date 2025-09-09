@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getProfile } from "../api/endpoints";
+import { getVerification } from "../api/endpoints";
 import { useRouter } from "next/navigation";
 
 function getId() {
@@ -9,15 +9,9 @@ function getId() {
     return id;
 }
 
-type Profile = {
-  id: number;
-  name: string;
-};
-
 export default function Dashboard() {
+  const [verification, setVerification] = useState(false);
   const router = useRouter();
-  const [profiles, setProfiles] = useState<Profile[]>([]);
-
   const id = getId();
 
   useEffect(() => {
@@ -25,34 +19,20 @@ export default function Dashboard() {
       router.push('/authPages/login');
       return;
     }
-
     const fetchData = async () => {
-      const data = await getProfile(parseInt(id));
+      const data = await getVerification(parseInt(id));
         if (data === null) {
-            alert("Unauthorized user");
-            router.push("/authPages/login");
-        } else {
-            const profiles = Array.isArray(data[0]) ? data[0] : data;
-            setProfiles(profiles as Profile[]);
+            setVerification(true);
         }
     };
-
     fetchData();
-  }, [id, router]);
+  }, [id]);
+
+  
 
   return (
   <div>
-    {profiles.length > 0 ? (
-      <ul>
-        {profiles.map((profile) => (
-          <li key={profile.id}>
-            ID: {profile.id}, Name: {profile.name}
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <div>Loading...</div>
-    )}
+    
   </div>
 );
 
