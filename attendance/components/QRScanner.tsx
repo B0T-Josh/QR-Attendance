@@ -33,22 +33,23 @@ export default function QRScanner() {
     }
 
     useEffect(() => {
-        if(!scannedData) {
+        if (!scannedData) {
             return;
-        } else {
-            const [name, student_id] = scannedData.split(", ");
-            const handleAdd = async (data: any) => {
-                console.log(`Adding ${data.name} ${data.student_id} ${data.subject}`);
-                if(await scanned({name: data.name, student_id: data.student_id, subject: data.subject})) {
-                    alert(`Attendance for ${data.name} is recorded`);
-                    return;
-                } else {
-                    alert(`Attendance recording for ${data.name} was unsuccessful`);
-                    return;
-                }
-            }  
-            handleAdd({name: name, student_id: student_id, subject: subject});
         }
+        if (!subject || subject === "") {
+            alert("Enter subject");
+            return;
+        }
+        const [name, student_id] = scannedData.split(", ");
+        const handleAdd = async (data: any) => {
+            console.log(`Adding ${data.name} ${data.student_id} ${data.subject}`);
+            if (await scanned({ name: data.name, student_id: data.student_id, subject: data.subject })) {
+                alert(`Attendance for ${data.name} is recorded`);
+            } else {
+                alert(`Attendance recording for ${data.name} was unsuccessful`);
+            }
+        };
+        handleAdd({ name: name, student_id: student_id, subject: subject });
     }, [scannedData]);
 
     return (
