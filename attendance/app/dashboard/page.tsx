@@ -1,59 +1,50 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getProfile } from "../api/endpoints";
+import { verificationFromUser } from "../api/endpoints";
 import { useRouter } from "next/navigation";
+import Popup from "@/components/Popup"
 
 function getId() {
-    let id = localStorage.getItem("id");
-    return id;
+  return localStorage.getItem('id');
 }
 
-type Profile = {
-  id: number;
-  name: string;
-};
-
 export default function Dashboard() {
+  const [verification, setVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
   const router = useRouter();
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  
+  let id: string; 
 
-  const id = getId();
+  function handleId() {
+    id = getId() || "0";
+  }
 
   useEffect(() => {
-    if (id === null) {
-      router.push('/authPages/login');
-      return;
+    handleId();
+    if(id === null) {
+      alert("Unauthorized user. Log in first");
+      return; 
+    } else {
+      fetch("/api/getVerification")
+      .then(res => res.json())
+      .then(data => setVerificationCode(data.verification));
+      console.log(verificationCode);
     }
+  }, []);
 
-    const fetchData = async () => {
-      const data = await getProfile(parseInt(id));
-        if (data === null) {
-            alert("Unauthorized user");
-            router.push("/authPages/login");
-        } else {
-            const profiles = Array.isArray(data[0]) ? data[0] : data;
-            setProfiles(profiles as Profile[]);
-        }
-    };
+  let content;
 
-    fetchData();
-  }, [id, router]);
+  if(verification) {
+    content = <Popup />
+  } else {
+    content = <p>Has verification</p>
+  }
 
   return (
-  <div>
-    {profiles.length > 0 ? (
-      <ul>
-        {profiles.map((profile) => (
-          <li key={profile.id}>
-            ID: {profile.id}, Name: {profile.name}
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <div>Loading...</div>
-    )}
-  </div>
-);
+    <div>
+      {content}
+    </div>
+  );
 
 }
