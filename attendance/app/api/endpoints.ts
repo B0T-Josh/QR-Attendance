@@ -9,12 +9,12 @@ export async function addUser(info: any) {
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
         if(error) {
-            console.log(error);
+            console.log(error.message);
             return false;
         }
         const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
         if(err) {
-            console.log(err);
+            console.log(err.message);
             return false;
         }
         if(await addTeacher(supabase, info, prof.id)){
@@ -28,15 +28,11 @@ export async function addUser(info: any) {
 
 export async function addTeacher(supabase: any, info: any, id: number) {
     try {
-        await supabase.from('teacher').insert([{id: id, name: info.name}]);
-        const { data: prof, error: err } = await supabase.from('teacher').select('id, name').eq('id', id).single();
+        const { error: err } = await supabase.from('teacher').insert([{id: id, name: info.name}]);
         if(err) {
-            console.log(err);
+            console.log(err.message);
             return false;
-        }
-        if(await addSubject(supabase, info, prof.name, prof.id)) {
-            return true;
-        } else return false;
+        }else return true;
     } catch (error) {
         console.log(error);
         return false;
@@ -49,7 +45,7 @@ export async function addSubject(supabase: any, info: any, name: string, id: num
         for(const element of subjects) {
             const {error: err} = await supabase.from('subject').insert([{name: element, teacher_name: name, teacher_id: id}]);
             if(err) {
-                console.log(err);
+                console.log(err.message);
                 return false;
             }
         }
@@ -62,11 +58,11 @@ export async function addSubject(supabase: any, info: any, name: string, id: num
 
 export async function getVerification(id: number) {
     try {
-        const { data } = await supabase.from('teacher').select('verification').eq('id', id).single();
-        return [data || { data: null }];
+        const { data } = await supabase.from('account').select('verification').eq('id', id).single();
+        return data?.verification;
     } catch (error) {
         console.log(error);
-        return [{ data: null }];
+        return null;
     }
 }
 
@@ -96,5 +92,16 @@ export async function scanned(info: any) {
     } catch(error) {
         alert(error);
         return false;
+    }
+}
+
+
+export async function verificationFromUser(info: any) {
+    try {
+        const data = await getVerification(info.id);
+        return data;
+    } catch(error) {
+        console.log(error);
+        return null;
     }
 }

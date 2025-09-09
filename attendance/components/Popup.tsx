@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react'
 
-export default function setVerification() {
+export default function Popup() {
     const [profile, setProfile] = useState({
         email: null,
         verification: null
@@ -15,8 +15,10 @@ export default function setVerification() {
     }
 
     return(
-        <div className='display-flex justify-center h-screen'>
-            <h2>Verififcation</h2>
+        <div className='flex flex-col justify-center w-[60rem] h-[80rem] border-2 rounded-lg'>
+            <div className='m-auto border-2 w-[40rem]'>
+
+            </div>
         </div>
     )
 }

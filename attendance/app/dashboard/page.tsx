@@ -1,39 +1,50 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getVerification } from "../api/endpoints";
+import { verificationFromUser } from "../api/endpoints";
 import { useRouter } from "next/navigation";
+import Popup from "@/components/Popup"
 
 function getId() {
-    let id = localStorage.getItem("id");
-    return id;
+  return localStorage.getItem('id');
 }
 
 export default function Dashboard() {
   const [verification, setVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
   const router = useRouter();
-  const id = getId();
+  
+  let id: string; 
+
+  function handleId() {
+    id = getId() || "0";
+  }
 
   useEffect(() => {
-    if (id === null) {
-      router.push('/authPages/login');
-      return;
+    handleId();
+    if(id === null) {
+      alert("Unauthorized user. Log in first");
+      return; 
+    } else {
+      fetch("/api/getVerification")
+      .then(res => res.json())
+      .then(data => setVerificationCode(data.verification));
+      console.log(verificationCode);
     }
-    const fetchData = async () => {
-      const data = await getVerification(parseInt(id));
-        if (data === null) {
-            setVerification(true);
-        }
-    };
-    fetchData();
-  }, [id]);
+  }, []);
 
-  
+  let content;
+
+  if(verification) {
+    content = <Popup />
+  } else {
+    content = <p>Has verification</p>
+  }
 
   return (
-  <div>
-    
-  </div>
-);
+    <div>
+      {content}
+    </div>
+  );
 
 }
