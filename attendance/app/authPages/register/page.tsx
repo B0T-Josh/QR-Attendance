@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";  
+import { useRouter } from "next/navigation"; 
+import Link from "next/link"; 
 
 function encryptPassword(password: string) {
   let asciiArray = password.split("").map((char: string) => char.charCodeAt(0));
@@ -87,6 +88,13 @@ export default function RegisterPage() {
             Register
           </button>
         </div>
+
+        <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
+          Already have an account? 
+          <Link href="/authPages/login" className="ml-1 text-purple-800 hover:text-purple-600">
+            Sign In
+          </Link>
+        </h3>
       </div>
     </div>
   );
