@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { getId } from '@/app/dashboard/page';
+import encryptPassword from './encrypt';
 
 export default function Popup() {
     const [verification, setVerification] = useState<{
@@ -23,7 +24,7 @@ export default function Popup() {
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setVerification(prev => ({
             ...prev,
-            [e.target.name]: e.target.value
+            [e.target.name]: encryptPassword(e.target.value)
         }));
     }
 
@@ -54,9 +55,9 @@ export default function Popup() {
             </div>  
             <div className='flex flex-col justify-center items-center p-2'>
                 <p className="text-left p-2">Enter your verification code: </p>
-                <input name="verification" type="text" onChange={handleChange} placeholder="Enter recovery code" className='border-1 rounded' value={verification.verification ?? ""}/>
+                <input name="verification" type="password" onChange={handleChange} placeholder="Enter recovery code" className='border-1 rounded' value={verification.verification ?? ""}/>
                 <p className="text-left p-2">Confirm your verification code: </p>
-                <input name="confirm" type="text" onChange={handleChange} placeholder="Conmfirm recovery code" className='border-1 rounded' value={verification.confirm ?? ""}/>
+                <input name="confirm" type="password" onChange={handleChange} placeholder="Conmfirm recovery code" className='border-1 rounded' value={verification.confirm ?? ""}/>
             </div>
             <div className='p-4'>
                 <button className='border rounded-lg w-[10rem]' onClick={submit}>Submit</button>

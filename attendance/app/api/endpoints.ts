@@ -105,7 +105,6 @@ export async function scanned(info: any) {
     }
 }
 
-
 export async function verificationFromUser(info: any) {
     try {
         const data = await getVerification(info);
@@ -114,4 +113,8 @@ export async function verificationFromUser(info: any) {
         console.log(error);
         return null;
     }
+}
+
+export async function checkDate(info: any) {
+    const date = new Date();
 }
