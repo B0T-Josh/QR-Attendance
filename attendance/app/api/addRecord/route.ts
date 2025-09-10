@@ -8,12 +8,12 @@ export async function POST(req: Request) {
         if(await timeOut(data)) {
           return NextResponse.json({ success: `Time out added for student ${data.name}`}, {status: 200});
         } 
-        return NextResponse.json({ error: `Already have time out for student ${data.name}`}, {status: 401});
+        return NextResponse.json({ error: `Already have time out for student ${data.name}`}, {status: 400});
     } 
     if(await addRecord(data)){
       return NextResponse.json({ success: `Record added for student ${data.name}`}, {status: 200});
     } else {
-      return NextResponse.json({ error: `There is an error adding record for ${data.name}`}, {status: 401});
+      return NextResponse.json({ error: `There is an error adding record for ${data.name}`}, {status: 400});
     }
   } catch (err) {
     alert(err);

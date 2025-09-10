@@ -38,6 +38,7 @@ export default function Dashboard() {
     handleId();
     if(id === null) {
       alert("Unauthorized user. Log in first");
+      
     } else {
       handleData();
     }

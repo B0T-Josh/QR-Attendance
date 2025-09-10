@@ -6,6 +6,7 @@ import { scanned } from "@/app/api/endpoints";
 export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [subject, setSubject] = useState<string | null>(null);
+    const [content, setContent] = useState<any>(null);
 
     useEffect(() => {
         const scanner = new Html5QrcodeScanner("reader", {
@@ -15,12 +16,13 @@ export default function QRScanner() {
     
         scanner.render(
             async (decodedText: string) => {
-                const [name, student_id] = decodedText.split(", ");
-                setScannedData(decodedText);    
-                console.log(`Decoded text: ${name} ${student_id}`);
+                setScannedData(decodedText);
             },
             (errorMessage: string) => {
-                console.warn(`QR Code Scan Error: ${errorMessage}`);
+                setContent(<p className="text-red-500">{errorMessage}</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 2500);
             }
         );
         return () => {
@@ -42,8 +44,11 @@ export default function QRScanner() {
         }
         const [name, student_id] = scannedData.split(", ");
         const handleAdd = async (data: any) => {
-            console.log(`Adding ${data.name} ${data.student_id} ${data.subject}`);
-            await scanned({ name: data.name, student_id: data.student_id, subject: data.subject })
+            const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: data.subject });
+            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            setTimeout(() => {
+                setContent("");
+            }, 2500);
         };
         handleAdd({ name: name, student_id: student_id, subject: subject });
     }, [scannedData]);
@@ -53,6 +58,7 @@ export default function QRScanner() {
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 <input type="text" onChange={handleChange} name="subject" value={subject || ""} placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
+                <div>{content}</div><br />
                 <div id="reader" style={{ width: "300px" }}></div>
             </div>
         </div>

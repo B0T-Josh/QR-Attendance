@@ -5,6 +5,21 @@ export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 );
 
+function getTime() {
+    const date = new Date();
+    const time =
+        String(date.getHours()).padStart(2, "0") + ":" +
+        String(date.getMinutes()).padStart(2, "0") + ":" +
+        String(date.getSeconds()).padStart(2, "0");
+    return time; 
+}
+
+function getDate() {
+    const date = new Date();
+    const formatted = date.toISOString().split("T")[0];
+    return formatted;
+}
+
 export async function addUser(info: any) {
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
@@ -68,7 +83,7 @@ export async function getVerification(id: number) {
 
 export async function addRecord(info: any) {
     try {
-        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject});
+        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject, time_in: getTime()});
         return true;
     } catch(error) {
         alert(error);
@@ -95,15 +110,12 @@ export async function scanned(info: any) {
         });
         const data = await res.json();
         if(!res.ok) {
-            alert(`${data.error}`);
-            return false;
+            return {error: data.error};
         } else {
-            alert(`${data.success}`);
-            return true;
+            return {message: data.success};
         }
-    } catch(error) {
-        alert(error);
-        return false;
+    } catch(error: any) {
+        return {err: error};
     }
 }
 
@@ -118,16 +130,10 @@ export async function verificationFromUser(info: any) {
 }
 
 export async function timeOut(info: any) {
-    const date = new Date();
-    const formatted = date.toISOString().split("T")[0];
-    const time =
-        String(date.getHours()).padStart(2, "0") + ":" +
-        String(date.getMinutes()).padStart(2, "0") + ":" +
-        String(date.getSeconds()).padStart(2, "0") + "." +
-        String(date.getMilliseconds()).padStart(3, "0");
+    const formatted = getDate();
     const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject).single();
     if(data?.time_out === null) {
-        await supabase.from('attendance').update({time_out: time}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
+        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
         return true;
     } else {
         return false;
@@ -135,8 +141,7 @@ export async function timeOut(info: any) {
 }
 
 export async function   checkDate(info: any) {
-    const date = new Date();
-    const formatted = date.toISOString().split("T")[0];
+    const formatted = getDate();
     const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subject).single();
     if(data === null) {
         return false;
