@@ -54,10 +54,6 @@ export default function StudentRecords() {
     return (
         <div>
             <Sidebar />
-<<<<<<< HEAD
-            <div>
-                
-=======
             <div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
                     {content}
             </div>
@@ -70,7 +66,6 @@ export default function StudentRecords() {
                     <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>Add</button>
                     <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>Remove</button>
                 </div>
->>>>>>> josh
             </div>            
         </div>
     );
