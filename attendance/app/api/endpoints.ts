@@ -142,3 +142,23 @@ export async function getAllSubjects(info: any) {
     const { data } = await supabase.from("subject").select("id, name").eq("teacher_id", info.id);
     return data;
 }
+
+export async function getEmail(info: any) {
+    const { data } = await supabase.from("account").select("id").eq("email", info.email).single();
+    return data ? data.id : 0;
+}
+
+export async function verifyCode(info: any) {
+    const { data } = await supabase.from("account").select("id").eq("verification", info.code);
+    return data;
+}
+
+export async function updatePassword(info: any) {
+    try{
+        await supabase.from("account").update({password: info.password}).eq("email", info.email);
+        return true;
+    } catch(error) {
+        console.log(error);
+        return false;
+    }
+}
