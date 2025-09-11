@@ -2,10 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Popup from "@/components/Popup"
+import { getId } from "@/components/getId"
 
-export function getId() {
-  return localStorage.getItem('id');
-}
 
 export default function Dashboard() {
   const [verification, setVerification] = useState(true);

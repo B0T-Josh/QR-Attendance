@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode"
-import { scanned } from "@/app/api/endpoints";
+import { scanned } from "@/app/api/requests/request";
 
 export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
