@@ -54,3 +54,42 @@ export async function getSubjects(info: any) {
     }
     return ({error: data.error});
 }
+
+export async function validateEmail(info: any) {
+    const res = await fetch("/api/getEmail", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(info)
+    });
+    const data = await res.json();
+    if(res.ok) {
+        return ({success: data.success});
+    }
+    return ({error: data.error});
+}
+
+export async function validateCode(info: any) {
+    const res = await fetch("/api/getCode", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(info)
+    });
+    const data = await res.json();
+    if(res.ok) {
+        return ({success: data.message});
+    }
+    return ({error: data.error});
+}
+
+export async function updatePassword(info: any) {
+    const res = await fetch("/api/updatePassword", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(info)
+    });
+    const data = await res.json();
+    if(res.ok) {
+        return ({success: data.success});
+    }
+    return ({error: data.error});
+}

@@ -2,9 +2,27 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import encryptPassword from "@/components/encrypt";
+import { validateCode } from "@/app/api/requests/request";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
+  const route = useRouter();
   const [loaded, setLoaded] = useState(false);
+  const [code, setCode] = useState<string | null>(null);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setCode(encryptPassword(e.target.value));
+  }
+
+  async function handleSubmit() {
+    const { success, error } = await validateCode({code: code});
+    if(success) {
+      route.push("/authPages/forgotPassword/validateEmail/resetPassword");   
+    } else{
+      alert(`${error}`);
+    }
+  }
 
   useEffect(() => {
     setLoaded(true);
@@ -14,9 +32,9 @@ export default function ForgotPassword() {
     <div className="flex items-center justify-center min-h-screen">
         <div className="space-y-4 w-80">
             <h1 className={`mb-4 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
-                [QuestionPlaceholder]
+                Recovery code:
             </h1>
-            <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="text"/>
+            <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="password" onChange={handleChange}/>
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
                 <Link href='/authPages/forgotPassword/validateEmail/resetPassword'>
