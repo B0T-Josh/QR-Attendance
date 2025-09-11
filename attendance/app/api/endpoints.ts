@@ -5,16 +5,31 @@ export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
 );
 
+function getTime() {
+    const date = new Date();
+    const time =
+        String(date.getHours()).padStart(2, "0") + ":" +
+        String(date.getMinutes()).padStart(2, "0") + ":" +
+        String(date.getSeconds()).padStart(2, "0");
+    return time; 
+}
+
+function getDate() {
+    const date = new Date();
+    const formatted = date.toISOString().split("T")[0];
+    return formatted;
+}
+
 export async function addUser(info: any) {
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
         if(error) {
-            console.log(error.message);
+            console.log(error);
             return false;
         }
         const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
         if(err) {
-            console.log(err.message);
+            console.log(err);
             return false;
         }
         if(await addTeacher(supabase, info, prof.id)){
@@ -30,30 +45,13 @@ export async function addTeacher(supabase: any, info: any, id: number) {
     try {
         const { error: err } = await supabase.from('teacher').insert([{id: id, name: info.name}]);
         if(err) {
-            console.log(err.message);
+            console.log(err);
             return false;
         }else return true;
     } catch (error) {
         console.log(error);
         return false;
     }
-}
-
-export async function addSubject(supabase: any, info: any, name: string, id: number) {
-    try{
-        let subjects = info.subjects.split(" ");
-        for(const element of subjects) {
-            const {error: err} = await supabase.from('subject').insert([{name: element, teacher_name: name, teacher_id: id}]);
-            if(err) {
-                console.log(err.message);
-                return false;
-            }
-        }
-    } catch(error) {
-        console.log(error);
-        return false;
-    } 
-    return true;
 }
 
 export async function getVerification(id: number) {
@@ -68,7 +66,7 @@ export async function getVerification(id: number) {
 
 export async function addRecord(info: any) {
     try {
-        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject});
+        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject, time_in: getTime()});
         return true;
     } catch(error) {
         alert(error);
@@ -86,26 +84,6 @@ export async function addVerification(info: any) {
     }
 }
 
-export async function scanned(info: any) {
-    try {
-        const res = await fetch("/api/addRecord", {
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(info)
-        });
-        if(!res.ok) {
-            alert(`There is an error: ${JSON.stringify(res)}`);
-            return false;
-        } else {
-            return true;
-        }
-    } catch(error) {
-        alert(error);
-        return false;
-    }
-}
-
-
 export async function verificationFromUser(info: any) {
     try {
         const data = await getVerification(info);
@@ -114,4 +92,53 @@ export async function verificationFromUser(info: any) {
         console.log(error);
         return null;
     }
+}
+
+export async function timeOut(info: any) {
+    const formatted = getDate();
+    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject).single();
+    if(data?.time_out === null) {
+        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+export async function checkDate(info: any) {
+    const formatted = getDate();
+    const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subject).single();
+    if(data === null) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export async function getSubject(subject: string) {
+    const { data } = await supabase.from("subject").select("id").eq("name", subject).single();
+    return data || undefined;
+}
+
+export async function addSubjects(info: any) {
+    if(await getSubject(info.name) === undefined) {
+        const { data } = await supabase.from("teacher").select("name").eq("id", info.id).single();
+        await supabase.from("subject").insert({name: info.name, teacher_id: info.id, teacher_name: data?.name});
+        return true;
+    }
+    console.log(`Add Subject error`);
+    return false;
+}
+
+export async function removeSubject(info: any) {
+    if(await getSubject(info.name) !== undefined) {
+        await supabase.from("subject").delete().eq("name", info.name).eq("teacher_id", info.id);
+        return true;
+    }
+    return false;
+}
+
+export async function getAllSubjects(info: any) {
+    const { data } = await supabase.from("subject").select("id, name").eq("teacher_id", info.id);
+    return data;
 }

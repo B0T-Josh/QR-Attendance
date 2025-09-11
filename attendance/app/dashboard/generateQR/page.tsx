@@ -5,9 +5,15 @@ import QRGenerator from "@/components/QRGenerator";
 
 export default function StudentRecords() {
     return (
-        <div>
-            <Sidebar />
-            <QRGenerator />
+        <div className="flex">
+            <div className="z-50">
+                <Sidebar />
+            </div>
+            
+            <div>
+                <QRGenerator />
+            </div>
+            
         </div>
     );
 }

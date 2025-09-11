@@ -1,12 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 
 export default function QRGenerator() {
     const [profile, setProfile] = useState({
-        name : null,
-        student_id : null
+        name : "",
+        student_id : ""
     });
+    const [content, setContent] = useState<string | "">("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -15,23 +16,23 @@ export default function QRGenerator() {
             [name]: value,
         }));
     };
+    
+    useEffect(() => {
+        setContent(`Encoded: ${profile.name} | ${profile.student_id}`);
+    }, [profile])
 
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8">
             <div className="flex flex-col justify-center items-center border rounded-lg w-[25rem] h-[35rem] space-y-6">
                 <h2 className="text-xl font-bold mb-4">QR Code Generator</h2>
                 <input className="border rounded-lg p-1 w-[17rem]" type="text" placeholder="Student ID" onChange={handleChange} name="student_id"/>
-                <input className="border rounded-lg p-1 w-[17rem]" type="text" placeholder="SURNAME, Firstname Middle initial." onChange={handleChange} name="name"/>
+                <input className="border rounded-lg p-1 w-[17rem]" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleChange} name="name"/>
                 <div className="flex flex-col items-center justify-center align-center border rounded-lg p-4 w-[17rem]">
-                    <QRCodeCanvas value={(profile.name ?? "") + ", " + (profile.student_id ?? "")} size={200} />
+                    <QRCodeCanvas value={(profile.name) + " | " + (profile.student_id)} size={200} />
                 </div>
                 <div className="border rounded-lg p-1 w-[17rem]">
                         <p className="mt-2 text-sm text-gray-600">
-                            Encoded: {(profile.name && profile.student_id) ? (
-                                <p>{profile.name + ", " + profile.student_id}</p>
-                            ) : (
-                                <p>No data...</p>
-                            )}
+                            {content}
                         </p>
                 </div>
             </div>
