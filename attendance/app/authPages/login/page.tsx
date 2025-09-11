@@ -33,7 +33,7 @@ export default function LogIn() {
     if(response.ok) {
       const data = await response.json();
       localStorage.setItem('id', data.id);
-      router.push('/dashboard');
+      router.push('/dashboard/studentRecords');
     } else {
       alert("Invalid credentials");
     }

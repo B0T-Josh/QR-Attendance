@@ -137,3 +137,8 @@ export async function removeSubject(info: any) {
     }
     return false;
 }
+
+export async function getAllSubjects(info: any) {
+    const { data } = await supabase.from("subject").select("id, name").eq("teacher_id", info.id);
+    return data;
+}
