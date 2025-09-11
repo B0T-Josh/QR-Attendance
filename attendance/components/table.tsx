@@ -32,7 +32,7 @@ export default function BasicTable() {
       setRows(data as AttendanceRow[])
     }
   }
-
+  //to remove
   useEffect(() => {
     fetchData()
 
