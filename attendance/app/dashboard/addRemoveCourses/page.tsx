@@ -22,7 +22,7 @@ export default function StudentRecords() {
         <div>
             <Sidebar />
             <div>
-
+                
             </div>            
         </div>
     );
