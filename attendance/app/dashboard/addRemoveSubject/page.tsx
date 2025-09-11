@@ -4,31 +4,48 @@ import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
 import { getId } from "@/components/getId"
-import { handleAddSubject, handleRemoveSubject } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
+
+type Subjects = {
+    id: any;
+    name: any;
+}
 
 export default function StudentRecords() {
     const router = useRouter();
     const [subject, setSubject] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [content, setContent] = useState<any>(null);
+    const [sets, setSets] = useState<Subjects[]>([]);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value);
     }
 
+    const get = async () => {
+        const res = await getSubjects({id: id});
+        setSets(res.data || null);
+    }
+
     useEffect(() => {
         if(getId() === null) {
-            alert("Unauthorized user. Log in first");
+            alert("Unauthorized set. Log in first");
             router.push("/authPages/login");
         } else {
             setId(getId());
         }
     }, []);
+
+    useEffect(() => {
+        if(!id) return;
+        get();
+    }, [id]);
     
     async function handleAdd() {
         if(subject) {
             const { message, error } = await handleAddSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            get();
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
 
@@ -36,35 +53,54 @@ export default function StudentRecords() {
         if(subject) {
             const { message, error } = await handleRemoveSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            get();
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
     
     useEffect(() => {
         setTimeout(() => {
             setContent("");
-        }, 2500);
-    }, [content]);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setSubject(null);
+            setSubject("");
         }, 2500);
     }, [content]);
 
     return (
         <div>
             <Sidebar />
-            <div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
+            <div className="absolute top-1 left-1/2 -translate-x-1/2">
                     {content}
             </div>
-            <div className="flex fixed inset-0 justify-center items-center">
-                
+            <div className="absolute top-1 left-1/2 -translate-x-1/2 -translate-y-[-20%]">
                 <div className="p-4 border-2 rounded w-[20rem] h-[12rem]">
                     <h2 className="p-2">Add Subject</h2>
                     <p className="p-2">Enter Subject: </p>
                     <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/><br />   
                     <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>Add</button>
                     <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>Remove</button>
+                </div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[-15%] border-2 rounded-lg w-[60rem] h-screen">
+                    <table className="table-auto border-collapse border border-gray-400 w-full" >
+                        <thead>
+                            <tr>
+                                <th className="border border-gray-400 px-4 py-2">ID</th>
+                                <th className="border border-gray-400 px-4 py-2">Subject</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {sets.length > 0 ? (
+                            sets.map((set) => (
+                            <tr key={set.id} className="text-center">
+                                <td className="border border-gray-400 px-4 py-2">{set.id}</td>
+                                <td className="border border-gray-400 px-4 py-2">{set.name}</td>
+                            </tr>
+                            ))
+                        ) : (   
+                            <tr>
+                                <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">No users found</td>
+                            </tr>
+                        )}
+                        </tbody>
+                    </table>
                 </div>
             </div>            
         </div>
