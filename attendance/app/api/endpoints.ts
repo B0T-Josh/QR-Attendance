@@ -54,23 +54,6 @@ export async function addTeacher(supabase: any, info: any, id: number) {
     }
 }
 
-export async function addSubject(supabase: any, info: any, name: string, id: number) {
-    try{
-        let subjects = info.subjects.split(" ");
-        for(const element of subjects) {
-            const {error: err} = await supabase.from('subject').insert([{name: element, teacher_name: name, teacher_id: id}]);
-            if(err) {
-                console.log(err);
-                return false;
-            }
-        }
-    } catch(error) {
-        console.log(error);
-        return false;
-    } 
-    return true;
-}
-
 export async function getVerification(id: number) {
     try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
@@ -101,24 +84,6 @@ export async function addVerification(info: any) {
     }
 }
 
-export async function scanned(info: any) {
-    try {
-        const res = await fetch("/api/addRecord", {
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(info)
-        });
-        const data = await res.json();
-        if(!res.ok) {
-            return {error: data.error};
-        } else {
-            return {message: data.success};
-        }
-    } catch(error: any) {
-        return {err: error};
-    }
-}
-
 export async function verificationFromUser(info: any) {
     try {
         const data = await getVerification(info);
@@ -140,7 +105,7 @@ export async function timeOut(info: any) {
     }
 }
 
-export async function   checkDate(info: any) {
+export async function checkDate(info: any) {
     const formatted = getDate();
     const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subject).single();
     if(data === null) {
@@ -148,4 +113,27 @@ export async function   checkDate(info: any) {
     } else {
         return true;
     }
+}
+
+export async function getSubject(subject: string) {
+    const { data } = await supabase.from("subject").select("id").eq("name", subject).single();
+    return data || undefined;
+}
+
+export async function addSubjects(info: any) {
+    if(await getSubject(info.name) === undefined) {
+        const { data } = await supabase.from("teacher").select("name").eq("id", info.id).single();
+        await supabase.from("subject").insert({name: info.name, teacher_id: info.id, teacher_name: data?.name});
+        return true;
+    }
+    console.log(`Add Subject error`);
+    return false;
+}
+
+export async function removeSubject(info: any) {
+    if(await getSubject(info.name) !== undefined) {
+        await supabase.from("subject").delete().eq("name", info.name).eq("teacher_id", info.id);
+        return true;
+    }
+    return false;
 }
