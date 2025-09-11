@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import encryptPassword from "@/components/encrypt";
 import { validateCode } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
@@ -37,11 +36,9 @@ export default function ForgotPassword() {
             <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="password" onChange={handleChange}/>
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-                <Link href='/authPages/forgotPassword/validateEmail/resetPassword'>
-                    <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit">
-                        Validate
-                    </button>
-                </Link>
+                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit">
+                      Validate
+                  </button>
             </div>
         </div>
     </div>
