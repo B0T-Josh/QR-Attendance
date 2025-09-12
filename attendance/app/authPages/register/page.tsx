@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 import encryptPassword from "@/components/encrypt"
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
