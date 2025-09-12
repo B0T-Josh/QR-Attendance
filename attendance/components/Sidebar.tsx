@@ -2,10 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 
 export default function Sidebar() {
+    const route = useRouter();
     const [expanded, setExpanded] = useState(false);
+
+    function handleLogOut() {
+        localStorage.removeItem("id");
+        if(localStorage.getItem("email")) {
+            localStorage.removeItem("email");
+            route.push("/authPages/login");
+        }
+        route.push("/authPages/login");
+    }
 
   return (
     <div className="flex min-h-screen">
@@ -94,7 +105,7 @@ export default function Sidebar() {
                 </div>
                 
                 <div className="relative group flex items-center">
-                    <Link href={"/authPages/login"}>
+                    <button onClick={handleLogOut}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             height="24px"
@@ -104,10 +115,10 @@ export default function Sidebar() {
                         >
                             <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
                         </svg>
-                    </Link>
-                    <span className="whitespace-nowrap absolute left-full ml-3 px-3 py-1 text-sm font-medium text-white bg-[#64646465] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-1/2 transition-opacity duration-300">
-                        Log out
-                    </span>
+                        <span className="whitespace-nowrap absolute left-full ml-3 px-3 py-1 text-sm font-medium text-white bg-[#64646465] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-1/2 transition-opacity duration-300">
+                            Log out
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>

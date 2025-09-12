@@ -3,12 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-function encryptPassword(password: string) {
-  let asciiArray = password.split("").map((char: string) => char.charCodeAt(0));
-  let hashedPass = asciiArray.join("");
-  return hashedPass;
-}
+import encryptPassword from "@/components/encrypt"
 
 export default function LogIn() {
   const router = useRouter();

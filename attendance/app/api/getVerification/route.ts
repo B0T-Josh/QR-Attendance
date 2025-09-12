@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     const data: any = await req.json();
     const res: any = await verificationFromUser(parseInt(data.id))
     return NextResponse.json({ message: "Value returned", verification: res.verification }, {status: 200});
-  } catch (err) {
-    return NextResponse.json({ error: `${err}` }, {status: 500});
+  } catch (error) {
+    return NextResponse.json({ error: `${error}` }, {status: 500});
   }
 }
