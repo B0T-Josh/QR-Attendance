@@ -42,7 +42,7 @@ export default function QRScanner() {
             alert("Enter subject");
             return;
         }
-        const [name, student_id] = scannedData.split(", ");
+        const [name, student_id] = scannedData.split(" | ");
         const handleAdd = async (data: any) => {
             const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: data.subject });
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);

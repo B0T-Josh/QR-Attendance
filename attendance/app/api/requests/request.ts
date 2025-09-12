@@ -74,11 +74,10 @@ export async function validateCode(info: any) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    const data = await res.json();
     if(res.ok) {
-        return ({success: data.message});
+        return ({success: "Recovery code valid"});
     }
-    return ({error: data.error});
+    return ({error: "Recovery code doesn't match"});
 }
 
 export async function updatePassword(info: any) {

@@ -45,6 +45,7 @@ export default function StudentRecords() {
         if(subject) {
             const { message, error } = await handleAddSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            setSubject("");
             get();
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
@@ -53,6 +54,7 @@ export default function StudentRecords() {
         if(subject) {
             const { message, error } = await handleRemoveSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            setSubject("");
             get();
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
@@ -60,7 +62,6 @@ export default function StudentRecords() {
     useEffect(() => {
         setTimeout(() => {
             setContent("");
-            setSubject("");
         }, 2500);
     }, [content]);
 
