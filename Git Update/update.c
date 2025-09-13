@@ -114,7 +114,7 @@ bool fetch(char *branch) {
 
 bool merge(char *branch) {
     char command[256];
-    sprintf(command, "git merge %s", branch);
+    sprintf(command, "git merge origin/%s", branch);
     if(system(command) == 0) {
         return true;
     }
