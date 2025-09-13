@@ -24,20 +24,17 @@ export async function addUser(info: any) {
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
         if(error) {
-            console.log(error);
-            return false;
+            return ({error: "Email address already exist"});
         }
         const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
         if(err) {
-            console.log(err);
-            return false;
+            return({error: "There is an error fetching id"});
         }
         if(await addTeacher(supabase, info, prof.id)){
-            return true;
-        } else return false;
+            return ({success: "Profile was successfully created"});
+        } else return ({error: "Creating profile failed"});
     } catch (error) {
-        console.log(error);
-        return false;
+        return ({error: "Server error"});
     }
 }
 
@@ -149,8 +146,8 @@ export async function getEmail(info: any) {
 }
 
 export async function verifyCode(info: any) {
-    const { data } = await supabase.from("account").select("id").eq("verification", info.code);
-    return data;
+    const { data } = await supabase.from("account").select("id").eq("verification", info.code).eq('email', info.email).single();
+    return data ? data.id : 0;
 }
 
 export async function updatePassword(info: any) {

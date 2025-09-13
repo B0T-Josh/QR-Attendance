@@ -9,9 +9,12 @@ export async function POST(req: Request) {
     if(data === null) {
         return NextResponse.json({ error: "No data provided" }, { status: 400 });
     }
-    if(await addUser(data)) {
-        return NextResponse.json({ message: "User added successfully" }, { status: 200 });
+
+    const {success, error} = await addUser(data);
+
+    if(success) {
+        return NextResponse.json({ sucess: success }, { status: 200 });
     } else {
-        return NextResponse.json({ error: "Failed to create a profile" }, { status: 401 });
+        return NextResponse.json({ error: error }, { status: 401 });
     }
 }

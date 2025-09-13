@@ -7,25 +7,27 @@ import { useRouter } from "next/navigation";
 export default function ForgotPassword() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const [content, setContent] = useState<any>();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
   }
 
   async function handleSubmit() {
-    const btn = document.getElementById("submit");
-    if (btn) {
-        btn.textContent = "Loading";
-    }
+    setLoading(true);
     const { success, error } = await validateEmail({email: email});
     console.log(success);
     if(success) {
       route.push("/authPages/forgotPassword/validateEmail");   
       localStorage.setItem("email", email || "");
     } else{
-      alert(`${error}`);
-      location.reload();
+      setLoading(false);
+      setContent(<p className="text-red-500">{error}</p>)
+      setTimeout(() => {
+        setContent("");
+      }, 1500);
     }
   }
 
@@ -36,6 +38,7 @@ export default function ForgotPassword() {
   return (
     <div className="flex items-center justify-center min-h-screen">
         <div className="space-y-4 w-80">
+          {content}
             <h1 className={`mb-4 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
                 Email:
             </h1>
@@ -43,7 +46,7 @@ export default function ForgotPassword() {
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
                   <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit}>
-                      Next
+                      {loading ? (<>Loading</>) : (<>Next</>)}
                   </button>
             </div>
         </div>

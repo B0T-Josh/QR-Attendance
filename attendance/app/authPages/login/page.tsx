@@ -10,6 +10,7 @@ export default function LogIn() {
   const route = useRouter();
   const [content, setContent] = useState<any>();
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
@@ -30,18 +31,23 @@ export default function LogIn() {
   };
 
   const handleSubmit = async () => {
-    const btn = document.getElementById("submit");
-    if (btn) {
-        btn.textContent = "Loading";
-    }
-    const { id, error } = await logIn({email: credentials.email, password: credentials.password});
-    if(id) {
-      localStorage.setItem("id", id);
-      route.push("/dashboard/homePage");
+    setLoading(true);
+    if(credentials.email && credentials.password) {
+      const { id } = await logIn({email: credentials.email, password: credentials.password});
+      if(id) {
+        localStorage.setItem("id", id);
+        route.push("/dashboard/homePage");
+      } else {
+        setContent(<p className="text-red-500">Invalid email or password...</p>);
+        setTimeout(() => {
+          location.reload();
+        }, 1500);
+      }
     } else {
-      setContent(<p className="text-red-500">Invalid email or password...</p>)
+      setContent(<p className="text-red-500">Enter an email account and password</p>);
       setTimeout(() => {
-        location.reload();
+        setContent("");
+        setLoading(false);
       }, 1500);
     }
   };
@@ -67,8 +73,8 @@ export default function LogIn() {
         </div>
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit}>
-            Log In
+          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>
+            {loading ? (<>Loading</>) : (<>Log In</>)}
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>

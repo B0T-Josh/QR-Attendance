@@ -4,13 +4,16 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 import encryptPassword from "@/components/encrypt"
 import Link from "next/link";
+import { register } from "@/app/api/requests/request";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const route = useRouter();
   const [loaded, setLoaded] = useState(false);
+  const [content, setContent] = useState<any>();
   const [loading, setLoading] = useState(false);
+  const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
   const [info, setInfo ] = useState({
-      email: null,
+      email: "",
       password: null,
       name: null,
   });
@@ -18,26 +21,39 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     try {
-    const btn = document.getElementById("submit");
-    if (btn) {
-        btn.textContent = "Loading";
-    }
-      setLoading(true);
-      if(password === info.password) {
-          const res = await fetch("/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(info),
-          });
-          if(res.ok) {
-            alert("Profile created successfully");
-            router.push('/authPages/login');
+      if(info.email && info.password && info.name && password) {
+        if(emailRegex.test(info.email)) {
+          if(password === info.password) {
+            setLoading(true);
+            const { success, error } = await register({email: info.email, password: info.password, name: info.name});
+            if(success) {
+              route.push("/authPages/login");
+            } else {
+              setContent(<p className="text-red-500">{error}</p>);
+              setLoading(false);
+              setTimeout(() => {
+                setContent("");
+              }, 1500);
+            }
           } else {
-            alert("Profile creation unsuccessful");
+            setContent(<p className="text-red-500">Password and Confirm password doesn't match</p>);
+            setTimeout(() => {
+              setContent("");
+            }, 1500);
           }
+        } else {
+          setContent(<p className="text-red-500">Enter valid email account</p>);
+          setTimeout(() => {
+            setContent("");
+          }, 1500);
+        }
       } else {
-        alert("Password does not match Confirm Password");
+        setContent(<p className="text-red-500">Enter an email account and password</p>);
+        setTimeout(() => {
+          setContent("");
+        }, 1500);
       }
+      
     } catch (error) {
       alert("Profile creation unsuccessful");
       console.log(error);
@@ -62,6 +78,7 @@ export default function RegisterPage() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="space-y-4 w-80">
+        {content}
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
           Email:
         </h1>
@@ -80,11 +97,11 @@ export default function RegisterPage() {
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[300ms]" : "opacity-0"}`}>
           Name:
         </h1>
-        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="name" onChange={handleChange} placeholder="SURNAME, Firstname, Middle initial"/>
+        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="name" onChange={handleChange} placeholder="SURNAME, Firstname M.I."/>
 
         <div className="mt-6 transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
           <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>
-            Register
+            {loading ? (<>Loading</>) : (<>Register</>)}
           </button>
         </div>
 

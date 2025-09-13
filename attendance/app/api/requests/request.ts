@@ -61,11 +61,15 @@ export async function validateEmail(info: any) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    const data = await res.json();
+    const {success, error} = await res.json();
     if(res.ok) {
-        return ({success: data.success});
+        if(success) {
+            return ({success: success});
+        } else {
+            return ({error: error});
+        }
     }
-    return ({error: data.error});
+    return ({error: error});
 }
 
 export async function validateCode(info: any) {
@@ -74,10 +78,11 @@ export async function validateCode(info: any) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
+    const data = await res.json();
     if(res.ok) {
-        return ({success: "Recovery code valid"});
+        return ({success: data.success});
     }
-    return ({error: "Recovery code doesn't match"});
+    return ({error: data.error});
 }
 
 export async function updatePassword(info: any) {
@@ -104,5 +109,19 @@ export async function logIn(info: any) {
         return ({id: data.id});
     } else {
         return ({error: data.error});
+    }
+}
+
+export async function register(info: any) {
+    const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(info),
+    });
+    const { success, error } = await res.json();
+    if(res.ok) {
+        return ({success: success});
+    } else {
+        return ({error: error});
     }
 }

@@ -7,7 +7,9 @@ import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
     const route = useRouter();
+    const [content, setContent] = useState<any>();
     const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState({
         new: "",
         confirm: ""
@@ -22,22 +24,30 @@ export default function ForgotPassword() {
     }
 
     async function handleSubmit() {
-        const btn = document.getElementById("submit");
-        if (btn) {
-            btn.textContent = "Loading";
-        }
-
-        if(password.new === password.confirm){
-            const { success, error } = await updatePassword({password: password.new, email: localStorage.getItem("email")});
-            if(success) {
-                alert(`${success}`);
-                route.push("/authPages/login");
+        setLoading(true);
+        if(password.new && password.confirm) {
+            if(password.new === password.confirm){
+                const { success, error } = await updatePassword({password: password.new, email: localStorage.getItem("email")});
+                if(success) {
+                    route.push("/authPages/login");
+                } else {
+                    setLoading(false);
+                    setContent(<p className="text-red-500">{error}</p>);
+                    setTimeout(() => {
+                        setContent("");
+                    }, 1500);
+                }
             } else {
-                alert(`${error}`);
+                setContent(<p className="text-red-500">New password doesn't match Confirm password</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 1500);
             }
         } else {
-            alert("New password and confirm password, doesn't match");
-            location.reload();
+            setContent(<p className="text-red-500">Enter a new password and confirm password</p>);
+            setTimeout(() => {
+                setContent("");
+            }, 1500);
         }
     }
 
@@ -59,8 +69,8 @@ export default function ForgotPassword() {
                 <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} name="confirm" type="password" onChange={handleChange}/>
 
                 <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-                    <button id="submit" className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
-                        Next
+                    <button disabled={loading} id="submit" className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
+                        {loading ? (<>Loading</>) : (<>Next</>)}
                     </button>
                 </div>
             </div>
