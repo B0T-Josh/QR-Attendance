@@ -53,7 +53,10 @@ export default function StudentRecords() {
 
     return (
         <div>
-            <Sidebar />
+            <div className="z-10">
+                <Sidebar />
+            </div>
+            
             <div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
                     {content}
             </div>

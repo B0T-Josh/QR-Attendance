@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
 import encryptPassword from "@/components/encrypt"
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -86,6 +87,13 @@ export default function RegisterPage() {
             Register
           </button>
         </div>
+
+        <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
+          Already have an account? 
+          <Link href="/authPages/login" className="ml-1 text-purple-800 hover:text-purple-600">
+            Sign In
+          </Link>
+        </h3>
       </div>
     </div>
   );
