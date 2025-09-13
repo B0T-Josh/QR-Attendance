@@ -14,6 +14,7 @@ export default function ForgotPassword() {
   }
 
   async function handleSubmit() {
+    document.getElementById("submit").textContent = "Loading";
     const { success, error } = await validateEmail({email: email});
     console.log(success);
     if(success) {
@@ -21,6 +22,7 @@ export default function ForgotPassword() {
       localStorage.setItem("email", email || "");
     } else{
       alert(`${error}`);
+      location.reload();
     }
   }
 
@@ -37,7 +39,7 @@ export default function ForgotPassword() {
             <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="text" placeholder="example@gmail.com"  name="email" onChange={handleChange}/>
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
+                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit}>
                       Next
                   </button>
             </div>

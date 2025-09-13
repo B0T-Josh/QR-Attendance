@@ -17,6 +17,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     try {
+      document.getElementById("submit").textContent = "Loading";
       setLoading(true);
       if(password === info.password) {
           const res = await fetch("/api/register", {
@@ -78,7 +79,7 @@ export default function RegisterPage() {
         <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="name" onChange={handleChange} placeholder="SURNAME, Firstname, Middle initial"/>
 
         <div className="mt-6 transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit} disabled={loading}>
+          <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>
             Register
           </button>
         </div>

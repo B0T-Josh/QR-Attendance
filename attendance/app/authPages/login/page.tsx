@@ -15,6 +15,9 @@ export default function LogIn() {
 
   useEffect(() => {
     setLoaded(true);
+    if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
+      router.push("/dashboard/addRemoveSubject");
+    }
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +28,7 @@ export default function LogIn() {
   };
 
   const handleSubmit = async () => {
+    document.getElementById("submit").textContent = "Loading";
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {  'Content-Type': 'application/json' },
@@ -36,6 +40,7 @@ export default function LogIn() {
       router.push('/dashboard/studentRecords');
     } else {
       alert("Invalid credentials");
+      location.reload();
     }
   };
 
@@ -59,7 +64,7 @@ export default function LogIn() {
         </div>
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
+          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit}>
             Log In
           </button>
         </div>
