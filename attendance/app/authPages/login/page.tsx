@@ -39,15 +39,16 @@ export default function LogIn() {
         route.push("/dashboard/homePage");
       } else {
         setContent(<p className="text-red-500">Invalid email or password...</p>);
+        setLoading(false);
         setTimeout(() => {
           location.reload();
         }, 1500);
       }
     } else {
       setContent(<p className="text-red-500">Enter an email account and password</p>);
+      setLoading(false);
       setTimeout(() => {
         setContent("");
-        setLoading(false);
       }, 1500);
     }
   };
