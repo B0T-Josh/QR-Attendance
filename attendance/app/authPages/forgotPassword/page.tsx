@@ -14,7 +14,10 @@ export default function ForgotPassword() {
   }
 
   async function handleSubmit() {
-    document.getElementById("submit").textContent = "Loading";
+    const btn = document.getElementById("submit");
+    if (btn) {
+        btn.textContent = "Loading";
+    }
     const { success, error } = await validateEmail({email: email});
     console.log(success);
     if(success) {

@@ -17,7 +17,10 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     try {
-      document.getElementById("submit").textContent = "Loading";
+    const btn = document.getElementById("submit");
+    if (btn) {
+        btn.textContent = "Loading";
+    }
       setLoading(true);
       if(password === info.password) {
           const res = await fetch("/api/register", {

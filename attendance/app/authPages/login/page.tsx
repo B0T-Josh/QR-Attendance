@@ -28,7 +28,10 @@ export default function LogIn() {
   };
 
   const handleSubmit = async () => {
-    document.getElementById("submit").textContent = "Loading";
+    const btn = document.getElementById("submit");
+    if (btn) {
+        btn.textContent = "Loading";
+    }
     const response = await fetch('/api/login', {
       method: 'POST',
       headers: {  'Content-Type': 'application/json' },

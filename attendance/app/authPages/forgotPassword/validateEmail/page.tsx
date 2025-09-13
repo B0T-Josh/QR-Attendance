@@ -15,7 +15,10 @@ export default function ForgotPassword() {
   }
 
   async function handleSubmit() {
-    document.getElementById("submit").textContent = "Loading";
+    const btn = document.getElementById("submit");
+    if (btn) {
+        btn.textContent = "Loading";
+    }
     const { success, error } = await validateCode({code: code});
     if(success) {
       route.push("/authPages/forgotPassword/validateEmail/resetPassword");   

@@ -22,7 +22,11 @@ export default function ForgotPassword() {
     }
 
     async function handleSubmit() {
-        document.getElementById("submit").textContent = "Loading";
+        const btn = document.getElementById("submit");
+        if (btn) {
+            btn.textContent = "Loading";
+        }
+
         if(password.new === password.confirm){
             const { success, error } = await updatePassword({password: password.new, email: localStorage.getItem("email")});
             if(success) {
