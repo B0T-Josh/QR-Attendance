@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/components/encrypt"
+import { logIn } from "@/app/api/requests/request";
 
 export default function LogIn() {
-  const router = useRouter();
+  const route = useRouter();
+  const [content, setContent] = useState<any>();
   const [loaded, setLoaded] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
@@ -16,7 +18,7 @@ export default function LogIn() {
   useEffect(() => {
     setLoaded(true);
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
-      router.push("/dashboard/addRemoveSubject");
+      route.push("/dashboard/addRemoveSubject");
     }
   }, []);
 
@@ -32,24 +34,22 @@ export default function LogIn() {
     if (btn) {
         btn.textContent = "Loading";
     }
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {  'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    });
-    if(response.ok) {
-      const data = await response.json();
-      localStorage.setItem('id', data.id);
-      router.push('/dashboard/studentRecords');
+    const { id, error } = await logIn({email: credentials.email, password: credentials.password});
+    if(id) {
+      localStorage.setItem("id", id);
+      route.push("/dashboard/homePage");
     } else {
-      alert("Invalid credentials");
-      location.reload();
+      setContent(<p className="text-red-500">Invalid email or password...</p>)
+      setTimeout(() => {
+        location.reload();
+      }, 1500);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="space-y-4 w-80">
+        {content}
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
           Email:
         </h1>

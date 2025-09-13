@@ -162,3 +162,12 @@ export async function updatePassword(info: any) {
         return false;
     }
 }
+
+export async function login(info: any) {
+    const { data, error } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
+    if(data) {
+        return ({data: {id: data.id, password: data.password}});
+    } else {
+        return ({error: error});
+    }
+}

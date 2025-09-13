@@ -92,3 +92,17 @@ export async function updatePassword(info: any) {
     }
     return ({error: data.error});
 }
+
+export async function logIn(info: any) {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {  'Content-Type': 'application/json' },
+      body: JSON.stringify(info)
+    });
+    const data = await res.json();
+    if(res.ok) {
+        return ({id: data.id});
+    } else {
+        return ({error: data.error});
+    }
+}
