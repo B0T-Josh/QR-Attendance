@@ -15,11 +15,16 @@ export default function ForgotPassword() {
   }
 
   async function handleSubmit() {
+    const btn = document.getElementById("submit");
+    if (btn) {
+        btn.textContent = "Loading";
+    }
     const { success, error } = await validateCode({code: code});
     if(success) {
       route.push("/authPages/forgotPassword/validateEmail/resetPassword");   
     } else{
       alert(`${error}`);
+      location.reload();
     }
   }
 
@@ -36,7 +41,7 @@ export default function ForgotPassword() {
             <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="password" onChange={handleChange}/>
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
+                  <button id="submit" className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
                       Validate
                   </button>
             </div>
