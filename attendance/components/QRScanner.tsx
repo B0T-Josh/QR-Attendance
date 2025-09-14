@@ -26,7 +26,7 @@ export default function QRScanner() {
             }
         );
         return () => {
-            scanner.clear().catch((err) => console.error("failed to clear scanner ", err))
+            location.reload();
         }
     }, []);
 

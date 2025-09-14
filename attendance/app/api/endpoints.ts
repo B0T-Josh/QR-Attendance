@@ -1,8 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
 
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
 );
 
 function getTime() {
@@ -63,10 +64,22 @@ export async function getVerification(id: number) {
 
 export async function addRecord(info: any) {
     try {
+       if(await validateSubject(info.subject)) {
         await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject, time_in: getTime()});
-        return true;
+        return ({success: "Attendance recorded for " + info.name});
+       } else {
+        return({error: "Failed to record attendance. Student " + info.name + "\nwas not enlisted to this subject"});
+       }
     } catch(error) {
-        alert(error);
+        return({error: error});
+    }
+}
+
+async function validateSubject(subject: string) {
+    const {data} = await supabase.from("subject").select("id").eq("name", subject).single();
+    if(data) {
+        return true;
+    } else {
         return false;
     }
 }
@@ -165,6 +178,6 @@ export async function login(info: any) {
     if(data) {
         return ({data: {id: data.id, password: data.password}});
     } else {
-        return ({error: error});
+        return ({error: "Failed to fetch information"});
     }
 }

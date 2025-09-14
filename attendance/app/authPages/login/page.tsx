@@ -33,17 +33,26 @@ export default function LogIn() {
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
-      const { id } = await logIn({email: credentials.email, password: credentials.password});
-      if(id) {
-        localStorage.setItem("id", id);
-        route.push("/dashboard/homePage");
-      } else {
-        setContent(<p className="text-red-500">Invalid email or password...</p>);
+      try{
+        const { id, error } = await logIn({email: credentials.email, password: credentials.password});
+        if(id) {
+          localStorage.setItem("id", id);
+          route.push("/dashboard/homePage");
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+          setLoading(false);
+          // setTimeout(() => {
+          //   location.reload();
+          // }, 1500);
+        }
+      } catch(error) {
+        setContent(<p className="text-red-500">Server error...</p>);
         setLoading(false);
-        setTimeout(() => {
-          location.reload();
-        }, 1500);
+        // setTimeout(() => {
+        //   location.reload();
+        // }, 1500);
       }
+      
     } else {
       setContent(<p className="text-red-500">Enter an email account and password</p>);
       setLoading(false);

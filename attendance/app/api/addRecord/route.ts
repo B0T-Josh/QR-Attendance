@@ -10,10 +10,11 @@ export async function POST(req: Request) {
         } 
         return NextResponse.json({ error: `Already have time out for student ${data.name}`}, {status: 400});
     } 
-    if(await addRecord(data)){
-      return NextResponse.json({ success: `Record added for student ${data.name}`}, {status: 200});
+    const { success, error } = await addRecord(data);
+    if(success){
+      return NextResponse.json({ success: success}, {status: 200});
     } else {
-      return NextResponse.json({ error: `There is an error adding record for ${data.name}`}, {status: 400});
+      return NextResponse.json({ error: error}, {status: 400});
     }
   } catch (err) {
     alert(err);
