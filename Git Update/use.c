@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     if(system(command) == 0) {
         return 0;
     } else {
-        printf("Error: branch '%s' does not exist.\n", argv[1]);
+        printf("Error: cannot change to branch %s\n", argv[1]);
         return 1;
     }
 }
