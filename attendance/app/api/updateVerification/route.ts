@@ -10,7 +10,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "No data provided" }, { status: 400 });
     }
     if(await addVerification({verification: data.verification, id: data.id})) {
-        return NextResponse.json({ success: "Verification added successfully" }, { status: 200 });
+        return NextResponse.json({ success: "Verification added successfully. Please reload the page" }, { status: 200 });
     } else {
         return NextResponse.json({ error: "Failed to add Verification" }, { status: 401 });
     }

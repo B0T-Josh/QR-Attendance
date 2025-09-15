@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";  
 import encryptPassword from "@/tools/encrypt"
 import Link from "next/link";
 import { register } from "@/app/api/requests/request";
+import format from "@/tools/format";
 
 export default function RegisterPage() {
   const route = useRouter();
@@ -14,10 +15,11 @@ export default function RegisterPage() {
   const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
   const [info, setInfo ] = useState({
       email: "",
-      password: null,
-      name: null,
+      password: "",
+      name: "",
   });
   const [password, setPassword] = useState<string | null>(null);
+  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleSubmit = async () => {
     try {
@@ -25,11 +27,12 @@ export default function RegisterPage() {
         if(emailRegex.test(info.email)) {
           if(password === info.password) {
             setLoading(true);
-            const { success, error } = await register({email: info.email, password: info.password, name: info.name});
-            if(success) {
+            const data = await register({email: info.email, password: info.password, name: info.name});
+            console.log(data);
+            if(data.success) {
               route.push("/authPages/login");
             } else {
-              setContent(<p className="text-red-500">{error}</p>);
+              setContent(<p className="text-red-500">{data.error}</p>);
               setLoading(false);
               setTimeout(() => {
                 setContent("");
@@ -61,15 +64,39 @@ export default function RegisterPage() {
   };
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      setInfo({
+      if(typeTimeout.current) {
+        clearTimeout(typeTimeout.current);
+      }
+      typeTimeout.current = setTimeout(() => {
+        setInfo({
           ...info,
           [e.target.name]: e.target.name === "password" ? encryptPassword(e.target.value): e.target.value
-      });
+        });
+      }, 1000);
+  };
+
+  function handleName(e: React.ChangeEvent<HTMLInputElement>) {
+      if(typeTimeout.current) {
+        clearTimeout(typeTimeout.current);
+      }
+      typeTimeout.current = setTimeout(() => {
+        const formatted = format(e.target.value);
+        if(formatted?.formatted) {
+          setInfo({
+          ...info,
+            name: formatted.formatted,
+          });
+        }
+      }, 1000);
   };
 
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(encryptPassword(e.target.value));
   }
+
+  useEffect(() => {
+    console.log(info);
+  }, [info]);
 
   useEffect(() => {
     setLoaded(true);
@@ -97,7 +124,7 @@ export default function RegisterPage() {
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[300ms]" : "opacity-0"}`}>
           Name:
         </h1>
-        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="name" onChange={handleChange} placeholder="SURNAME, Firstname M.I."/>
+        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="text" name="name" onChange={handleName} placeholder="SURNAME, Firstname M.I."/>
 
         <div className="mt-6 transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
           <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>

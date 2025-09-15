@@ -11,7 +11,7 @@
                     }
                 } 
                 var middle_ini = temp_name[temp_name.length-1].toUpperCase() + '.';
-                var formatted: string = last_name + ", " + first_name + middle_ini;
+                var formatted = last_name + ", " + first_name + middle_ini;
                 return ({formatted: formatted});
             }
         } catch(error) {

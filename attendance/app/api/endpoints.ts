@@ -169,3 +169,12 @@ export async function login(info: any) {
         return ({error: "Failed to fetch information"});
     }
 }
+
+export async function validateTeacher(info: any) {
+    const {data, error} = await supabase.from("account").select("id").eq("id", info.id).single();
+    if(data) {
+        return ({id: data.id});
+    } else {
+        return ({error: error});
+    }
+}

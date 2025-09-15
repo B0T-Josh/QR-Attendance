@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     const {success, error} = await addUser(data);
 
     if(success) {
-        return NextResponse.json({ sucess: success }, { status: 200 });
+        return NextResponse.json({ success: success }, { status: 200 });
     } else {
         return NextResponse.json({ error: error }, { status: 401 });
     }

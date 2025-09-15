@@ -118,7 +118,7 @@ export async function register(info: any) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(info),
     });
-    const { success, error } = await res.json();
+    const {success, error} = await res.json();
     if(res.ok) {
         return ({success: success});
     } else {
@@ -131,10 +131,24 @@ export async function getValidation(info: any) {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
-    })
+    });
     const {verification, error} = await res.json();
     if(res.ok) {
         return ({verification: verification})
     }
     return ({error: error});
+}
+
+export async function validateTeacher(info: any) {
+    const res = await fetch("/api/verifyUser", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {id, error} = await res.json();
+    if(id) {
+        return ({success: "User exist"});
+    } else {
+        return ({error: error});
+    }
 }

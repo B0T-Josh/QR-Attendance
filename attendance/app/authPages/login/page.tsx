@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
 import { logIn } from "@/app/api/requests/request";
+import { validateTeacher } from "@/app/api/requests/request";
 
 export default function LogIn() {
   const route = useRouter();
@@ -19,7 +20,15 @@ export default function LogIn() {
   useEffect(() => {
     setLoaded(true);
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
-      route.push("/dashboard/homePage");
+      async function validate() {
+        const {success, error} = await validateTeacher({id: localStorage.getItem("id")});
+        if(success) {
+          route.push("/dashboard/homePage");
+        } else {
+          localStorage.removeItem("id");
+        }
+      }
+      validate();
     }
   }, []);
 
