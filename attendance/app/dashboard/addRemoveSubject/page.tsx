@@ -17,6 +17,9 @@ export default function StudentRecords() {
     const [id, setId] = useState<string | null>(null);
     const [content, setContent] = useState<any>(null);
     const [sets, setSets] = useState<Subjects[]>([]);
+    const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [process, setProcess] = useState<any>();
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value);
@@ -40,6 +43,7 @@ export default function StudentRecords() {
     }, [id]);
     
     async function handleAdd() {
+        setLoading(true);
         if(subject) {
             const { message, error } = await handleAddSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
@@ -49,6 +53,7 @@ export default function StudentRecords() {
     }
 
     async function handleRemove() {
+        setLoading(true);
         if(subject) {
             const { message, error } = await handleRemoveSubject({name: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
@@ -58,24 +63,31 @@ export default function StudentRecords() {
     }
     
     useEffect(() => {
+        setLoading(false);
         setTimeout(() => {
             setContent("");
         }, 2500);
     }, [content]);
 
+    useEffect(() => {
+        setTimeout(() => {
+            setLoaded(true);
+        }, 1000)
+    }, [sets]);
+
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-
-            <div className="flex-1 flex flex-col">
-
+            {loaded ? (
+                <div className="flex-1 flex flex-col">
                 <div className="absolute top-1 left-1/2 -translate-x-1/2">
                     {content}
                 </div>
 
-                <div className="p-4 flex flex-col items-center w-full">
-                    <div className="mt-10 mb-10 p-4 border-2 rounded w-[20rem] h-[12rem]">
+                <div className="p-4 flex flex-col items-center">
+                    <div className="mt-10 mb-10 p-4 border-2 rounded w-[20rem] h-auto">
                         <h2 className="p-2">Add Subject</h2>
+                        {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
                         <p className="p-2">Enter Subject:</p>
 
                         <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/>
@@ -120,6 +132,8 @@ export default function StudentRecords() {
                     </div>
                 </div>
             </div>
+            ) : <p></p>}
+            
         </div>
     );
 

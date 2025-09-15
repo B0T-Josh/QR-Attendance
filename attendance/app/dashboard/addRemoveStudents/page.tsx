@@ -58,7 +58,6 @@ export default function StudentRecords() {
                     {content}
             </div>
             <div className="flex fixed inset-0 justify-center items-center">
-                
                 <div className="p-4 border-2 rounded w-[20rem] h-[12rem]">
                     <h2 className="p-2">Add Subject</h2>
                     <p className="p-2">Enter Subject: </p>
