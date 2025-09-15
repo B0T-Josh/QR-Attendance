@@ -24,13 +24,14 @@ export default function StudentRecords() {
 
     const get = async () => {
         const res = await getSubjects({id: id});
-        setSets(res.data || null);
+        setSets(res.data || []);
     }
 
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
+        setId(getId());
     }, []);
 
     useEffect(() => {
@@ -110,7 +111,7 @@ export default function StudentRecords() {
                                         colSpan={3}
                                         className="border border-gray-400 px-4 py-2 text-center"
                                     >
-                                        No users found
+                                        No subjects found
                                     </td>
                                 </tr>
                             )}

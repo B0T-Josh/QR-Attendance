@@ -36,7 +36,7 @@ export default function HomePage() {
     useEffect(() => {
         setTimeout(() => {
             setLoaded(true);
-        }, 1100)
+        }, 1150)
     }, [hasVerification]);
 
     return (
