@@ -12,7 +12,7 @@ type Subjects = {
 }
 
 export default function StudentRecords() {
-    const router = useRouter();
+    const route = useRouter();
     const [subject, setSubject] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [content, setContent] = useState<any>(null);
@@ -28,11 +28,8 @@ export default function StudentRecords() {
     }
 
     useEffect(() => {
-        if(getId() === null) {
-            alert("Unauthorized set. Log in first");
-            router.push("/authPages/login");
-        } else {
-            setId(getId());
+        if(parseInt(getId() || '0') <= 0) {
+            route.push("/authPages/login");
         }
     }, []);
 

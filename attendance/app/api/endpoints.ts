@@ -1,10 +1,9 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-);
+const url = 'https://ubtgylbwwffsjxlnmxdu.supabase.co';
+const key = 'sb_publishable_f44KRWBKnwS3LG4pMhPTgg_27eY9xrJ';
+const supabase = createClient(url, key);
 
 function getTime() {
     const date = new Date();

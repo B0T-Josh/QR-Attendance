@@ -49,7 +49,7 @@ export default function Popup() {
     }
 
     return(
-        <div className='inset-0 flex flex-col justify-center items-center w-[20rem] h-[20rem] m-auto'>
+        <div className='inset-0 z-10 flex flex-col justify-center items-center w-[20rem] h-[20rem] m-auto'>
             <div>
                 <h1 className='p-4'>Setup a verification code</h1>
             </div>  

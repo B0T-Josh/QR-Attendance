@@ -19,7 +19,7 @@ export default function LogIn() {
   useEffect(() => {
     setLoaded(true);
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
-      route.push("/dashboard/addRemoveSubject");
+      route.push("/dashboard/homePage");
     }
   }, []);
 

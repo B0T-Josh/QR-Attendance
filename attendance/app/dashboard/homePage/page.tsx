@@ -1,7 +1,25 @@
+"use client";
+
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getId } from "@/tools/getId";
+import { useEffect, useState } from "react";
 
 export default function HomePage() {
+    const route = useRouter();
+    const [hasVerification, setVerification] = useState();
+    const [id, setId] = useState<string | "">("");
+    
+
+
+    useEffect(() => {
+        if(parseInt(getId() || '0') <= 0) {
+            route.push("/authPages/login");
+        }
+        
+    }, []);
+
     return (
         <div className="flex min-h-screen">
             <Sidebar />

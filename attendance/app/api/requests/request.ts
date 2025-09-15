@@ -125,3 +125,16 @@ export async function register(info: any) {
         return ({error: error});
     }
 }
+
+export async function getValidation(info: any) {
+    const res = await fetch("/api/getVerification", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    })
+    const data = await res.json();
+    if(res.ok) {
+        return data;
+    }
+    return data.error;
+}
