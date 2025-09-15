@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";  
-import encryptPassword from "@/components/encrypt"
+import encryptPassword from "@/tools/encrypt"
 import Link from "next/link";
 import { register } from "@/app/api/requests/request";
 

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { getId } from '@/components/getId';
-import encryptPassword from './encrypt';
+import { getId } from '@/tools/getId';
+import encryptPassword from '../tools/encrypt';
 
 export default function Popup() {
     const [verification, setVerification] = useState<{

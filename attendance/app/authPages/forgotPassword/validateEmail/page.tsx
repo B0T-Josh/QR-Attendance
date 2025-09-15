@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import encryptPassword from "@/components/encrypt";
+import encryptPassword from "@/tools/encrypt";
 import { validateCode } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
 

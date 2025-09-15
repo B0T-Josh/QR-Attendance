@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import encryptPassword from "@/components/encrypt"
+import encryptPassword from "@/tools/encrypt"
 import { logIn } from "@/app/api/requests/request";
 
 export default function LogIn() {

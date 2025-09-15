@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Popup from "@/components/Popup"
-import { getId } from "@/components/getId"
+import { getId } from "@/tools/getId"
 
 
 export default function Dashboard() {

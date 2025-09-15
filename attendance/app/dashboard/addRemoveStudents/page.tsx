@@ -3,7 +3,7 @@
 import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
-import { getId } from "@/components/getId"
+import { getId } from "@/tools/getId"
 import { handleAddSubject, handleRemoveSubject } from "@/app/api/requests/request";
 
 export default function StudentRecords() {
