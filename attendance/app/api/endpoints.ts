@@ -166,7 +166,7 @@ export async function login(info: any) {
     if(data) {
         return ({data: {id: data.id, password: data.password}});
     } else {
-        return ({error: "Failed to fetch information"});
+        return ({error: "Invlid credentials."});
     }
 }
 

@@ -67,7 +67,7 @@ export default function LogIn() {
       setLoading(false);
       setTimeout(() => {
         setContent("");
-      }, 1500);
+      }, 500);
     }
   };
 

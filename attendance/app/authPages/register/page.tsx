@@ -72,7 +72,7 @@ export default function RegisterPage() {
           ...info,
           [e.target.name]: e.target.name === "password" ? encryptPassword(e.target.value): e.target.value
         });
-      }, 1000);
+      }, 500);
   };
 
   function handleName(e: React.ChangeEvent<HTMLInputElement>) {
@@ -86,6 +86,11 @@ export default function RegisterPage() {
           ...info,
             name: formatted.formatted,
           });
+        } else {
+          setContent(<p className="text-red-500">{formatted?.error}</p>);
+          setTimeout(() => {
+            setContent("");
+          }, 2000);
         }
       }, 1000);
   };
@@ -93,10 +98,6 @@ export default function RegisterPage() {
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(encryptPassword(e.target.value));
   }
-
-  useEffect(() => {
-    console.log(info);
-  }, [info]);
 
   useEffect(() => {
     setLoaded(true);
