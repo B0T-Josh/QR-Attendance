@@ -132,9 +132,9 @@ export async function getValidation(info: any) {
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     })
-    const data = await res.json();
+    const {verification, error} = await res.json();
     if(res.ok) {
-        return data;
+        return ({verification: verification})
     }
-    return data.error;
+    return ({error: error});
 }

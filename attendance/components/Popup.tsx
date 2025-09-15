@@ -29,7 +29,6 @@ export default function Popup() {
     }
 
     async function submit() {
-        console.log(verification.id);
         if(verification.verification !== verification.confirm) {
             alert("Confirm verification code doesn't match verification code");
             return;
@@ -39,11 +38,13 @@ export default function Popup() {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(verification)
         }); 
+        const {success, error} = await res.json();
         if(res.ok) {
-            alert("Verification code is added");
-            return true;
+            if(success) {
+                alert(success);
+            }
         } else {
-            alert("Failed to add verification code");
+            alert(error);
             return false;
         }
     }

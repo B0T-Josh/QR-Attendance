@@ -51,13 +51,12 @@ export async function addTeacher(supabase: any, info: any, id: number) {
     }
 }
 
-export async function getVerification(id: number) {
+export async function getVerification(id: any) {
     try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
-        return data;
+        return ({verification: data?.verification});
     } catch (error) {
-        console.log(error);
-        return null;
+        return ({error: "There is no verification code"});
     }
 }
 
@@ -90,16 +89,6 @@ export async function addVerification(info: any) {
     } catch(error) {
         console.log(error);
         return false;
-    }
-}
-
-export async function verificationFromUser(info: any) {
-    try {
-        const data = await getVerification(info);
-        return data;
-    } catch(error) {
-        console.log(error);
-        return null;
     }
 }
 
