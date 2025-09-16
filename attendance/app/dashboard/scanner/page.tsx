@@ -17,9 +17,9 @@ export default function StudentRecords() {
 
     return (
         <div className="flex">
-            <div className="z-50">
+            {/* <div className="z-50">
                 <Sidebar />
-            </div>
+            </div> */}
             
             <div >
                 <QRScanner/>

@@ -94,3 +94,37 @@ To run a live server, you just need to navigate inside attendance and type "npm 
 ## Reminder!
 
 Add the package or application that you will use on making the project in requirements.txt.<br>
+
+# Ngrok
+
+To use ngrok, install ngrok here and follow the steps to setup.
+
+### Description: 
+
+Ngrok is an online hosting website. You just need to pass the hostname and port to the command and you can use it freely<br>
+Example: 
+
+### Usage 
+<pre>
+        ngrok http http://localhost:3000
+</pre>
+
+# Server 
+
+This is a command to run server via online or offline.
+
+### Requirements 
+
+Ngrok
+
+<pre>
+Syntax:
+        server [command] [hostname]
+Command:
+        - /online - Runs an online server
+        - /offline - Runs a local server
+Usage:
+        - server /online http://localhost:3000
+        - server /offline
+        - server /offline /online http://localhost:3000
+</pre>

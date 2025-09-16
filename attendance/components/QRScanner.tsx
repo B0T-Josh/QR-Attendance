@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode"
+import { BrowserQRCodeReader } from "@zxing/browser";
 import { scanned } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 
@@ -17,34 +17,28 @@ export default function QRScanner() {
     const [id, setId] = useState<string | "">("");
     const [loading, setLoading] = useState(false);
     const typeTimeout = useRef<NodeJS.Timeout | null>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         const temp = localStorage.getItem("id");
         if(temp === null) return;
         setId(temp);
-    }, []);
+        const codeReader = new BrowserQRCodeReader();
 
-    useEffect(() => {
-        const scanner = new Html5QrcodeScanner("reader", {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-        }, false);
-    
-        scanner.render(
-            async (decodedText: string) => {
-                setScannedData(decodedText);
-            },
-            (errorMessage: string) => {
-                setContent(<p className="text-red-500">{errorMessage}</p>);
-                setTimeout(() => {
-                    setContent("");
-                }, 2500);
+        let controls: any; // holds the stop function
+
+        if (videoRef.current) {
+        codeReader
+            .decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
+            if (res) {
+                setScannedData(res.getText());
             }
-        );
-        return () => {
-            location.reload();
+            // ignore errors when no QR is found in frame
+            })
+            .catch((err) => console.error("Camera error:", err));
         }
     }, []);
+
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const {value} = e.target;
@@ -96,11 +90,14 @@ export default function QRScanner() {
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
-                {loading ? <p className="text-gray-600">&nbsp;&nbsp;&nbsp;Loading</p> : <p></p>}
+                {loading ? <p className="text-gray-600 p-4">Loading</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <input type="text" onChange={handleChange} name="subject" placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
                 <div>{content}</div><br />
-                <div id="reader" style={{ width: "300px" }}></div>
+                <video
+                    ref={videoRef}
+                    style={{ width: "100%", maxWidth: "300px", borderRadius: "12px" }}
+                />
             </div>
         </div>
     )
