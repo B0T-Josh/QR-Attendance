@@ -63,10 +63,8 @@ Push everytime you finish a file<br>
 
 This is a shortcut for "git checkout [branch]" to use your own branch.
 
-<pre>
-Syntax:
+### Syntax:
         use [branch]
-</pre>
 
 ### Installation guide:
 
@@ -98,7 +96,7 @@ Add the package or application that you will use on making the project in requir
 
 # Ngrok
 
-To use ngrok, install ngrok here and follow the steps to setup.
+To use ngrok, install ngrok here https://ngrok.com/download and follow the steps to setup. 
 
 ### Description: 
 
@@ -112,7 +110,7 @@ Example:
 
 # Server 
 
-This is a command to run server via online or offline.
+This is a command to run server via online or offline. 
 
 ### Requirements 
 
