@@ -18,17 +18,19 @@ export default function LogIn() {
   });
 
   useEffect(() => {
-    setLoaded(true);
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
       async function validate() {
-        const {success, error} = await validateTeacher({id: localStorage.getItem("id")});
+        const {success} = await validateTeacher({id: localStorage.getItem("id")});
         if(success) {
           route.push("/dashboard/homePage");
         } else {
           localStorage.removeItem("id");
+          setLoaded(true);
         }
       }
       validate();
+    } else {
+      setLoaded(true);
     }
   }, []);
 
@@ -73,7 +75,8 @@ export default function LogIn() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="space-y-4 w-80">
+      {loaded ? (
+        <div className="space-y-4 w-80">
         {content}
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
           Email:
@@ -103,6 +106,7 @@ export default function LogIn() {
           </Link>
         </h3>
       </div>
+      ) : (<p></p>)}
     </div>
   );
 }
