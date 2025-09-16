@@ -1,16 +1,16 @@
 # Student Log Book
 
 For first time users, run install.exe on terminal by typing "install" on terminal. If using Powershell as terminal instead of CMD, type "./install" instead.<br>
-<pre>
-Syntax:
+
+### Syntax:
         install [option]
-Options:
+### Options:
         - /modules - Install node_modules and dependencies      
         - /node - Install Node.js
-Usage:
+### Usage:
         - install /modules
         - install /node
-</pre>
+
 
 # GitUpdate
 
@@ -31,32 +31,33 @@ Usage:
 * git push origin main //this uploads your changes to the online remote repository
 * git checkout [branch] //use the branch that was indicated
 
-### Update usage:
-<pre>
-update [command] [option]
-command - ['-a', '-c', '-p', '-f', '-m', '-A']
-option - if -a is chosen, type the name of the file that you wanted to add changes into.
-       - if -c is chosen, type the message for the commit.
-       - if -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
-       - if -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
-       - if -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
-       - if -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
-usage:
-update -a [filename] / . (to add all changes)
-update -a [filename] / . (to add all changes)
-update -c [comment/message]
-update -p [branch]
-update -f [branch]
-update -m [branch]
-proper usage:
-update -f -m
-update -a [filename/.] -c [comment/message] -p [branch]
-update -A
+### Syntax
+        update [command] [option]
+### Command 
+        - ['-a', '-c', '-p', '-f', '-m', '-A']
+### Option 
+        -a is chosen, type the name of the file that you wanted to add changes into.
+        -c is chosen, type the message for the commit.
+        -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
+        -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
+        -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
+        -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
+### Usage:
+        update -a [filename] / . (to add all changes)
+        update -a [filename] / . (to add all changes)
+        update -c [comment/message]
+        update -p [branch]
+        update -f [branch]
+        update -m [branch]
+### Proper usage:
+        update -f -m
+        update -a [filename/.] -c [comment/message] -p [branch]
+        update -A
 
-Important note:
-Make sure to fetch and merge before you work on any file.
-Push everytime you finish a file
-</pre>
+#### Important note:
+Make sure to fetch and merge before you work on any file.<br>
+Push everytime you finish a file<br>
+
 
 ### Use usage:
 
