@@ -117,14 +117,13 @@ This is a command to run server via online or offline.
 
 Ngrok
 
-<pre>
-Syntax:
+### Syntax:
         server [command] [hostname]
-Command:
+
+### Command:
         - /online - Runs an online server
         - /offline - Runs a local server
-Usage:
+### Usage:
         - server /online http://localhost:3000
         - server /offline
         - server /offline /online http://localhost:3000
-</pre>
