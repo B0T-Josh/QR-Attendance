@@ -4,9 +4,11 @@ For first time users, run install.exe on terminal by typing "install" on termina
 
 ### Syntax:
         install [option]
+
 ### Options:
         - /modules - Install node_modules and dependencies      
         - /node - Install Node.js
+        
 ### Usage:
         - install /modules
         - install /node
@@ -33,15 +35,18 @@ For first time users, run install.exe on terminal by typing "install" on termina
 
 ### Syntax
         update [command] [option]
+
 ### Command 
         - ['-a', '-c', '-p', '-f', '-m', '-A']
+
 ### Option 
-- -a is chosen, type the name of the file that you wanted to add changes into.
-- -c is chosen, type the message for the commit.
-- -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
-- -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
-- -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
-- -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
+        - -a is chosen, type the name of the file that you wanted to add changes into.
+        - -c is chosen, type the message for the commit.
+        - -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
+        - -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
+        - -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
+        - -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
+
 ### Usage:
         - update -a [filename] / . (to add all changes)
         - update -a [filename] / . (to add all changes)
@@ -49,6 +54,7 @@ For first time users, run install.exe on terminal by typing "install" on termina
         - update -p [branch]
         - update -f [branch]
         - update -m [branch]
+
 ### Proper usage:
         - update -f -m
         - update -a [filename/.] -c [comment/message] -p [branch]
@@ -104,9 +110,9 @@ Ngrok is an online hosting website. You just need to pass the hostname and port 
 Example: 
 
 ### Usage 
-<pre>
+        
         ngrok http http://localhost:3000
-</pre>
+
 
 # Server 
 
@@ -122,6 +128,7 @@ Ngrok
 ### Command:
         - /online - Runs an online server
         - /offline - Runs a local server
+
 ### Usage:
         - server /online http://localhost:3000
         - server /offline
