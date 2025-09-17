@@ -96,7 +96,6 @@ export default function RegisterPage() {
 
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
     setPassword(String(encryptPassword(e.target.value)));
-    console.log(info);
   }
 
   useEffect(() => {
@@ -128,7 +127,7 @@ export default function RegisterPage() {
         <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`} disabled={loading} type="text" name="name" onChange={handleName} placeholder="SURNAME, Firstname M.I."/>
 
         <div className="mt-6 transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading} id="submit" type="submit" onClick={handleSubmit}>
+          <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading || !(info.email !== "" && info.name !== "" && info.password !== "")} id="submit" type="submit" onClick={handleSubmit}>
             {loading ? (<>Loading</>) : (<>Register</>)}
           </button>
         </div>
