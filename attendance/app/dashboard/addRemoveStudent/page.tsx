@@ -3,14 +3,28 @@
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getId } from "@/tools/getId"
-import { handleAddSubject, handleRemoveSubject } from "@/app/api/requests/request";
+import { getId } from "@/tools/getId";
+import {
+  handleAddStudent,
+  handleRemoveStudent,
+  getStudent,
+} from "@/app/api/requests/request";
+
+type Student = {
+  id: string;          // primary key in Supabase
+  student_id: string;  // school/student number
+  name: string;        // student name
+  subject: string;     // subject they’re enrolled in
+};
 
 export default function StudentRecords() {
-    const route = useRouter();
-    const [subject, setSubject] = useState<string | null>(null);
-    const [id, setId] = useState<string | null>(null);
-    const [content, setContent] = useState<any>(null);
+  const router = useRouter();
+  const [studentName, setStudentName] = useState<string>("");
+  const [studentId, setStudentId] = useState<string>("");
+  const [subject, setSubject] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [content, setContent] = useState<any>(null);
+  const [students, setStudents] = useState<Student[]>([]);
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setStudentName(e.target.value);
@@ -39,17 +53,34 @@ export default function StudentRecords() {
     }
   }, []);
 
-    useEffect(() => {
-        if(parseInt(getId() || '0') <= 0) {
-            route.push("/authPages/login");
-        }
-    }, []);
-    
-    async function handleAdd() {
-        if(subject) {
-            const { message, error } = await handleAddSubject({name: subject, id: id});
-            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
-        } else setContent(<p className="text-red-500">Enter a subject</p>);
+  useEffect(() => {
+    if (!userId) return;
+    get();
+  }, [userId]);
+
+  async function handleAdd() {
+    if (studentName && studentId && subject) {
+      const { message, error } = await handleAddStudent({
+        student_id: studentId,
+        name: studentName,
+        subject: subject,
+        user_id: userId,
+      });
+
+      setContent(
+        message ? (
+          <p className="text-green-300">{message}</p>
+        ) : (
+          <p className="text-red-500">{error}</p>
+        )
+      );
+
+      setStudentName("");
+      setStudentId("");
+      setSubject("");
+      get();
+    } else {
+      setContent(<p className="text-red-500">Fill all fields first</p>);
     }
   }
 
@@ -78,24 +109,59 @@ export default function StudentRecords() {
     return () => clearTimeout(timer);
   }, [content]);
 
-    return (
-        <div>
-            <div className="z-10">
-                <Sidebar />
-            </div>
-            
-            <div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
-                    {content}
-            </div>
-            <div className="flex fixed inset-0 justify-center items-center">
-                <div className="p-4 border-2 rounded w-[20rem] h-[12rem]">
-                    <h2 className="p-2">Add Subject</h2>
-                    <p className="p-2">Enter Subject: </p>
-                    <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/><br />   
-                    <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>Add</button>
-                    <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>Remove</button>
-                </div>
-            </div>            
+  return (
+    <div className="flex">
+      <Sidebar />
+
+      <div className="flex flex-col items-center flex-1 p-8 gap-8">
+        {/* Feedback message */}
+        <div>{content}</div>
+
+        {/* Manage Students Form */}
+        <div className="p-6 border-2 rounded w-[25rem]">
+          <h2 className="text-lg font-bold mb-4">Manage Students</h2>
+
+          <label className="block mb-2">Enter Student ID:</label>
+          <input
+            type="text"
+            onChange={handleIdChange}
+            placeholder="Enter student ID"
+            className="p-2 border rounded w-full mb-4"
+            value={studentId}
+          />
+
+          <label className="block mb-2">Enter Student Name:</label>
+          <input
+            type="text"
+            onChange={handleNameChange}
+            placeholder="Enter student name"
+            className="p-2 border rounded w-full mb-4"
+            value={studentName}
+          />
+
+          <label className="block mb-2">Enter Subject:</label>
+          <input
+            type="text"
+            onChange={handleSubjectChange}
+            placeholder="Enter subject"
+            className="p-2 border rounded w-full mb-4"
+            value={subject}
+          />
+
+          <div className="flex justify-between">
+            <button
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500"
+              onClick={handleAdd}
+            >
+              Add
+            </button>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
+              onClick={handleRemove}
+            >
+              Remove
+            </button>
+          </div>
         </div>
 
         {/* Students Table */}
