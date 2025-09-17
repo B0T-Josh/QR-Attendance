@@ -149,17 +149,11 @@ export default function StudentRecords() {
           />
 
           <div className="flex justify-between">
-            <button
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500"
-              onClick={handleAdd}
-            >
-              Add
+            <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
+                Add
             </button>
-            <button
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500"
-              onClick={handleRemove}
-            >
-              Remove
+            <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
+                Remove
             </button>
           </div>
         </div>
