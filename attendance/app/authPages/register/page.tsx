@@ -28,7 +28,6 @@ export default function RegisterPage() {
           if(password === info.password) {
             setLoading(true);
             const data = await register({email: info.email, password: info.password, name: info.name});
-            console.log(data);
             if(data.success) {
               route.push("/authPages/login");
             } else {
@@ -70,7 +69,7 @@ export default function RegisterPage() {
       typeTimeout.current = setTimeout(() => {
         setInfo({
           ...info,
-          [e.target.name]: e.target.name === "password" ? encryptPassword(e.target.value): e.target.value
+          [e.target.name]: e.target.name === "password" ? String(encryptPassword(e.target.value)): e.target.value
         });
       }, 500);
   };
@@ -92,11 +91,12 @@ export default function RegisterPage() {
             setContent("");
           }, 2000);
         }
-      }, 1000);
+      }, 500);
   };
 
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(encryptPassword(e.target.value));
+    setPassword(String(encryptPassword(e.target.value)));
+    console.log(info);
   }
 
   useEffect(() => {

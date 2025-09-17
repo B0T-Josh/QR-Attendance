@@ -10,7 +10,7 @@ import Popup from "@/components/Popup";
 
 export default function HomePage() {
     const route = useRouter();
-    const [hasVerification, setVerification] = useState(false); 
+    const [hasVerification, setHasVerification] = useState(false); 
     const [id, setId] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
 
@@ -22,7 +22,6 @@ export default function HomePage() {
             const {success} = await validateTeacher({id: localStorage.getItem("id")});
             if(success) {
                 setId(getId());
-                setLoaded(true);
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");
@@ -36,7 +35,7 @@ export default function HomePage() {
         async function validate() {
             const { verification } = await getValidation({id: id});
             if(verification) {
-                setVerification(true);
+                setHasVerification(true);
             }
         }
         validate();    
@@ -45,7 +44,7 @@ export default function HomePage() {
     useEffect(() => {
         setTimeout(() => {
             setLoaded(true);
-        }, 1150)
+        }, 1500)
     }, [hasVerification]);
 
     return (
@@ -56,7 +55,7 @@ export default function HomePage() {
                 <div className="flex flex-col md:flex-row gap-6 h-full">
                     <div className="flex-1 flex flex-col gap-6">
                         <div className="bg-[#2e2e2ec0] rounded-lg flex-1 transition-all duration-500 hover:flex-[3]">
-                            <Link href={"/dashboard/addRemoveStudents"}>
+                            <Link href={"/dashboard/addRemoveStudent"}>
                                 <div className="p-4 h-full flex justify-left">
                                     Students Masterlist:
                                 </div>

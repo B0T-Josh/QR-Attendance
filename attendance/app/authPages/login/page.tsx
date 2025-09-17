@@ -69,7 +69,7 @@ export default function LogIn() {
       setLoading(false);
       setTimeout(() => {
         setContent("");
-      }, 500);
+      }, 1000);
     }
   };
 
@@ -95,7 +95,7 @@ export default function LogIn() {
         </div>
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>
+          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading || !(credentials.email && credentials.password)}>
             {loading ? (<>Loading</>) : (<>Log In</>)}
           </button>
         </div>
