@@ -56,7 +56,7 @@ export async function getSubjects(info: any) {
 }
 
 export async function handleAddStudent(info: any) {
-    const res = await fetch("/api/addStudent", {
+    const res = await fetch("/api/students", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
@@ -69,7 +69,7 @@ export async function handleAddStudent(info: any) {
 }
 
 export async function handleRemoveStudent(info: any) {
-    const res = await fetch("/api/removeStudent", {
+    const res = await fetch("/api/getStudents", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
@@ -82,7 +82,7 @@ export async function handleRemoveStudent(info: any) {
 }
 
 export async function getStudent(info: any) {
-    const res = await fetch("/api/getStudent", {
+    const res = await fetch("/api/getStudents", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
@@ -93,3 +93,4 @@ export async function getStudent(info: any) {
     }
     return ({error: data.error});
 }
+
