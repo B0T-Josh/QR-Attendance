@@ -13,7 +13,6 @@ For first time users, run install.exe on terminal by typing "install" on termina
         - install /modules
         - install /node
 
-
 # GitUpdate
 
 ## Important note: Study git first
