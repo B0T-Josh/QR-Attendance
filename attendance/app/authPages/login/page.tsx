@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
@@ -12,6 +12,7 @@ export default function LogIn() {
   const [content, setContent] = useState<any>();
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
@@ -35,10 +36,15 @@ export default function LogIn() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCredentials({
-      ...credentials,
-      [e.target.name]: e.target.name === "password" ? encryptPassword(e.target.value): e.target.value
-    });
+    if(typeTimeout.current) {
+      clearTimeout(typeTimeout.current);
+    }
+    typeTimeout.current = setTimeout(() => {
+      setCredentials({
+        ...credentials,
+        [e.target.name]: e.target.name === "password" ? encryptPassword(e.target.value): e.target.value
+      });
+    }, 500);
   };
 
   const handleSubmit = async () => {

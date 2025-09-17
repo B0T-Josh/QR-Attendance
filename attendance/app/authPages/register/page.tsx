@@ -95,7 +95,12 @@ export default function RegisterPage() {
   };
 
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
-    setPassword(String(encryptPassword(e.target.value)));
+    if(typeTimeout.current) {
+      clearTimeout(typeTimeout.current);
+    }
+    typeTimeout.current = setTimeout(() => {
+      setPassword(String(encryptPassword(e.target.value)));
+    }, 500);
   }
 
   useEffect(() => {

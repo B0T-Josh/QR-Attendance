@@ -74,7 +74,7 @@ export async function addRecord(info: any) {
 }
 
 async function validateSubject(subject: string) {
-    const {data} = await supabase.from("subject").select("id").eq("name", subject).single();
+    const {data} = await supabase.from("subject").select("id").eq("id", subject).single();
     if(data) {
         return true;
     } else {
