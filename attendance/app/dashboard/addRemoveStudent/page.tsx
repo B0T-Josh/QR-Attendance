@@ -4,13 +4,14 @@ import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId"
-import { handleAddSubject, handleRemoveSubject } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, validateTeacher } from "@/app/api/requests/request";
 
 export default function StudentRecords() {
     const route = useRouter();
     const [subject, setSubject] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [content, setContent] = useState<any>(null);
+    const [loaded, setLoaded] = useState(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value);
@@ -20,6 +21,15 @@ export default function StudentRecords() {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
+        async function validate() {
+            const {success} = await validateTeacher({id: localStorage.getItem("id")});
+            if(!success) {
+                localStorage.removeItem("id");
+                route.push("/authPages/login");
+            } 
+            setLoaded(true);
+        }
+        validate();
     }, []);
     
     async function handleAdd() {
@@ -53,9 +63,9 @@ export default function StudentRecords() {
             <div className="z-10">
                 <Sidebar />
             </div>
-            
-            <div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
-                    {content}
+            {loaded ? (
+            <><div className="flex fixed inset-0 justify-center items-top mt-[20rem]">
+                {content}
             </div>
             <div className="flex fixed inset-0 justify-center items-center">
                 <div className="p-4 border-2 rounded w-[20rem] h-[12rem]">
@@ -65,7 +75,8 @@ export default function StudentRecords() {
                     <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>Add</button>
                     <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>Remove</button>
                 </div>
-            </div>            
+            </div></> 
+            ) : (<p></p>)}           
         </div>
     );
 }

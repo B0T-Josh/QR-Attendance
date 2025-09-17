@@ -70,12 +70,12 @@ export default function Sidebar() {
                     </button>
 
                     <span className="whitespace-nowrap absolute left-full ml-3 px-3 py-1 text-sm font-medium text-white bg-[#64646465] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-1/2 transition-opacity duration-300">
-                        Add/Remove Courses
+                        Add/Remove Subject
                     </span>
                 </div>
 
                 <div className="relative group flex items-center">
-                    <button className="p-2 rounded hover:scale-125 transition-transform duration-300 ease-in-out" onClick={() => route.push("/dashboard/addRemoveStudents")}>
+                    <button className="p-2 rounded hover:scale-125 transition-transform duration-300 ease-in-out" onClick={() => route.push("/dashboard/addRemoveStudent")}>
                         <svg 
                             xmlns="http://www.w3.org/2000/svg" 
                             height="24px" 
@@ -88,7 +88,7 @@ export default function Sidebar() {
                     </button>
 
                     <span className="whitespace-nowrap absolute left-full ml-3 px-3 py-1 text-sm font-medium text-white bg-[#64646465] rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transform translate-y-1/2 transition-opacity duration-300">
-                        Add/Remove Students
+                        Add/Remove Student
                     </span>
                 </div>
 

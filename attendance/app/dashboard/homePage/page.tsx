@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getValidation } from "@/app/api/requests/request";
+import { getValidation, validateTeacher } from "@/app/api/requests/request";
 import Popup from "@/components/Popup";
 
 export default function HomePage() {
@@ -18,9 +18,18 @@ export default function HomePage() {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
-        if(getId() === null) return;
-        setId(getId());
-    }, [])
+        async function validate() {
+            const {success} = await validateTeacher({id: localStorage.getItem("id")});
+            if(success) {
+                setId(getId());
+                setLoaded(true);
+            } else {
+                localStorage.removeItem("id");
+                route.push("/authPages/login");
+            }
+        }
+        validate();
+    }, []);
 
     useEffect(() => {
         if(id === null) return;
