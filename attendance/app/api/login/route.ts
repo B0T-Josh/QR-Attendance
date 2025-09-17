@@ -1,22 +1,17 @@
 import { NextResponse } from "next/server";
-import { supabase } from "../endpoints"; // adjust path to your supabase client
+import { login } from "../endpoints";
 
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
-    const { data, error } = await supabase
-      .from("account")
-      .select("id, password")
-      .eq("email", email)
-      .eq("password", password)
-      .single();
+    const { data, error } = await login({email: email, password: password});
 
     if (error || !data) {
-      return NextResponse.json({ error: error?.message || "Authentication failed" }, { status: 401 });
+      return NextResponse.json({ error: error || "Authentication failed" }, { status: 401 });
     }
 
-    if (data.password !== password) {
+    if (parseInt(data.password) !== parseInt(password)) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 

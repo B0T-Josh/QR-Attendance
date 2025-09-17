@@ -1,16 +1,17 @@
 # Student Log Book
 
 For first time users, run install.exe on terminal by typing "install" on terminal. If using Powershell as terminal instead of CMD, type "./install" instead.<br>
-<pre>
-Syntax:
+
+### Syntax:
         install [option]
-Options:
+
+### Options:
         - /modules - Install node_modules and dependencies      
         - /node - Install Node.js
-Usage:
+        
+### Usage:
         - install /modules
         - install /node
-</pre>
 
 # GitUpdate
 
@@ -31,41 +32,46 @@ Usage:
 * git push origin main //this uploads your changes to the online remote repository
 * git checkout [branch] //use the branch that was indicated
 
-### Update usage:
-<pre>
-update [command] [option]
-command - ['-a', '-c', '-p', '-f', '-m', '-A']
-option - if -a is chosen, type the name of the file that you wanted to add changes into.
-       - if -c is chosen, type the message for the commit.
-       - if -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
-       - if -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
-       - if -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
-       - if -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
-usage:
-update -a [filename] / . (to add all changes)
-update -a [filename] / . (to add all changes)
-update -c [comment/message]
-update -p [branch]
-update -f [branch]
-update -m [branch]
-proper usage:
-update -f -m
-update -a [filename/.] -c [comment/message] -p [branch]
-update -A
+### Syntax
+        update [command] [option]
 
-Important note:
-Make sure to fetch and merge before you work on any file.
-Push everytime you finish a file
-</pre>
+### Command 
+        ['-a', '-c', '-p', '-f', '-m', '-A', '-P']
+
+### Option 
+        - -a - type the name of the file that you wanted to add changes into.
+        - -c - type the message for the commit.
+        - -p - you need to type the branch to where you will push your work. This pushes your updates to the remote branch.
+        - -f - you need to type the branch that you want to fetch. This fetches updates from the remote branch.
+        - -m - you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch.
+        - -A - you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command.
+        - -P - you need to type the branch that you want to fetch and merge. This fetches updates and merges it from the remote branch to your local repository.
+
+### Usage:
+        - update -a [filename] / . (to add all changes)
+        - update -c [comment/message]
+        - update -p [branch]
+        - update -f [branch]
+        - update -m [branch]
+        - update -A [branch]
+        - update -P [branch]
+
+### Proper usage:
+        - update -f [branch] -m [branch]
+        - update -a [filename/.] -c [comment/message] -p [branch]
+        - update -A [branch]
+        - update -P [branch]
+
+#### Important note:
+Make sure to fetch and merge before you work on any file.<br>
+Push everytime you finish a file<br>
 
 ### Use usage:
 
 This is a shortcut for "git checkout [branch]" to use your own branch.
 
-<pre>
-Syntax:
+### Syntax:
         use [branch]
-</pre>
 
 ### Installation guide:
 
@@ -94,3 +100,37 @@ To run a live server, you just need to navigate inside attendance and type "npm 
 ## Reminder!
 
 Add the package or application that you will use on making the project in requirements.txt.<br>
+
+# Ngrok
+
+To use ngrok, install ngrok here https://ngrok.com/download and follow the steps to setup. 
+
+### Description: 
+
+Ngrok is an online hosting website. You just need to pass the hostname and port to the command and you can use it freely<br>
+Example: 
+
+### Usage 
+        
+        ngrok http http://localhost:3000
+
+
+# Server 
+
+This is a command to run server via online or offline. 
+
+### Requirements 
+
+Ngrok
+
+### Syntax:
+        server [command] [domainname:port]
+
+### Command:
+        - /online - Runs an online server
+        - /offline - Runs a local server
+
+### Usage:
+        - server /online localhost:3000
+        - server /offline
+        - server /offline /online localhost:3000

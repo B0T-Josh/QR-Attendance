@@ -3,18 +3,35 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import encryptPassword from "@/components/encrypt"
+import encryptPassword from "@/tools/encrypt"
+import { logIn } from "@/app/api/requests/request";
+import { validateTeacher } from "@/app/api/requests/request";
 
 export default function LogIn() {
-  const router = useRouter();
+  const route = useRouter();
+  const [content, setContent] = useState<any>();
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     email: "",
     password: ""
   });
 
   useEffect(() => {
-    setLoaded(true);
+    if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
+      async function validate() {
+        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        if(success) {
+          route.push("/dashboard/homePage");
+        } else {
+          localStorage.removeItem("id");
+          setLoaded(true);
+        }
+      }
+      validate();
+    } else {
+      setLoaded(true);
+    }
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,32 +42,51 @@ export default function LogIn() {
   };
 
   const handleSubmit = async () => {
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {  'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
-    });
-    if(response.ok) {
-      const data = await response.json();
-      localStorage.setItem('id', data.id);
-      router.push('/dashboard/studentRecords');
+    setLoading(true);
+    if(credentials.email && credentials.password) {
+      try{
+        const { id, error } = await logIn({email: credentials.email, password: credentials.password});
+        if(id) {
+          localStorage.setItem("id", id);
+          route.push("/dashboard/homePage");
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+          setLoading(false);
+          // setTimeout(() => {
+          //   location.reload();
+          // }, 1500);
+        }
+      } catch(error) {
+        setContent(<p className="text-red-500">Server error...</p>);
+        setLoading(false);
+        // setTimeout(() => {
+        //   location.reload();
+        // }, 1500);
+      }
+      
     } else {
-      alert("Invalid credentials");
+      setContent(<p className="text-red-500">Enter an email account and password</p>);
+      setLoading(false);
+      setTimeout(() => {
+        setContent("");
+      }, 500);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="space-y-4 w-80">
+      {loaded ? (
+        <div className="space-y-4 w-80">
+        {content}
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
           Email:
         </h1>
-        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="text" onChange={handleChange} name="email" placeholder="example@gmail.com"/>
+        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="text" disabled={loading} onChange={handleChange} name="email" placeholder="example@gmail.com"/>
 
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[300ms]" : "opacity-0"}`}>
           Password:
         </h1>
-        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="password" onChange={handleChange} name="password"/>
+        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="password" disabled={loading} onChange={handleChange} name="password"/>
 
         <div className="flex justify-end">
           <Link href="/authPages/forgotPassword" className={`mb-2 transition-opacity ease-out duration-1000 text-purple-800 hover:text-purple-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
@@ -59,8 +95,8 @@ export default function LogIn() {
         </div>
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
-            Log In
+          <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading}>
+            {loading ? (<>Loading</>) : (<>Log In</>)}
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
@@ -70,6 +106,7 @@ export default function LogIn() {
           </Link>
         </h3>
       </div>
+      ) : (<p></p>)}
     </div>
   );
 }

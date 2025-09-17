@@ -55,42 +55,100 @@ export async function getSubjects(info: any) {
     return ({error: data.error});
 }
 
-export async function handleAddStudent(info: any) {
-    const res = await fetch("/api/students", {
+export async function validateEmail(info: any) {
+    const res = await fetch("/api/getEmail", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {success, error} = await res.json();
+    if(res.ok) {
+        if(success) {
+            return ({success: success});
+        } else {
+            return ({error: error});
+        }
+    }
+    return ({error: error});
+}
+
+export async function validateCode(info: any) {
+    const res = await fetch("/api/getCode", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
     const data = await res.json();
     if(res.ok) {
-        return ({message: data.message});
+        return ({success: data.success});
     }
     return ({error: data.error});
 }
 
-export async function handleRemoveStudent(info: any) {
-    const res = await fetch("/api/getStudents", {
+export async function updatePassword(info: any) {
+    const res = await fetch("/api/updatePassword", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
     const data = await res.json();
     if(res.ok) {
-        return ({message: data.message});
+        return ({success: data.success});
     }
     return ({error: data.error});
 }
 
-export async function getStudent(info: any) {
-    const res = await fetch("/api/getStudents", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(info)
+export async function logIn(info: any) {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {  'Content-Type': 'application/json' },
+      body: JSON.stringify(info)
     });
     const data = await res.json();
     if(res.ok) {
-        return (data);
+        return ({id: data.id});
+    } else {
+        return ({error: data.error});
     }
-    return ({error: data.error});
 }
 
+export async function register(info: any) {
+    const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(info),
+    });
+    const {success, error} = await res.json();
+    if(res.ok) {
+        return ({success: success});
+    } else {
+        return ({error: error});
+    }
+}
+
+export async function getValidation(info: any) {
+    const res = await fetch("/api/getVerification", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {verification, error} = await res.json();
+    if(res.ok) {
+        return ({verification: verification})
+    }
+    return ({error: error});
+}
+
+export async function validateTeacher(info: any) {
+    const res = await fetch("/api/verifyUser", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {id, error} = await res.json();
+    if(id) {
+        return ({success: "User exist"});
+    } else {
+        return ({error: error});
+    }
+}

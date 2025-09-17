@@ -2,63 +2,33 @@
 
 import { useState, useEffect } from "react";
 import Popup from "@/components/Popup"
-import { getId } from "@/components/getId"
+import { getId } from "@/tools/getId"
+import { useRouter } from "next/navigation";
+import Sidebar from "@/components/Sidebar";
+import { validateTeacher } from "@/app/api/requests/request";
 
-
-export default function Dashboard() {
-  const [verification, setVerification] = useState(true);
-  
-  let id: string; 
-
-  function handleId() {
-    id = getId() || "0";
-  }
-
-  async function handleData() {
-    if(id === null || id === '0') return;
-    const res = await fetch("/api/getVerification", {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: id})
-    });
-    if(res.ok) {
-      const data = await res.json();
-      if(data.verification) {
-        setVerification(false);
-      } else {
-        setVerification(true);
-      }
-    }
-    return res;
-  }
+export default function Records() {
+  const route = useRouter();
+  const [loaded, setLoaded] = useState(false); 
 
   useEffect(() => {
-    handleId();
-    if(id === null) {
-      alert("Unauthorized user. Log in first");
-      
-    } else {
-      handleData();
-    }
+      if(parseInt(getId() || '0') <= 0) {
+          route.push("/authPages/login");
+      }
+      async function validate() {
+        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        if(!success) {
+            localStorage.removeItem("id");
+            route.push("/authPages/login");
+        } 
+        setLoaded(true);
+      }
+      validate();
   }, []);
 
-  let content;
-
-  if(verification) {
-    content = (
-      <div className="border-2 rounded-lg">
-        <button className="border w-5 h-8 rounded" onClick={() => {setVerification(false)}}>x</button>
-        <Popup />
-      </div>
-      )
-  } else {
-    content = <p>Has verification</p>
-  }
-
   return (
-    <div className="fixed inset-0 flex flex-col justify-center items-center h-screen position-absolute">
-      {content}
+    <div className="flex min-h-screen">
+        <Sidebar />
     </div>
   );
-
 }
