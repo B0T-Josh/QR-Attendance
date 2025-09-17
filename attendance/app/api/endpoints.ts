@@ -66,7 +66,7 @@ export async function addRecord(info: any) {
         await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject, time_in: getTime()});
         return ({success: "Attendance recorded for " + info.name});
        } else {
-        return({error: "Failed to record attendance. Student " + info.name + "\nwas not enlisted to this subject"});
+        return({error: "Failed to record attendance. Student " + info.name});
        }
     } catch(error) {
         return({error: error});
@@ -74,7 +74,7 @@ export async function addRecord(info: any) {
 }
 
 async function validateSubject(subject: string) {
-    const {data} = await supabase.from("subject").select("id").eq("id", subject).single();
+    const {data} = await supabase.from("subject").select("id").eq("name", subject).single();
     if(data) {
         return true;
     } else {
@@ -177,4 +177,25 @@ export async function validateTeacher(info: any) {
     } else {
         return ({error: error});
     }
+}
+
+export async function getRecords(info: any) {
+    console.log(info);
+    let query = supabase.from("attendance").select("*");
+    if(info.data.name) {
+        query = query.eq("name", info.data.name);
+    }
+    if(info.data.subject) {
+        query = query.eq("subject", info.data.subject);
+    } 
+    if(info.data.id) {
+        query = query.eq("student_id", info.data.id);
+    }
+    if(info.data.date) {
+        query = query.eq("date", info.data.date);
+    }
+    const {data, error} = await query;
+    if(data) {
+        return ({data: data});
+    } return ({error: error});
 }

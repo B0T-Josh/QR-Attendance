@@ -191,3 +191,16 @@ export async function getStudent(info: any) {
     }
     return ({error: data.error});
 }
+
+export async function getRecords(info: any) {
+    const res = await fetch("/api/getRecords", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {data} = await res.json();
+    if(res.ok) {
+        return ({data: data});
+    } 
+    return ({error: data});
+}

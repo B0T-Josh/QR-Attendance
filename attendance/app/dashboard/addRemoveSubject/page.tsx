@@ -80,17 +80,16 @@ export default function StudentRecords() {
             <Sidebar />
             {loaded ? (
                 <div className="flex-1 flex flex-col">
-                <div className="absolute top-1 left-1/2 -translate-x-1/2">
-                    {content}
-                </div>
+                    <div className="absolute top-1 left-1/2 -translate-x-1/2">
+                        {content}
+                    </div>
 
-                <div className="p-4 flex flex-col items-center">
-                    <div className="mt-10 mb-10 p-4 border-2 rounded w-[20rem] h-auto">
+                <div className="p-4 flex justify-center items-center m-auto w-1/2">
+                    <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
                         <h2 className="p-2">Add Subject</h2>
                         {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
-                        <p className="p-2">Enter Subject:</p>
 
-                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/>
+                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent" value={subject || ""}/>
 
                         <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
                             Add

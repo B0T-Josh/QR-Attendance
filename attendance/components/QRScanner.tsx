@@ -14,7 +14,6 @@ export default function QRScanner() {
     const [valid, setValid] = useState(true);
     const [subject, setSubject] = useState<string | "">("");
     const [content, setContent] = useState<any>(null);
-    const [subjectId, setSubjectId] = useState<string | null>(null);
     const [id, setId] = useState<string | "">("");
     const [loading, setLoading] = useState(false);
     const typeTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -60,7 +59,6 @@ export default function QRScanner() {
             if(!found) {
                 setValid(false);
             } else {
-                setSubjectId(found.id);
                 setValid(true);
             }
         }
@@ -78,7 +76,7 @@ export default function QRScanner() {
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
         const handleAdd = async (data: any) => {
-            const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subjectId });
+            const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subject });
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
             setTimeout(() => {
                 setContent("");
