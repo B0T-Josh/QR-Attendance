@@ -180,7 +180,6 @@ export async function validateTeacher(info: any) {
 }
 
 export async function getRecords(info: any) {
-    console.log(info);
     let query = supabase.from("attendance").select("*");
     if(info.data.name) {
         query = query.eq("name", info.data.name);
@@ -193,6 +192,9 @@ export async function getRecords(info: any) {
     }
     if(info.data.date) {
         query = query.eq("date", info.data.date);
+    }
+    if(!(info.data.name || info.data.id || info.data.date || info.data.subject)) {
+        return({data: "No data"});
     }
     const {data, error} = await query;
     if(data) {

@@ -63,7 +63,7 @@ export default function Records() {
   }, []);
 
   useEffect(() => {
-    // if(!(search.date || search.id || search.name || search.subject)) return;
+    if(!(search.date || search.id || search.name || search.subject)) return;
     getRecord();
   }, [search]);
 
@@ -72,14 +72,14 @@ export default function Records() {
         <Sidebar />
         {loaded ? (
           <div className="p-4 flex justify-center items-center m-auto">
-            <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
-                <h2 className="p-2">Search</h2>
-                {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
-                <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
-                <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
-                <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
-                <input type="text" name="name" onChange={handleChange} placeholder="Enter student name" className="p-2 bg-transparent"/>
-            </div>
+          <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
+              <h2 className="p-2">Search</h2>
+              {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
+              <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
+              <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
+              <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
+              <input type="text" name="name" onChange={handleChange} placeholder="Enter student name" className="p-2 bg-transparent"/>
+          </div>
           <div className="border-2 rounded-lg">
               <table className="table-auto border-collapse border border-gray-400 w-full h-full">
                   <thead>
