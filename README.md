@@ -37,11 +37,11 @@ For first time users, run install.exe on terminal by typing "install" on termina
         - ['-a', '-c', '-p', '-f', '-m', '-A']
 ### Option 
 - -a is chosen, type the name of the file that you wanted to add changes into.
-        - -c is chosen, type the message for the commit.
-        - -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
-        - -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
-        - -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
-        - -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
+- -c is chosen, type the message for the commit.
+- -p is chosen, you need to type the branch to where you will push your work. This pushes your updates to the remote branch
+- -f is chosen, you need to type the branch that you want to fetch. This fetches updates from the remote branch
+- -m is chosen, you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch
+- -A is chosen, you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command
 ### Usage:
         - update -a [filename] / . (to add all changes)
         - update -a [filename] / . (to add all changes)
