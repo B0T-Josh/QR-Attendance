@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 void printErr() {
-    printf("Syntax:\n\tserver [command] [hostname]\nCommand:\n\t- /online - Runs an online server\n\t- /offline - Runs a local server\nUsage:\n\t- server /online http://localhost:3000\n\t- server /offline\n\t- server /offline /online http://localhost:3000\n");
+    printf("Syntax:\n\tserver [command] [domainname:port]\nCommand:\n\t- /online - Runs an online server\n\t- /offline - Runs a local server\nUsage:\n\t- server /online localhost:3000\n\t- server /offline\n\t- server /offline /online localhost:3000\n");
 }
 
 int printBool(char *msg, int ret) {
@@ -31,7 +31,8 @@ int start(int length, char *args[]) {
     for(int i = 1; i < length; i++) {
         if(compare(args[i], "/online")) {
             char command[256];
-            sprintf(command, "ngrok.exe -ArgumentList 'http %s'", args[i+1]);
+            if(args[i+1] == NULL) return 0;
+            sprintf(command, "ngrok.exe -ArgumentList 'http http://%s'", args[i+1]);
             if(console(command)) {
                 printf("Online server is running\n");
             } else return printBool("Online server failed to initiate\n", 0);
@@ -48,7 +49,12 @@ int main(int argc, char *argv[]) {
     if(argc >= 2) {
         if(start(argc, argv)) {
             return 0;
+        } else {
+            printf("Syntax error:\n");
+            printErr();
+            return 1;
         }
+        
     } else {
         printErr();
         return 1;
