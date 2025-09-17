@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error || "Authentication failed" }, { status: 401 });
     }
 
-    if (data.password !== password) {
+    if (parseInt(data.password) !== parseInt(password)) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
