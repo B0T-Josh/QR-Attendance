@@ -10,7 +10,7 @@ type Subject = {
 }
 
 type Student = {
-    id: string;
+    student_id: string;
     name: string;
     subjects: string;
 }
@@ -97,7 +97,6 @@ export default function QRScanner() {
     }, [scannedData]);
 
     useEffect(() => {  
-        console.log(student?.subjects);
         if(!student) return;
         let student_subject = student?.subjects;
         const found = student_subject?.includes(subject);
@@ -110,7 +109,7 @@ export default function QRScanner() {
                 }, 2500);
                 setLoading(false);
             };
-            handleAdd({ name: student.name, student_id: student.id, subject: subject });
+            handleAdd({ name: student.name, student_id: student.student_id, subject: subject });
         } else {
             setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
             setTimeout(() => {
