@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import {
@@ -9,6 +9,7 @@ import {
   handleRemoveStudent,
   getStudent,
 } from "@/app/api/requests/request";
+import format from "@/tools/format";
 
 type Student = {
   id: string;          // primary key in Supabase
@@ -22,12 +23,28 @@ export default function StudentRecords() {
   const [studentName, setStudentName] = useState<string>("");
   const [studentId, setStudentId] = useState<string>("");
   const [subject, setSubject] = useState<string>("");
-  const [userId, setUserId] = useState<string | null>(null);
   const [content, setContent] = useState<any>(null);
   const [students, setStudents] = useState<Student[]>([]);
+  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
+  const name_input = useRef<HTMLInputElement | null>(null);
+  const id_input = useRef<HTMLInputElement | null>(null);
+  const subject_input = useRef<HTMLInputElement | null>(null);
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setStudentName(e.target.value);
+    if(typeTimeout.current) {
+      clearTimeout(typeTimeout.current);
+    } 
+    typeTimeout.current = setTimeout(() => {
+      const temp_name = format(e.target.value);
+      if(temp_name?.formatted) {
+        setStudentName(temp_name.formatted);
+      } else if(temp_name?.error) {
+        setContent(<p className="text-red-500">{temp_name.error}</p>);
+        setTimeout(() => {
+          setContent("");
+        }, 2000);
+      }
+    }, 500);
   }
 
   function handleIdChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -48,15 +65,9 @@ export default function StudentRecords() {
     if (!uid) {
       alert("Unauthorized. Log in first.");
       router.push("/authPages/login");
-    } else {
-      setUserId(uid);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!userId) return;
+    } 
     get();
-  }, [userId]);
+  }, []);
 
   async function handleAdd() {
     if (studentName && studentId && subject) {
@@ -73,10 +84,9 @@ export default function StudentRecords() {
           <p className="text-red-500">{error}</p>
         )
       );
-
-      setStudentName("");
-      setStudentId("");
-      setSubject("");
+      name_input.current && (name_input.current.value = "");
+      id_input.current && (id_input.current.value = "");
+      subject_input.current && (subject_input.current.value = "");
       get();
     } else {
       setContent(<p className="text-red-500">Fill all fields first</p>);
@@ -93,9 +103,9 @@ export default function StudentRecords() {
           <p className="text-red-500">{error}</p>
         )
       );
-      setStudentName("");
-      setStudentId("");
-      setSubject("");
+      name_input.current && (name_input.current.value = "");
+      id_input.current && (id_input.current.value = "");
+      subject_input.current && (subject_input.current.value = "");
       get();
     } else {
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
@@ -111,12 +121,8 @@ export default function StudentRecords() {
   return (
     <div className="flex">
       <Sidebar />
-
+      <div>{content}</div>
       <div className="flex flex-row items-center flex-1 p-8 gap-8">
-        {/* Feedback message */}
-        <div>{content}</div>
-
-        {/* Manage Students Form */}
         <div className="p-6 border-2 rounded w-[25rem]">
           <h2 className="text-lg font-bold mb-4">Manage Students</h2>
 
@@ -126,7 +132,8 @@ export default function StudentRecords() {
             onChange={handleIdChange}
             placeholder="Enter student ID"
             className="p-2 border rounded w-full mb-4"
-            value={studentId}
+            id="id"
+            ref={id_input}
           />
 
           <label className="block mb-2">Enter Student Name:</label>
@@ -135,7 +142,8 @@ export default function StudentRecords() {
             onChange={handleNameChange}
             placeholder="Enter student name"
             className="p-2 border rounded w-full mb-4"
-            value={studentName}
+            id="name"
+            ref={name_input}
           />
 
           <label className="block mb-2">Enter Subject:</label>
@@ -144,7 +152,8 @@ export default function StudentRecords() {
             onChange={handleSubjectChange}
             placeholder="Enter subject"
             className="p-2 border rounded w-full mb-4"
-            value={subject}
+            id="subjects"
+            ref={subject_input}
           />
 
           <div className="flex justify-between">
