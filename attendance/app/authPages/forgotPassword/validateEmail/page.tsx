@@ -13,7 +13,7 @@ export default function ForgotPassword() {
   const [code, setCode] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setCode(encryptPassword(e.target.value));
+    setCode(String(encryptPassword(e.target.value)));
   }
 
   async function handleSubmit() {
