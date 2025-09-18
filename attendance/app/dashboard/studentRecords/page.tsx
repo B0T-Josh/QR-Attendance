@@ -5,7 +5,7 @@ import Popup from "@/components/Popup"
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { getRecords, validateTeacher } from "@/app/api/requests/request";
+import { getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
 
 type Record = {
   id: string;
@@ -17,22 +17,33 @@ type Record = {
   time_out: string;
 }
 
+type Subjects = {
+  id: string;
+  name: string;
+}
+
 export default function Records() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false); 
+  const [hasSubject, setHasSubject] = useState(false);
   const [record, setRecord] = useState<Record[]>([]);
   const [loading, setLodaing] = useState(false);
+  const [id, setId] = useState<string | null>(null);
+  const [content, setContent] = useState<any>();
   const [search, setSearch] = useState({
     id: null,
     name: null,
     subject: null,
     date: null
   });
+  const [subjects, setSubjects] = useState<Subjects[]>([]);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   async function getRecord() {
+    setLodaing(true);
     const {data, error} = await getRecords({data: search});
     setRecord(data);
+    setLodaing(false);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -57,6 +68,7 @@ export default function Records() {
             localStorage.removeItem("id");
             route.push("/authPages/login");
         } 
+        setId(localStorage.getItem("id"));
         setLoaded(true);
       }
       validate();
@@ -64,22 +76,45 @@ export default function Records() {
 
   useEffect(() => {
     if(!(search.date || search.id || search.name || search.subject)) return;
-    getRecord();
+    if(search.subject) {
+      async function getSubject() {
+        const res = await getSubjects({id: id});
+        setSubjects(res.data || []);
+      }
+      getSubject();
+    } else {
+      getRecord();
+    }
   }, [search]);
+
+  useEffect(() => {
+    if(subjects.length > 0) {
+      const found = subjects.find(items => items.name === search.subject);
+      console.log(found);
+      if(!found?.name) {
+        setContent(<p className="text-red-500">You don't have this subject</p>);
+        setTimeout(() => {
+          setContent("");
+        }, 2000);
+      } else {
+        getRecord();
+      }
+    }
+  }, [subjects]);
 
   return (
     <div className="flex min-h-screen">
         <Sidebar />
         {loaded ? (
           <div className="p-4 flex justify-center items-center m-auto">
-          <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
-              <h2 className="p-2">Search</h2>
-              {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
-              <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
-              <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
-              <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
-              <input type="text" name="name" onChange={handleChange} placeholder="Enter student name" className="p-2 bg-transparent"/>
-          </div>
+            <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
+                {content}
+                {loading ? (<h2 className="p-2">Loading</h2>) : <h2 className="p-2">Search</h2>}
+                <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
+                <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
+                <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
+                <input type="text" name="name" onChange={handleChange} placeholder="Enter student name" className="p-2 bg-transparent"/>
+            </div>
           <div className="border-2 rounded-lg">
               <table className="table-auto border-collapse border border-gray-400 w-full h-full">
                   <thead>

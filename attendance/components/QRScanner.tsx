@@ -25,7 +25,7 @@ export default function QRScanner() {
         setId(temp);
         const codeReader = new BrowserQRCodeReader();
 
-        let controls: any; // holds the stop function
+        let controls: any;
 
         if (videoRef.current) {
         codeReader
@@ -33,7 +33,6 @@ export default function QRScanner() {
             if (res) {
                 setScannedData(res.getText());
             }
-            // ignore errors when no QR is found in frame
             })
             .catch((err) => console.error("Camera error:", err));
         }
