@@ -240,7 +240,6 @@ export async function getAllStudent() {
 }
 //Add students to the database.
 export async function addStudent(info: any) {
-    console.log(info);
     const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects});
     if(!error) {
         return({success: `Student ${info.name} is added`});
