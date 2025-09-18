@@ -86,8 +86,8 @@ export default function StudentRecords() {
 
                 <div className="p-4 flex justify-center items-center m-auto w-1/2">
                     <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
-                        <h2 className="p-2">Add Subject</h2>
-                        {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
+                        
+                        {loading ? (<h2 className="p-2 text-gray-600">Loading</h2>) : <h2 className="p-2">Add Subject</h2>}
 
                         <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent" value={subject || ""}/>
 

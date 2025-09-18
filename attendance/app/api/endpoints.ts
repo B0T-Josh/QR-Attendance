@@ -201,3 +201,10 @@ export async function getRecords(info: any) {
         return ({data: data});
     } return ({error: error});
 }
+
+export async function verifyStudentData(info: any) {
+    const {data, error} = await supabase.from("students").select("*").eq("student_id", info.id).eq("name", info.name).single();
+    if(data) {
+        return ({data: data});
+    } return ({error: "Student doesn't exist"});
+}

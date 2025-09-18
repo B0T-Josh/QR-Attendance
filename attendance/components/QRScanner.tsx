@@ -1,12 +1,18 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { scanned } from "@/app/api/requests/request";
+import { scanned, verifyStudentData } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 
 type Subject = {
     id: string;
     name: string;
+}
+
+type Student = {
+    id: string;
+    name: string;
+    subjects: string;
 }
 
 export default function QRScanner() {
@@ -18,6 +24,7 @@ export default function QRScanner() {
     const [loading, setLoading] = useState(false);
     const typeTimeout = useRef<NodeJS.Timeout | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [student, setStudent] = useState<Student | null>(null);
 
     useEffect(() => {
         const temp = localStorage.getItem("id");
@@ -74,16 +81,44 @@ export default function QRScanner() {
         }
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
-        const handleAdd = async (data: any) => {
-            const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subject });
-            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+        async function verifyStudent() {
+            const {data, error} = await verifyStudentData({name: name, id: student_id});
+            if(data) {
+                setStudent(data);
+            } else {
+                setLoading(false);
+                setContent(<p className="text-red-500">{error}</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 2000);
+            }
+        }
+        verifyStudent();
+    }, [scannedData]);
+
+    useEffect(() => {  
+        console.log(student?.subjects);
+        if(!student) return;
+        let student_subject = student?.subjects;
+        const found = student_subject?.includes(subject);
+        if(found) {
+            const handleAdd = async (data: any) => {
+                const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subject });
+                setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 2500);
+                setLoading(false);
+            };
+            handleAdd({ name: student.name, student_id: student.id, subject: subject });
+        } else {
+            setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
             setTimeout(() => {
                 setContent("");
             }, 2500);
             setLoading(false);
-        };
-        handleAdd({ name: name, student_id: student_id, subject: subject });
-    }, [scannedData]);
+        }
+    }, [student]);
 
     return (
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">

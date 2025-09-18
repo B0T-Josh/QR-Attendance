@@ -204,3 +204,16 @@ export async function getRecords(info: any) {
     } 
     return ({error: data});
 }
+
+export async function verifyStudentData(info: any) {
+    const res = await fetch("/api/verifyStudentData", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {data, error} = await res.json();
+    if(res.ok) {
+        return ({data: data});
+    } 
+    return ({error: error});
+}

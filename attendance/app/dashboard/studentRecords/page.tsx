@@ -27,7 +27,7 @@ export default function Records() {
   const [loaded, setLoaded] = useState(false); 
   const [hasSubject, setHasSubject] = useState(false);
   const [record, setRecord] = useState<Record[]>([]);
-  const [loading, setLodaing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [content, setContent] = useState<any>();
   const [search, setSearch] = useState({
@@ -40,10 +40,10 @@ export default function Records() {
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   async function getRecord() {
-    setLodaing(true);
+    setLoading(true);
     const {data, error} = await getRecords({data: search});
     setRecord(data);
-    setLodaing(false);
+    setLoading(false);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -76,6 +76,7 @@ export default function Records() {
 
   useEffect(() => {
     if(!(search.date || search.id || search.name || search.subject)) return;
+    setLoading(true);
     if(search.subject) {
       async function getSubject() {
         const res = await getSubjects({id: id});
@@ -88,16 +89,25 @@ export default function Records() {
   }, [search]);
 
   useEffect(() => {
+    if(hasSubject) {
+      getRecord();
+    }
+  }, [hasSubject]);
+
+  useEffect(() => {
     if(subjects.length > 0) {
       const found = subjects.find(items => items.name === search.subject);
       console.log(found);
       if(!found?.name) {
+        setHasSubject(false);
+        setLoading(false);
         setContent(<p className="text-red-500">You don't have this subject</p>);
         setTimeout(() => {
           setContent("");
         }, 2000);
       } else {
-        getRecord();
+        setHasSubject(true);
+        setLoading(false);
       }
     }
   }, [subjects]);
