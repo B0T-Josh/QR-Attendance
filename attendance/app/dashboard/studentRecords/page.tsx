@@ -25,7 +25,6 @@ type Subjects = {
 export default function Records() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false); 
-  const [hasSubject, setHasSubject] = useState(false);
   const [record, setRecord] = useState<Record[]>([]);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
@@ -89,25 +88,17 @@ export default function Records() {
   }, [search]);
 
   useEffect(() => {
-    if(hasSubject) {
-      getRecord();
-    }
-  }, [hasSubject]);
-
-  useEffect(() => {
     if(subjects.length > 0) {
       const found = subjects.find(items => items.name === search.subject);
-      console.log(found);
       if(!found?.name) {
-        setHasSubject(false);
         setLoading(false);
         setContent(<p className="text-red-500">You don't have this subject</p>);
         setTimeout(() => {
           setContent("");
         }, 2000);
       } else {
-        setHasSubject(true);
         setLoading(false);
+        getRecord();
       }
     }
   }, [subjects]);
@@ -119,7 +110,7 @@ export default function Records() {
           <div className="p-4 flex justify-center items-center m-auto">
             <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
                 {content}
-                {loading ? (<h2 className="p-2">Loading</h2>) : <h2 className="p-2">Search</h2>}
+                {loading ? (<h2 className="p-2">Loading...</h2>) : <h2 className="p-2">Search</h2>}
                 <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
                 <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
                 <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
@@ -154,7 +145,7 @@ export default function Records() {
                       ) : (
                       <tr>
                         <td colSpan={7} className="border border-gray-400 px-4 py-2 text-center">
-                          No subjects found
+                          No data found
                         </td>
                       </tr>
                   )}

@@ -123,7 +123,7 @@ export default function QRScanner() {
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
-                {loading ? <p className="text-gray-600 p-4">Loading</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
+                {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <input type="text" onChange={handleChange} name="subject" placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
                 <div>{content}</div><br />
