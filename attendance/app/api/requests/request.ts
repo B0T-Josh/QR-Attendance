@@ -158,7 +158,7 @@ export async function getValidation(info: any) {
     }
     return ({error: error});
 }
-
+//Get the teacher ID and if ID is verified, the teacher or user is verified.
 export async function validateTeacher(info: any) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyUser", {
@@ -174,52 +174,50 @@ export async function validateTeacher(info: any) {
         return ({error: error});
     }
 }
-
+//Request to add student.
 export async function handleAddStudent(info: any) {
     //Pass the submitted data to the URL.
-    const res = await fetch("/api/students", {
+    const res = await fetch("/api/addStudent", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
     //Processes response from URL.
-    const data = await res.json();
+    const {success, error} = await res.json();
     if(res.ok) {
-        return ({message: data.message});
+        return ({success: success});
     }
-    return ({error: data.error});
+    return ({error: error});
 }
-
+//Request to delete a student from the table.
 export async function handleRemoveStudent(info: any) {
     //Pass the submitted data to the URL.
-    const res = await fetch("/api/getStudents", {
-        method: "POST",
+    const res = await fetch("/api/addStudent", {
+        method: "DELETE",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
     //Processes response from URL.
-    const data = await res.json();
+    const {success, error} = await res.json();
     if(res.ok) {
-        return ({message: data.message});
+        return ({success: success});
     }
-    return ({error: data.error});
+    return ({error: error});
 }
-
-export async function getStudent(info: any) {
+//Get all student from the database.
+export async function getStudent() {
     //Pass the submitted data to the URL.
-    const res = await fetch("/api/getStudents", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(info)
+    const res = await fetch("/api/addStudent", {
+        method: "GET"
     });
     //Processes response from URL.
-    const data = await res.json();
+    const {data, error} = await res.json();
     if(res.ok) {
-        return (data);
+        return ({data: data});
     }
-    return ({error: data.error});
+    return ({error: error});
 }
-
+//Get all student record base on the subject.
 export async function getRecords(info: any) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getRecords", {
@@ -234,7 +232,7 @@ export async function getRecords(info: any) {
     } 
     return ({error: data});
 }
-
+//Verify if the student is enrolled or exist.
 export async function verifyStudentData(info: any) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyStudentData", {

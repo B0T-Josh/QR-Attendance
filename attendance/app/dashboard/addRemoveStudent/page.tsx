@@ -14,7 +14,7 @@ type Student = {
   id: string;          // primary key in Supabase
   student_id: string;  // school/student number
   name: string;        // student name
-  subject: string;     // subject they’re enrolled in
+  subjects: string;     // subject they’re enrolled in
 };
 
 export default function StudentRecords() {
@@ -39,7 +39,7 @@ export default function StudentRecords() {
   }
 
   const get = async () => {
-    const res = await getStudent({ id: userId });
+    const res = await getStudent();
     setStudents(res.data || []);
   };
 
@@ -60,16 +60,15 @@ export default function StudentRecords() {
 
   async function handleAdd() {
     if (studentName && studentId && subject) {
-      const { message, error } = await handleAddStudent({
+      const { success, error } = await handleAddStudent({
         student_id: studentId,
         name: studentName,
-        subject: subject,
-        user_id: userId,
+        subjects: subject
       });
 
       setContent(
-        message ? (
-          <p className="text-green-300">{message}</p>
+        success ? (
+          <p className="text-green-300">{success}</p>
         ) : (
           <p className="text-red-500">{error}</p>
         )
@@ -86,10 +85,10 @@ export default function StudentRecords() {
 
   async function handleRemove() {
     if (studentId) {
-      const { message, error } = await handleRemoveStudent({ student_id: studentId });
+      const { success, error } = await handleRemoveStudent({ student_id: studentId });
       setContent(
-        message ? (
-          <p className="text-green-300">{message}</p>
+        success ? (
+          <p className="text-green-300">{success}</p>
         ) : (
           <p className="text-red-500">{error}</p>
         )
@@ -113,7 +112,7 @@ export default function StudentRecords() {
     <div className="flex">
       <Sidebar />
 
-      <div className="flex flex-col items-center flex-1 p-8 gap-8">
+      <div className="flex flex-row items-center flex-1 p-8 gap-8">
         {/* Feedback message */}
         <div>{content}</div>
 
@@ -174,7 +173,7 @@ export default function StudentRecords() {
                   <tr key={s.id} className="text-center">
                     <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
                     <td className="border border-gray-400 px-4 py-2">{s.name}</td>
-                    <td className="border border-gray-400 px-4 py-2">{s.subject}</td>
+                    <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
                   </tr>
                 ))
               ) : (

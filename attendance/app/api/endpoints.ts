@@ -229,3 +229,31 @@ export async function verifyStudentData(info: any) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});
 }
+//Get all students.
+export async function getAllStudent() {
+    const { data, error } = await supabase.from("students").select("*");
+    if(data) {
+        return ({data});
+    } else {
+        return ({error});
+    }
+}
+//Add students to the database.
+export async function addStudent(info: any) {
+    console.log(info);
+    const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects});
+    if(!error) {
+        return({success: `Student ${info.name} is added`});
+    } else {
+        return({error: "Failed to add student"});
+    }
+}
+//Remove student from the table.
+export async function removeStudent(info: any) {
+    const { error } = await supabase.from("students").delete().eq("student_id", info.student_id);
+    if(!error) {
+        return ({success: `Student ${info.name} was deleted`});
+    } else {
+        return ({error: "Failed to remove student"});
+    }
+}
