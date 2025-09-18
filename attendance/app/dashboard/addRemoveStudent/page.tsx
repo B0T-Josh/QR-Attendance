@@ -7,7 +7,8 @@ import { getId } from "@/tools/getId";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  getStudent,
+  getStudents,
+  getStudent
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 
@@ -29,23 +30,10 @@ export default function StudentRecords() {
   const name_input = useRef<HTMLInputElement | null>(null);
   const id_input = useRef<HTMLInputElement | null>(null);
   const subject_input = useRef<HTMLInputElement | null>(null);
+  const [loading, setLoading] = useState(false);
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if(typeTimeout.current) {
-      clearTimeout(typeTimeout.current);
-    } 
-    typeTimeout.current = setTimeout(() => {
-      const formatted = format(e.target.value);
-      if(formatted?.formatted) {
-        setStudentName(formatted.formatted);
-      } else if(formatted?.error) {
-        let err = formatted.error;
-        setContent(<p className="text-red-500">{err}</p>);
-        setTimeout(() => {
-          setContent("");
-        }, 2000);
-      }
-    }, 1000);
+    setStudentName(e.target.value);
   }
 
   function handleIdChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -53,11 +41,11 @@ export default function StudentRecords() {
   }
 
   function handleSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSubjects(e.target.value);
+    setSubjects(e.target.value.toUpperCase());
   }
 
   const get = async () => {
-    const res = await getStudent();
+    const res = await getStudents();
     setStudents(res.data || []);
   };
 
@@ -71,10 +59,16 @@ export default function StudentRecords() {
   }, []);
 
   async function handleAdd() {
+    setLoading(true);
     if (studentName && studentId && subjects) {
+      const formatted = format(studentName);
+      if(formatted?.error) {
+        setContent(<p className="text-red-500">Invalid format.<br/>Must be SURNAME, Firstname M.I.</p>);
+        return;
+      }
       const { success, error } = await handleAddStudent({
         student_id: studentId,
-        name: studentName,
+        name: formatted?.formatted,
         subjects: subjects
       });
 
@@ -89,12 +83,15 @@ export default function StudentRecords() {
       id_input.current && (id_input.current.value = "");
       subject_input.current && (subject_input.current.value = "");
       get();
+      setLoading(false);
     } else {
+      setLoading(false);
       setContent(<p className="text-red-500">Fill all fields first</p>);
     }
   }
 
   async function handleRemove() {
+    setLoading(true);
     if (studentId) {
       const { success, error } = await handleRemoveStudent({ student_id: studentId });
       setContent(
@@ -108,24 +105,44 @@ export default function StudentRecords() {
       id_input.current && (id_input.current.value = "");
       subject_input.current && (subject_input.current.value = "");
       get();
+      setLoading(false);
     } else {
+      setLoading(false);
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
     }
   }
 
   async function handleSearch() {
-    // if(!(studentId || studentName || subjects)) return;
-    // const res = await getStudent({student_id: studentId, name: studentName, subjects: subjects});
-    // setStudents(res.data || []);
+    setLoading(true);
+    if(!(studentId || studentName || subjects)) {
+      setContent(<p className="text-red-500">Enter a value first</p>);
+      setLoading(false);
+      return;
+    }
+    const {data, error} = await getStudent({student_id: studentId, name: studentName, subjects: subjects});
+    if(data) {
+      setStudents(data || []);
+      setLoading(false);
+    } else {
+      setContent(<p className="text-red-500">{error}</p>);
+      setLoading(false);
+    }
   }
+
+  useEffect(() => {
+    if(!content) return;
+    setTimeout(() => {
+        setContent("");
+      }, 2000);
+  }, [content]);
 
   return (
     <div className="flex">
       <Sidebar />
-      <div>{content}</div>
       <div className="flex flex-row items-center flex-1 p-8 gap-8">
+        {content}
         <div className="p-6 border-2 rounded w-[25rem]">
-          <h2 className="text-lg font-bold mb-4">Manage Students</h2>
+          <h2 className="text-lg font-bold mb-4">{loading ? "Loading" : "Manage Student"}</h2>
 
           <label className="block mb-2">Enter Student ID:</label>
           <input

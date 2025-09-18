@@ -218,10 +218,26 @@ export async function handleRemoveStudent(info: any) {
 }
 
 //Get all student from the database.
-export async function getStudent() {
+export async function getStudents() {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "GET"
+    });
+    //Processes response from URL.
+    const {data, error} = await res.json();
+    if(res.ok) {
+        return ({data: data});
+    }
+    return ({error: error});
+}
+
+//Get selected student from the database.
+export async function getStudent(info: any) {
+    //Pass the submitted data to the URL.
+    const res = await fetch("/api/getStudents", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
     });
     //Processes response from URL.
     const {data, error} = await res.json();

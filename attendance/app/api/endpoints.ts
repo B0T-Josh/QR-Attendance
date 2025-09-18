@@ -202,16 +202,16 @@ export async function validateTeacher(info: any) {
 export async function getRecords(info: any) {
     let query = supabase.from("attendance").select("*");
     if(info.data.name) {
-        query = query.eq("name", info.data.name);
+        query = query.ilike("name", `%${info.data.name}%`);
     }
     if(info.data.subject) {
-        query = query.eq("subject", info.data.subject);
+        query = query.ilike("subject", `%${info.data.subject}%`);
     } 
     if(info.data.id) {
-        query = query.eq("student_id", info.data.id);
+        query = query.ilike("student_id", `%${info.data.id}%`);
     }
     if(info.data.date) {
-        query = query.eq("date", info.data.date);
+        query = query.ilike("date", `%${info.data.date}%`);
     }
     if(!(info.data.name || info.data.id || info.data.date || info.data.subject)) {
         return({data: "No data"});
@@ -240,21 +240,22 @@ export async function getAllStudent() {
 }
 //Get selected students.
 export async function getStudent(info:any) {
+    
     let query = supabase.from("students").select("*");
     if(info.student_id) {
-        query = query.eq("student_id", info.student_id);
+        query = query.ilike("student_id", `%${info.student_id}%`);
     } 
-    if(info.student_id) {
-        query = query.eq("name", info.name);
+    if(info.name) {
+        query = query.ilike("name", `%${info.name}%`);
     }
-    if(info.student_id) {
-        query = query.eq("subjects", info.subjects);
+    if(info.subjects) {
+        query = query.ilike("subjects", `%${info.subjects}%`);
     }
-    const {data, error} = await query;
+    const {data} = await query;
     if(data) {
         return ({data});
     } else {
-        return ({error});
+        return ({error: "Student doesn't exist"});
     }
 }
 //Add students to the database.
