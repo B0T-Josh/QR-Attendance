@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import {
@@ -22,7 +22,7 @@ export default function StudentRecords() {
   const router = useRouter();
   const [studentName, setStudentName] = useState<string>("");
   const [studentId, setStudentId] = useState<string>("");
-  const [subject, setSubject] = useState<string>("");
+  const [subjects, setSubjects] = useState<string>("");
   const [content, setContent] = useState<any>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -35,16 +35,17 @@ export default function StudentRecords() {
       clearTimeout(typeTimeout.current);
     } 
     typeTimeout.current = setTimeout(() => {
-      const temp_name = format(e.target.value);
-      if(temp_name?.formatted) {
-        setStudentName(temp_name.formatted);
-      } else if(temp_name?.error) {
-        setContent(<p className="text-red-500">{temp_name.error}</p>);
+      const formatted = format(e.target.value);
+      if(formatted?.formatted) {
+        setStudentName(formatted.formatted);
+      } else if(formatted?.error) {
+        let err = formatted.error;
+        setContent(<p className="text-red-500">{err}</p>);
         setTimeout(() => {
           setContent("");
         }, 2000);
       }
-    }, 500);
+    }, 1000);
   }
 
   function handleIdChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -52,7 +53,7 @@ export default function StudentRecords() {
   }
 
   function handleSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSubject(e.target.value);
+    setSubjects(e.target.value);
   }
 
   const get = async () => {
@@ -70,11 +71,11 @@ export default function StudentRecords() {
   }, []);
 
   async function handleAdd() {
-    if (studentName && studentId && subject) {
+    if (studentName && studentId && subjects) {
       const { success, error } = await handleAddStudent({
         student_id: studentId,
         name: studentName,
-        subjects: subject
+        subjects: subjects
       });
 
       setContent(
@@ -112,11 +113,11 @@ export default function StudentRecords() {
     }
   }
 
-  useEffect(() => {
-    if (!content) return;
-    const timer = setTimeout(() => setContent(""), 2500);
-    return () => clearTimeout(timer);
-  }, [content]);
+  async function handleSearch() {
+    // if(!(studentId || studentName || subjects)) return;
+    // const res = await getStudent({student_id: studentId, name: studentName, subjects: subjects});
+    // setStudents(res.data || []);
+  }
 
   return (
     <div className="flex">
@@ -159,6 +160,9 @@ export default function StudentRecords() {
           <div className="flex justify-between">
             <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
                 Add
+            </button>
+            <button className="p-3 text-gray-600 hover:text-yellow-500" onClick={handleSearch}>
+                Search
             </button>
             <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
                 Remove

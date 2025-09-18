@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { addStudent, getAllStudent, removeStudent } from "../endpoints";
 
 // GET: fetch all students for a user
-export async function GET(req: Request) {
+export async function GET() {
   const {data, error} = await getAllStudent();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });

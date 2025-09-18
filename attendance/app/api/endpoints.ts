@@ -238,6 +238,25 @@ export async function getAllStudent() {
         return ({error});
     }
 }
+//Get selected students.
+export async function getStudent(info:any) {
+    let query = supabase.from("students").select("*");
+    if(info.student_id) {
+        query = query.eq("student_id", info.student_id);
+    } 
+    if(info.student_id) {
+        query = query.eq("name", info.name);
+    }
+    if(info.student_id) {
+        query = query.eq("subjects", info.subjects);
+    }
+    const {data, error} = await query;
+    if(data) {
+        return ({data});
+    } else {
+        return ({error});
+    }
+}
 //Add students to the database.
 export async function addStudent(info: any) {
     const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects});

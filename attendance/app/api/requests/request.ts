@@ -18,6 +18,7 @@ export async function scanned(info: any) {
         return {err: error};
     }
 }
+
 //Request to add subject.
 export async function handleAddSubject(info: any) {
     //Pass the submitted data to the URL.
@@ -33,6 +34,7 @@ export async function handleAddSubject(info: any) {
     }
     return ({error: data.error});
 }
+
 //Request to remove subject.
 export async function handleRemoveSubject(info: any) {
     //Pass the submitted data to the URL.
@@ -48,6 +50,7 @@ export async function handleRemoveSubject(info: any) {
     }
     return ({error: data.error});
 }
+
 //Request to get all subjects.
 export async function getSubjects(info: any) {
     //Pass the submitted data to the URL.
@@ -63,6 +66,7 @@ export async function getSubjects(info: any) {
     }
     return ({error: data.error});
 }
+
 //Request to validate user email if it is eisting.
 export async function validateEmail(info: any) {
     //Pass the submitted data to the URL.
@@ -82,6 +86,7 @@ export async function validateEmail(info: any) {
     }
     return ({error: error});
 }
+
 //Request to verify if the code for the user exist.
 export async function validateCode(info: any) {
     //Pass the submitted data to the URL.
@@ -97,6 +102,7 @@ export async function validateCode(info: any) {
     }
     return ({error: data.error});
 }
+
 //Request to update the password of the user.
 export async function updatePassword(info: any) {
     //Pass the submitted data to the URL.
@@ -112,6 +118,7 @@ export async function updatePassword(info: any) {
     }
     return ({error: data.error});
 }
+
 //Request to login.
 export async function logIn(info: any) {
     //Pass the submitted data to the URL.
@@ -128,6 +135,7 @@ export async function logIn(info: any) {
         return ({error: data.error});
     }
 }
+
 //Request to add user.
 export async function register(info: any) {
     //Pass the submitted data to the URL.
@@ -143,6 +151,7 @@ export async function register(info: any) {
         return ({error: error});
     }
 }
+
 //Request to remove subject.
 export async function getValidation(info: any) {
     //Pass the submitted data to the URL.
@@ -158,6 +167,7 @@ export async function getValidation(info: any) {
     }
     return ({error: error});
 }
+
 //Get the teacher ID and if ID is verified, the teacher or user is verified.
 export async function validateTeacher(info: any) {
     //Pass the submitted data to the URL.
@@ -174,6 +184,7 @@ export async function validateTeacher(info: any) {
         return ({error: error});
     }
 }
+
 //Request to add student.
 export async function handleAddStudent(info: any) {
     //Pass the submitted data to the URL.
@@ -189,6 +200,7 @@ export async function handleAddStudent(info: any) {
     }
     return ({error: error});
 }
+
 //Request to delete a student from the table.
 export async function handleRemoveStudent(info: any) {
     //Pass the submitted data to the URL.
@@ -204,6 +216,7 @@ export async function handleRemoveStudent(info: any) {
     }
     return ({error: error});
 }
+
 //Get all student from the database.
 export async function getStudent() {
     //Pass the submitted data to the URL.
@@ -217,6 +230,7 @@ export async function getStudent() {
     }
     return ({error: error});
 }
+
 //Get all student record base on the subject.
 export async function getRecords(info: any) {
     //Pass the submitted data to the URL.
@@ -232,6 +246,7 @@ export async function getRecords(info: any) {
     } 
     return ({error: data});
 }
+
 //Verify if the student is enrolled or exist.
 export async function verifyStudentData(info: any) {
     //Pass the submitted data to the URL.
