@@ -224,7 +224,7 @@ export async function getRecords(info: any) {
 
 //Verify if the student is existing
 export async function verifyStudentData(info: any) {
-    const {data, error} = await supabase.from("students").select("*").eq("student_id", info.id).eq("name", info.name).single();
+    const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subject}%`).single();
     if(data) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});

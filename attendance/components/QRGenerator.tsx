@@ -22,7 +22,7 @@ export default function QRGenerator() {
         }
         typingTimeout.current = setTimeout(() => {
             setStudentId(value);
-        }, 1000);
+        }, 2000);
     };
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

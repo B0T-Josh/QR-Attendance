@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     //Gets the submitted data.
     const info = await req.json();
     //Gets the response of verifyStudent from endpoints.
-    const {data, error} = await verifyStudentData(info);
+    const {data, error} = await verifyStudentData({student_id: info.id, name: info.name, subject: info.subject});
     //If data exist, the student exist. Otherwise return an error message.
     if(data) {
         return NextResponse.json({data: data}, {status: 200});

@@ -82,7 +82,7 @@ export default function QRScanner() {
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
         async function verifyStudent() {
-            const {data, error} = await verifyStudentData({name: name, id: student_id});
+            const {data, error} = await verifyStudentData({name: name, id: student_id, subject: subject});
             if(data) {
                 setStudent(data);
             } else {
