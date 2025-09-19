@@ -85,12 +85,11 @@ export default function StudentRecords() {
                 </div>
 
                 <div className="p-4 flex flex-col items-center">
-                    <div className="mt-10 mb-10 p-4 border-2 rounded w-[20rem] h-auto">
+                    <div className="mt-10 mb-10 p-4 w-[20rem] h-auto border-[#c7c7c79f]">
                         <h2 className="p-2">Add Subject</h2>
                         {loading ? (<h3 className="text-gray-600">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Loading</h3>) : <p></p>}
-                        <p className="p-2">Enter Subject:</p>
 
-                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/>
+                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 rounded-lg" value={subject || ""}/>
 
                         <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
                             Add
@@ -101,8 +100,8 @@ export default function StudentRecords() {
                         </button>
                     </div>
                     
-                    <div className="flex-1 w-full border-2 rounded-lg overflow-y-auto">
-                        <table className="table-auto border-collapse border border-gray-400 w-full h-full">
+                    <div className="flex-1 w-full border-2 rounded-lg overflow-y-auto border-[#c7c7c79f]">
+                        <table className="table-auto border-collapse border w-full h-full">
                             <thead>
                                 <tr>
                                     <th className="border border-gray-400 px-4 py-2">ID</th>
@@ -136,5 +135,4 @@ export default function StudentRecords() {
             
         </div>
     );
-
 }
