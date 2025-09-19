@@ -256,11 +256,11 @@ export async function getRecords(info: any) {
         body: JSON.stringify(info)
     });
     //Processes response from URL.
-    const {data} = await res.json();
+    const {data, error} = await res.json();
     if(res.ok) {
         return ({data: data});
     } 
-    return ({error: data});
+    return ({error: error});
 }
 
 //Verify if the student is enrolled or exist.

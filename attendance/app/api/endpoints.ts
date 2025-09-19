@@ -195,21 +195,24 @@ export async function validateTeacher(info: any) {
 
 //Gets all the student records that the user wants. 
 export async function getRecords(info: any) {
+    if(info.data.subject === "") {
+        return({error: "Enter a subject first"});
+    }
     let query = supabase.from("attendance").select("*");
-    if(info.data.name) {
-        query = query.ilike("name", `%${info.data.name}%`);
+    if(info.data.name && info.data.subject) {
+        query = query.ilike("name", `%${info.data.name}%`).eq("subject", info.data.subject);
     }
     if(info.data.subject) {
-        query = query.ilike("subject", `%${info.data.subject}%`);
+        query = query.ilike("subject", `%${info.data.subject}%`).eq("subject", info.data.subject);
     } 
-    if(info.data.id) {
-        query = query.ilike("student_id", `%${info.data.id}%`);
+    if(info.data.id && info.data.subject) {
+        query = query.ilike("student_id", `%${info.data.id}%`).eq("subject", info.data.subject);
     }
-    if(info.data.date) {
-        query = query.eq("date", `%${info.data.date}%`);
+    if(info.data.date && info.data.subject) {
+        query = query.eq("date", `%${info.data.date}%`).eq("subject", info.data.subject);
     }
     if(!(info.data.name || info.data.id || info.data.date || info.data.subject)) {
-        return({data: "No data"});
+        return({error: "No data"});
     }
     const {data, error} = await query;
     if(data) {
