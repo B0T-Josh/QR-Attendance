@@ -191,6 +191,7 @@ export async function login(info: any) {
 //Validate if the ID of the user exist.
 export async function validateTeacher(info: any) {
     const {data, error} = await supabase.from("account").select("id").eq("id", info.id).single();
+    console.log(data?.id + " " + info.id);
     if(data) {
         return ({id: data.id});
     } else {
@@ -211,7 +212,7 @@ export async function getRecords(info: any) {
         query = query.ilike("student_id", `%${info.data.id}%`);
     }
     if(info.data.date) {
-        query = query.ilike("date", `%${info.data.date}%`);
+        query = query.eq("date", `%${info.data.date}%`);
     }
     if(!(info.data.name || info.data.id || info.data.date || info.data.subject)) {
         return({data: "No data"});

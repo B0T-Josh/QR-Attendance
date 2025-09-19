@@ -11,7 +11,7 @@ export async function POST(req: Request) {
     const { verification, error } = await getVerification(data.id)
     //If verification is not null, return a message. Otherwise return an error message.
     if(verification) {
-      return NextResponse.json({ message: "Value returned", verification: verification }, {status: 200});
+      return NextResponse.json({ message: "Value returned" }, {status: 200});
     } else {
       return NextResponse.json({ error: error }, {status: 400});
     }

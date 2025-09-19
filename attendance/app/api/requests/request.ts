@@ -161,9 +161,9 @@ export async function getValidation(info: any) {
         body: JSON.stringify(info)
     });
     //Processes response from URL.
-    const {verification, error} = await res.json();
+    const {message, error} = await res.json();
     if(res.ok) {
-        return ({verification: verification})
+        return ({message: message})
     }
     return ({error: error});
 }

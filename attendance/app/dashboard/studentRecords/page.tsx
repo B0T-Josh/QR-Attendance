@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import Popup from "@/components/Popup"
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
@@ -30,12 +30,12 @@ export default function Records() {
   const [id, setId] = useState<string | null>(null);
   const [content, setContent] = useState<any>();
   const [search, setSearch] = useState({
-    id: null,
-    name: null,
-    subject: null,
-    date: null
+    id: "",
+    name: "",
+    subject: "",
+    date: ""
   });
-  const [subjects, setSubjects] = useState<Subjects[]>([]);
+  const [subjects, setSubjects] = useState<Subjects[] | null>(null);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   async function getRecord() {
@@ -54,7 +54,14 @@ export default function Records() {
         ...search,
         [e.target.name]: e.target.value
       });
-    }, 500);
+    }, 1000);
+  }
+
+  function handleSelect(e: ChangeEvent<HTMLSelectElement>) {
+    setSearch({
+      ...search,
+      subject: e.target.value
+    })
   }
 
   useEffect(() => {
@@ -76,32 +83,36 @@ export default function Records() {
   useEffect(() => {
     if(!(search.date || search.id || search.name || search.subject)) return;
     setLoading(true);
-    if(search.subject) {
+    async function getSelectedRecord() {
+      const {data, error} = await getRecords({data: search});
+      if(data) {
+        setRecord(data);
+        setLoading(false);
+      } else {
+        setContent(<p className="text-red-500">{error}</p>);
+        setLoading(false);
+      }
+    }
+    getSelectedRecord();
+  }, [search]);
+
+  useEffect(() => {
+    if(!id) return;
+    if(!subjects) {
       async function getSubject() {
         const res = await getSubjects({id: id});
         setSubjects(res.data || []);
       }
       getSubject();
-    } else {
-      getRecord();
     }
-  }, [search]);
+  }, [id]);
 
   useEffect(() => {
-    if(subjects.length > 0) {
-      const found = subjects.find(items => items.name === search.subject);
-      if(!found?.name) {
-        setLoading(false);
-        setContent(<p className="text-red-500">You don't have this subject</p>);
-        setTimeout(() => {
-          setContent("");
-        }, 2000);
-      } else {
-        setLoading(false);
-        getRecord();
-      }
-    }
-  }, [subjects]);
+    if(!content) return;
+    setTimeout(() => {
+      setContent("");
+    }, 2000);
+  }, [content])
 
   return (
     <div className="flex min-h-screen">
@@ -111,8 +122,15 @@ export default function Records() {
             <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
                 {content}
                 {loading ? (<h2 className="p-2">Loading...</h2>) : <h2 className="p-2">Search</h2>}
-                <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent"/>
-                <input type="text" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
+                <select value={search.subject} name="subject" onChange={handleSelect}>
+                  <option value="">Select a subject</option>
+                  {subjects ? subjects.length > 1 ? (
+                    subjects.map(subject => (
+                      <option key={subject.id} value={subject.name}>{subject.name}</option>
+                    ))
+                  ) : <option value="">No subject</option> : (<></>)}
+                </select>
+                <input type="date" name="date" onChange={handleChange} placeholder="Enter date" className="p-2 bg-transparent"/>
                 <input type="text" name="id" onChange={handleChange} placeholder="Enter student id" className="p-2 bg-transparent"/>
                 <input type="text" name="name" onChange={handleChange} placeholder="Enter student name" className="p-2 bg-transparent"/>
             </div>
