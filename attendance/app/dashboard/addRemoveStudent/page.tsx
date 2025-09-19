@@ -1,30 +1,36 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  getStudent,
+  getStudents,
+  getStudent
 } from "@/app/api/requests/request";
+import format from "@/tools/format";
 
 type Student = {
   id: string;          // primary key in Supabase
   student_id: string;  // school/student number
   name: string;        // student name
-  subject: string;     // subject they’re enrolled in
+  subjects: string;     // subject they’re enrolled in
 };
 
 export default function StudentRecords() {
   const router = useRouter();
   const [studentName, setStudentName] = useState<string>("");
   const [studentId, setStudentId] = useState<string>("");
-  const [subject, setSubject] = useState<string>("");
-  const [userId, setUserId] = useState<string | null>(null);
+  const [subjects, setSubjects] = useState<string>("");
   const [content, setContent] = useState<any>(null);
   const [students, setStudents] = useState<Student[]>([]);
+  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
+  const name_input = useRef<HTMLInputElement | null>(null);
+  const id_input = useRef<HTMLInputElement | null>(null);
+  const subject_input = useRef<HTMLInputElement | null>(null);
+  const [loading, setLoading] = useState(false);
 
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setStudentName(e.target.value);
@@ -35,11 +41,11 @@ export default function StudentRecords() {
   }
 
   function handleSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSubject(e.target.value);
+    setSubjects(e.target.value.toUpperCase());
   }
 
   const get = async () => {
-    const res = await getStudent({ id: userId });
+    const res = await getStudents();
     setStudents(res.data || []);
   };
 
@@ -48,78 +54,95 @@ export default function StudentRecords() {
     if (!uid) {
       alert("Unauthorized. Log in first.");
       router.push("/authPages/login");
-    } else {
-      setUserId(uid);
-    }
+    } 
+    get();
   }, []);
 
-  useEffect(() => {
-    if (!userId) return;
-    get();
-  }, [userId]);
-
   async function handleAdd() {
-    if (studentName && studentId && subject) {
-      const { message, error } = await handleAddStudent({
+    setLoading(true);
+    if (studentName && studentId && subjects) {
+      const formatted = format(studentName);
+      if(formatted?.error) {
+        setContent(<p className="text-red-500">Invalid format.<br/>Must be SURNAME, Firstname M.I.</p>);
+        return;
+      }
+      const { success, error } = await handleAddStudent({
         student_id: studentId,
-        name: studentName,
-        subject: subject,
-        user_id: userId,
+        name: formatted?.formatted,
+        subjects: subjects
       });
 
       setContent(
-        message ? (
-          <p className="text-green-300">{message}</p>
+        success ? (
+          <p className="text-green-300">{success}</p>
         ) : (
           <p className="text-red-500">{error}</p>
         )
       );
-
-      setStudentName("");
-      setStudentId("");
-      setSubject("");
+      name_input.current && (name_input.current.value = "");
+      id_input.current && (id_input.current.value = "");
+      subject_input.current && (subject_input.current.value = "");
       get();
+      setLoading(false);
     } else {
+      setLoading(false);
       setContent(<p className="text-red-500">Fill all fields first</p>);
     }
   }
 
   async function handleRemove() {
+    setLoading(true);
     if (studentId) {
-      const { message, error } = await handleRemoveStudent({ student_id: studentId });
+      const { success, error } = await handleRemoveStudent({ student_id: studentId });
       setContent(
-        message ? (
-          <p className="text-green-300">{message}</p>
+        success ? (
+          <p className="text-green-300">{success}</p>
         ) : (
           <p className="text-red-500">{error}</p>
         )
       );
-      setStudentName("");
-      setStudentId("");
-      setSubject("");
+      name_input.current && (name_input.current.value = "");
+      id_input.current && (id_input.current.value = "");
+      subject_input.current && (subject_input.current.value = "");
       get();
+      setLoading(false);
     } else {
+      setLoading(false);
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
     }
   }
 
+  async function handleSearch() {
+    setLoading(true);
+    if(!(studentId || studentName || subjects)) {
+      setContent(<p className="text-red-500">Enter a value first</p>);
+      setLoading(false);
+      return;
+    }
+    const {data, error} = await getStudent({student_id: studentId, name: studentName, subjects: subjects});
+    if(data) {
+      setStudents(data || []);
+      setLoading(false);
+    } else {
+      setContent(<p className="text-red-500">{error}</p>);
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    if (!content) return;
-    const timer = setTimeout(() => setContent(""), 2500);
-    return () => clearTimeout(timer);
+    if(!content) return;
+    setTimeout(() => {
+        setContent("");
+      }, 2000);
   }, [content]);
 
   return (
     <div className="flex">
       <Sidebar />
-
-      <div className="flex flex-col items-center flex-1 p-8 gap-8">
-        {/* Feedback message */}
-        <div>{content}</div>
-
-        {/* Manage Students Form */}
+      <div className="flex flex-row items-center flex-1 p-8 gap-8">
+        {content}
         <div className="p-6 border-2 rounded w-[25rem]">
-          <h2 className="text-lg font-bold mb-4">Manage Students</h2>
+          <h2 className="text-lg font-bold mb-4">{loading ? "Loading" : "Manage Student"}</h2>
 
           <label className="block mb-2">Enter Student ID:</label>
           <input
@@ -127,7 +150,8 @@ export default function StudentRecords() {
             onChange={handleIdChange}
             placeholder="Enter student ID"
             className="p-2 border rounded w-full mb-4"
-            value={studentId}
+            id="id"
+            ref={id_input}
           />
 
           <label className="block mb-2">Enter Student Name:</label>
@@ -136,7 +160,8 @@ export default function StudentRecords() {
             onChange={handleNameChange}
             placeholder="Enter student name"
             className="p-2 border rounded w-full mb-4"
-            value={studentName}
+            id="name"
+            ref={name_input}
           />
 
           <label className="block mb-2">Enter Subject:</label>
@@ -145,12 +170,16 @@ export default function StudentRecords() {
             onChange={handleSubjectChange}
             placeholder="Enter subject"
             className="p-2 border rounded w-full mb-4"
-            value={subject}
+            id="subjects"
+            ref={subject_input}
           />
 
           <div className="flex justify-between">
             <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
                 Add
+            </button>
+            <button className="p-3 text-gray-600 hover:text-yellow-500" onClick={handleSearch}>
+                Search
             </button>
             <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
                 Remove
@@ -174,7 +203,7 @@ export default function StudentRecords() {
                   <tr key={s.id} className="text-center">
                     <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
                     <td className="border border-gray-400 px-4 py-2">{s.name}</td>
-                    <td className="border border-gray-400 px-4 py-2">{s.subject}</td>
+                    <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
                   </tr>
                 ))
               ) : (

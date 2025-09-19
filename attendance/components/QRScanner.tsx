@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { scanned } from "@/app/api/requests/request";
+import { scanned, verifyStudentData } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 
 type Subject = {
@@ -9,16 +9,22 @@ type Subject = {
     name: string;
 }
 
+type Student = {
+    student_id: string;
+    name: string;
+    subjects: string;
+}
+
 export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [valid, setValid] = useState(true);
     const [subject, setSubject] = useState<string | "">("");
     const [content, setContent] = useState<any>(null);
-    const [subjectId, setSubjectId] = useState<string | null>(null);
     const [id, setId] = useState<string | "">("");
     const [loading, setLoading] = useState(false);
     const typeTimeout = useRef<NodeJS.Timeout | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [student, setStudent] = useState<Student | null>(null);
 
     useEffect(() => {
         const temp = localStorage.getItem("id");
@@ -26,7 +32,7 @@ export default function QRScanner() {
         setId(temp);
         const codeReader = new BrowserQRCodeReader();
 
-        let controls: any; // holds the stop function
+        let controls: any;
 
         if (videoRef.current) {
         codeReader
@@ -34,7 +40,6 @@ export default function QRScanner() {
             if (res) {
                 setScannedData(res.getText());
             }
-            // ignore errors when no QR is found in frame
             })
             .catch((err) => console.error("Camera error:", err));
         }
@@ -60,7 +65,6 @@ export default function QRScanner() {
             if(!found) {
                 setValid(false);
             } else {
-                setSubjectId(found.id);
                 setValid(true);
             }
         }
@@ -77,22 +81,49 @@ export default function QRScanner() {
         }
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
-        const handleAdd = async (data: any) => {
-            const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subjectId });
-            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+        async function verifyStudent() {
+            const {data, error} = await verifyStudentData({name: name, id: student_id, subject: subject});
+            if(data) {
+                setStudent(data);
+            } else {
+                setLoading(false);
+                setContent(<p className="text-red-500">{error}</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 2000);
+            }
+        }
+        verifyStudent();
+    }, [scannedData]);
+
+    useEffect(() => {  
+        if(!student) return;
+        let student_subject = student?.subjects;
+        const found = student_subject?.includes(subject);
+        if(found) {
+            const handleAdd = async (data: any) => {
+                const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subject });
+                setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+                setTimeout(() => {
+                    setContent("");
+                }, 2500);
+                setLoading(false);
+            };
+            handleAdd({ name: student.name, student_id: student.student_id, subject: subject });
+        } else {
+            setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
             setTimeout(() => {
                 setContent("");
             }, 2500);
             setLoading(false);
-        };
-        handleAdd({ name: name, student_id: student_id, subject: subject });
-    }, [scannedData]);
+        }
+    }, [student]);
 
     return (
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
-                {loading ? <p className="text-gray-600 p-4">Loading</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
+                {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <input type="text" onChange={handleChange} name="subject" placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
                 <div>{content}</div><br />

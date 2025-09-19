@@ -33,8 +33,8 @@ export default function HomePage() {
     useEffect(() => {
         if(id === null) return;
         async function validate() {
-            const { verification } = await getValidation({id: id});
-            if(verification) {
+            const { message } = await getValidation({id: id});
+            if(message) {
                 setHasVerification(true);
             }
         }

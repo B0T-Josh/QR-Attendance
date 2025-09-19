@@ -1,10 +1,15 @@
 import { NextResponse } from "next/server";
 import { validateTeacher } from "../endpoints";
 
+//Connected to /api/requests/request/validateTeacher.
 export async function POST(req: Request) {
+    //Checks request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
+    //Gets the submitted data.
     const data = await req.json();
+    //Gets the ID of the user.
     const {id, error} = await validateTeacher({id: data.id});
+    //If id exist, means user is verified. 
     if(id) {
         return NextResponse.json({id: id}, {status: 200});
     } else {

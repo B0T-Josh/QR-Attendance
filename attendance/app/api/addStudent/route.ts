@@ -1,62 +1,42 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { addStudent, getAllStudent, removeStudent } from "../endpoints";
 
 // GET: fetch all students for a user
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const user_id = searchParams.get("user_id");
-
-  if (!user_id) {
-    return NextResponse.json({ error: "Missing user_id" }, { status: 400 });
-  }
-
-  const { data, error } = await supabase
-    .from("students")
-    .select("*")
-    .eq("user_id", user_id);
+export async function GET() {
+  const {data, error} = await getAllStudent();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 400 });
 
-  return NextResponse.json({ data });
+  return NextResponse.json({ data }, {status: 200});
 }
 
 // POST: add a student
 export async function POST(req: Request) {
-  const { student_id, name, subject, user_id } = await req.json();
-
-  if (!student_id || !name || !subject || !user_id) {
+  const data = await req.json();
+  if (!data) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 });
   }
 
-  const { error } = await supabase
-    .from("students")
-    .insert([{ student_id, name, subject, user_id }]);
+  const {success, error} = await addStudent({student_id: data.student_id, name: data.name, subjects: data.subjects});
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if(success) {
+    return NextResponse.json({success: success}, {status: 200});
+  }
 
-  return NextResponse.json({ message: "Student added successfully" });
+  return NextResponse.json({ error: error }, {status: 400});
 }
 
 // DELETE: remove a student
 export async function DELETE(req: Request) {
-  const { student_id, user_id } = await req.json();
+  const data = await req.json();
 
-  if (!student_id || !user_id) {
+  if (!data.student_id) {
     return NextResponse.json({ error: "Missing student_id or user_id" }, { status: 400 });
   }
 
-  const { error } = await supabase
-    .from("students")
-    .delete()
-    .eq("student_id", student_id)
-    .eq("user_id", user_id);
+  const {success, error} = await removeStudent({student_id: data.student_id});
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (success) return NextResponse.json({ success: success }, { status: 200 });
 
-  return NextResponse.json({ message: "Student removed successfully" });
+  return NextResponse.json({ error: error }, {status: 400});
 }

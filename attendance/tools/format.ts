@@ -1,20 +1,19 @@
     export default function format(name: string) {
         try {
             if(name) {
-                var temp = name.split(", ");
-                var temp_name = temp[1].replace(".", "").split(" ");
-                var last_name = temp[0].toUpperCase();
-                var first_name = temp_name[0].charAt(0).toUpperCase() + temp_name[0].substring(1).toLowerCase() + " ";
-                if(temp_name.length > 2) {
-                    for(let i = 1; i <= temp.length; i++) {
-                        first_name += temp_name[i].charAt(0).toUpperCase() + temp_name[i].substring(1).toLowerCase() + (i == temp.length ? "" : " ");
-                    }
-                } 
-                var middle_ini = first_name.includes(temp_name[temp_name.length-1].charAt(0).toUpperCase() + temp_name[temp_name.length-1].substring(1).toLowerCase()) ? '' : " " + temp_name[temp_name.length-1].toUpperCase() + ".";
-                var formatted = last_name + ", " + first_name + middle_ini;
+                var temp = name.trim().split(", "); //Infante, Gene Paul DC. -> ["Infante", " Gene Paul DC."]
+                var temp_name = temp[1].replace(".", "").split(" "); //["Infante", "Gene Paul DC."] -> ["Gene", "Paul", "DC"]
+                var last_name = temp[0].toUpperCase(); //"INFANTE"
+                var first_name = ""; 
+                for(let i = 0; i < temp_name.length; i++) {
+                    first_name += temp_name[i].length > 2 ? " " + temp_name[i].charAt(0).toUpperCase() + temp_name[i].substring(1).toLowerCase() : ""; //Concatenates and checks if the index is Middle initial.
+                }
+                var middle_ini = first_name.toLowerCase().includes(temp_name[temp_name.length-1].toLowerCase()) ? "." : " " + temp_name[temp_name.length-1].toUpperCase() + "."; //Checks if last index is equal to first name or middle initial
+                var formatted: string | "" = last_name + "," + first_name + middle_ini; //Merges Surname, Firstname, and Middle initial to form formatted name.
+                
                 return ({formatted: formatted});
-            }
+        }
         } catch(error) {
-            return ({error: "Enter the right name format\nSURNAME, Firstname M.I."});
+            return ({error: "Invalid format"});
         }
     }
