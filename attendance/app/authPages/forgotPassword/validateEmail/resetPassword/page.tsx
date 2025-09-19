@@ -15,6 +15,7 @@ export default function ForgotPassword() {
         confirm: ""
     });
 
+    //Sets encrypted password value
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const {name, value} = e.target
         setPassword((prev) => ({
@@ -23,6 +24,7 @@ export default function ForgotPassword() {
         }));
     }
 
+    //Updates password for the user
     async function handleSubmit() {
         setLoading(true);
         if(password.new && password.confirm) {
@@ -70,7 +72,7 @@ export default function ForgotPassword() {
 
                 <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
                     <button disabled={loading} id="submit" className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} type="submit" onClick={handleSubmit}>
-                        {loading ? (<>Loading</>) : (<>Next</>)}
+                        {loading ? (<>Loading</>) : (<>Next</>)} {/* Changes text value when a process is loading */}
                     </button>
                 </div>
             </div>

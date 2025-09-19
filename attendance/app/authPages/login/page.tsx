@@ -17,6 +17,7 @@ export default function LogIn() {
     password: ""
   });
 
+  //Validates the ID of the user that was inside the localstorage
   useEffect(() => {
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
       async function validate() {
@@ -34,6 +35,7 @@ export default function LogIn() {
     }
   }, []);
 
+  //Updates credential values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials({
       ...credentials,
@@ -41,6 +43,7 @@ export default function LogIn() {
     });
   };
 
+  //Log in process
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
@@ -52,26 +55,24 @@ export default function LogIn() {
         } else {
           setContent(<p className="text-red-500">{error}</p>);
           setLoading(false);
-          // setTimeout(() => {
-          //   location.reload();
-          // }, 1500);
         }
       } catch(error) {
         setContent(<p className="text-red-500">Server error...</p>);
         setLoading(false);
-        // setTimeout(() => {
-        //   location.reload();
-        // }, 1500);
       }
       
     } else {
       setContent(<p className="text-red-500">Enter an email account and password</p>);
       setLoading(false);
-      setTimeout(() => {
-        setContent("");
-      }, 1000);
     }
   };
+
+  useEffect(() => {
+    if(content === "") return;
+    setTimeout(() => {
+      setContent("");
+    }, 2000);
+  }, content);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -96,7 +97,7 @@ export default function LogIn() {
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
           <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit} disabled={loading || !(credentials.email && credentials.password)}>
-            {loading ? (<>Loading</>) : (<>Log In</>)}
+            {loading ? (<>Loading</>) : (<>Log In</>)} {/* Changes text value when a process is loading */}
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>

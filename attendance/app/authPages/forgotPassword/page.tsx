@@ -10,19 +10,21 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [content, setContent] = useState<any>();
-
+  //Changes email value
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
   }
-
+  //Validate email if exist
   async function handleSubmit() {
     setLoading(true);
     const { success, error } = await validateEmail({email: email});
     console.log(success);
     if(success) {
+      //Redirects to the next step of verification
       route.push("/authPages/forgotPassword/validateEmail");   
       localStorage.setItem("email", email || "");
     } else{
+      //Print out error message
       setLoading(false);
       setContent(<p className="text-red-500">{error}</p>)
       setTimeout(() => {
@@ -45,8 +47,8 @@ export default function ForgotPassword() {
             <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} type="text" placeholder="example@gmail.com"  name="email" onChange={handleChange}/>
 
             <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
-                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} id="submit" type="submit" onClick={handleSubmit}>
-                      {loading ? (<>Loading</>) : (<>Next</>)}
+                  <button className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading} id="submit" type="submit" onClick={handleSubmit}>
+                      {loading ? (<>Loading</>) : (<>Next</>)} {/* Changes text value when a process is loading */}
                   </button>
             </div>
         </div>

@@ -21,6 +21,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState<string | null>(null);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  //Process registation
   const handleSubmit = async () => {
     try {
       if(info.email && info.password && info.name && password) {
@@ -50,6 +51,7 @@ export default function RegisterPage() {
     }
   };
 
+  //Clears content
   useEffect(() => {
     if(!content || content === "") return;
     setTimeout(() => {
@@ -57,7 +59,9 @@ export default function RegisterPage() {
     }, 2500);
   }, [content])
 
+  //Apply changes from input fields
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    //Set debounces. Waits for the user to be done typing
       if(typeTimeout.current) {
         clearTimeout(typeTimeout.current);
       }
@@ -69,13 +73,15 @@ export default function RegisterPage() {
       }, 500);
   };
 
-    function handleEmail(e: React.ChangeEvent<HTMLInputElement>) {
-      setInfo({
-        ...info,
-        email: e.target.value
-      })
+  //Changes email value
+  function handleEmail(e: React.ChangeEvent<HTMLInputElement>) {
+    setInfo({
+      ...info,
+      email: e.target.value
+    })
   };
 
+  //Format name after user types
   function handleName(e: React.ChangeEvent<HTMLInputElement>) {
     if(typeTimeout.current) {
       clearTimeout(typeTimeout.current);
@@ -96,6 +102,7 @@ export default function RegisterPage() {
     }, 500);
   };
 
+  //Set confirm password value
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
     if(typeTimeout.current) {
       clearTimeout(typeTimeout.current);
