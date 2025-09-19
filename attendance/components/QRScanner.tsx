@@ -18,6 +18,7 @@ type Student = {
 export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [valid, setValid] = useState(true);
+    const [subjects, setSubjects] = useState<Subject[]>([]);
     const [subject, setSubject] = useState<string | "">("");
     const [content, setContent] = useState<any>(null);
     const [id, setId] = useState<string | "">("");
@@ -37,39 +38,26 @@ export default function QRScanner() {
         if (videoRef.current) {
         codeReader
             .decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
-            if (res) {
-                setScannedData(res.getText());
-            }
+                if (res) {
+                    setScannedData(res.getText());
+                }
             })
             .catch((err) => console.error("Camera error:", err));
         }
     }, []);
 
-
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const {value} = e.target;
-        if(typeTimeout.current) {
-            clearTimeout(typeTimeout.current);
-        }
-        typeTimeout.current = setTimeout(() => {
-            setSubject(e.target.value);
-        }, 1000)
+    function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        setSubject(e.target.value);
     }
 
     useEffect(() => {
-        if(!subject) return;
+        if(subject) return;
         async function verifySubject() {
             const res = await getSubjects({id: id});
-            const data: Subject[] = res.data;
-            const found = data.find(sub => sub.name === subject);
-            if(!found) {
-                setValid(false);
-            } else {
-                setValid(true);
-            }
+            setSubjects(res.data);
         }
         verifySubject();
-    }, [subject]);
+    }, [id]);
 
     useEffect(() => {
         if (!scannedData) {
@@ -124,7 +112,14 @@ export default function QRScanner() {
             <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
-                <input type="text" onChange={handleChange} name="subject" placeholder="Subject" className="border rounded-lg p-1 w-[17rem]"/><br/>
+                <select value={subject} name="subject" onChange={handleChange}>
+                  <option value="">Select a subject</option>
+                  {subjects ? subjects.length > 1 ? (
+                    subjects.map(subject => (
+                      <option key={subject.id} value={subject.name}>{subject.name}</option>
+                    ))
+                  ) : <option value="">No subject</option> : (<></>)}
+                </select>
                 <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
                 <div>{content}</div><br />
                 <video
