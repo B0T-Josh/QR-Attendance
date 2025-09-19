@@ -12,7 +12,7 @@ import {
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 
-type Student = {
+type Students = {
   id: string;          // primary key in Supabase
   student_id: string;  // school/student number
   name: string;        // student name
@@ -21,33 +21,34 @@ type Student = {
 
 export default function StudentRecords() {
   const router = useRouter();
-  const [studentName, setStudentName] = useState<string>("");
-  const [studentId, setStudentId] = useState<string>("");
-  const [subjects, setSubjects] = useState<string>("");
+  const [student, setStudent] = useState({
+    student_id: "",
+    name: "",
+    subjects: ""
+  })
   const [content, setContent] = useState<any>(null);
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<Students[]>([]);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const name_input = useRef<HTMLInputElement | null>(null);
   const id_input = useRef<HTMLInputElement | null>(null);
   const subject_input = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
 
-  function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setStudentName(e.target.value);
-  }
-
-  function handleIdChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setStudentId(e.target.value);
-  }
-
-  function handleSubjectChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSubjects(e.target.value.toUpperCase());
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setStudent({
+      ...student,
+      [e.target.name]: e.target.value
+    });
   }
 
   const get = async () => {
     const res = await getStudents();
     setStudents(res.data || []);
   };
+
+  useEffect(() => {
+    if((student.name === "" && student.student_id === "" && student.subjects === "")) get();
+  }, [student])
 
   useEffect(() => {
     const uid = getId();
@@ -60,16 +61,16 @@ export default function StudentRecords() {
 
   async function handleAdd() {
     setLoading(true);
-    if (studentName && studentId && subjects) {
-      const formatted = format(studentName);
+    if (student.name && student.student_id && student.subjects) {
+      const formatted = format(student.name);
       if(formatted?.error) {
         setContent(<p className="text-red-500">Invalid format.<br/>Must be SURNAME, Firstname M.I.</p>);
         return;
       }
       const { success, error } = await handleAddStudent({
-        student_id: studentId,
+        student_id: student.student_id,
         name: formatted?.formatted,
-        subjects: subjects
+        subjects: student.subjects
       });
 
       setContent(
@@ -92,8 +93,8 @@ export default function StudentRecords() {
 
   async function handleRemove() {
     setLoading(true);
-    if (studentId) {
-      const { success, error } = await handleRemoveStudent({ student_id: studentId });
+    if (student.student_id) {
+      const { success, error } = await handleRemoveStudent({ student_id: student.student_id });
       setContent(
         success ? (
           <p className="text-green-300">{success}</p>
@@ -112,14 +113,31 @@ export default function StudentRecords() {
     }
   }
 
+    function handleName(e: React.ChangeEvent<HTMLInputElement>) {
+        if(typeTimeout.current) {
+          clearTimeout(typeTimeout.current);
+        }
+        typeTimeout.current = setTimeout(() => {
+          const formatted = format(e.target.value);
+          if(formatted?.formatted) {
+            setStudent({
+              ...student,
+              name: formatted.formatted,
+            });
+          } else {
+            setContent(<p className="text-red-500">{formatted?.error}</p>);
+          }
+        }, 1000);
+    };
+
   async function handleSearch() {
     setLoading(true);
-    if(!(studentId || studentName || subjects)) {
+    if((student.student_id === "" && student.name === "" && student.subjects === "")) {
       setContent(<p className="text-red-500">Enter a value first</p>);
       setLoading(false);
       return;
     }
-    const {data, error} = await getStudent({student_id: studentId, name: studentName, subjects: subjects});
+    const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects});
     if(data) {
       setStudents(data || []);
       setLoading(false);
@@ -130,7 +148,7 @@ export default function StudentRecords() {
   }
 
   useEffect(() => {
-    if(!content) return;
+    if(content === "") return;
     setTimeout(() => {
         setContent("");
       }, 2000);
@@ -147,30 +165,30 @@ export default function StudentRecords() {
           <label className="block mb-2">Enter Student ID:</label>
           <input
             type="text"
-            onChange={handleIdChange}
+            onChange={handleChange}
             placeholder="Enter student ID"
             className="p-2 border rounded w-full mb-4"
-            id="id"
+            name="student_id"
             ref={id_input}
           />
 
           <label className="block mb-2">Enter Student Name:</label>
           <input
             type="text"
-            onChange={handleNameChange}
+            onChange={handleName}
             placeholder="Enter student name"
             className="p-2 border rounded w-full mb-4"
-            id="name"
+            name="name"
             ref={name_input}
           />
 
           <label className="block mb-2">Enter Subject:</label>
           <input
             type="text"
-            onChange={handleSubjectChange}
+            onChange={handleChange}
             placeholder="Enter subject"
             className="p-2 border rounded w-full mb-4"
-            id="subjects"
+            name="subjects"
             ref={subject_input}
           />
 

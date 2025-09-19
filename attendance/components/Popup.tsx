@@ -42,8 +42,7 @@ export default function Popup() {
         const {success, error} = await res.json();
         if(res.ok) {
             if(success) {
-                alert(success);
-                setDisabled(true);
+                window.location.reload();
             }
         } else {
             alert(error);
@@ -59,7 +58,7 @@ export default function Popup() {
                 <p className="text-left p-2">Enter your verification code: </p>
                 <input name="verification" disabled={disabled} type="password" onChange={handleChange} placeholder="Enter recovery code" className='border-1 rounded'/>
                 <p className="text-left p-2">Confirm your verification code: </p>
-                <input name="confirm" disabled={disabled} type="password" onChange={handleChange} placeholder="Conmfirm recovery code" className='border-1 rounded'/>
+                <input name="confirm" disabled={disabled} type="password" onChange={handleChange} placeholder="Confirm recovery code" className='border-1 rounded'/>
             </div>
             <div className='p-4'>
                 <button className='border rounded-lg w-[10rem]'  disabled={disabled} onClick={submit}>Submit</button>

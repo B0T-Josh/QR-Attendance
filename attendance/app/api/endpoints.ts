@@ -46,11 +46,9 @@ export async function addTeacher(supabase: any, info: any, id: number) {
     try {
         const { error: err } = await supabase.from('teacher').insert([{id: id, name: info.name}]);
         if(err) {
-            console.log(err);
             return false;
         }else return true;
     } catch (error) {
-        console.log(error);
         return false;
     }
 }
@@ -95,7 +93,6 @@ export async function addVerification(info: any) {
         await supabase.from('account').update({verification: info.verification}).eq('id', info.id);
         return true;
     } catch(error) {
-        console.log(error);
         return false;
     }
 }
@@ -136,7 +133,6 @@ export async function addSubjects(info: any) {
         await supabase.from("subject").insert({name: info.name, teacher_id: info.id, teacher_name: data?.name});
         return true;
     }
-    console.log(`Add Subject error`);
     return false;
 }
 
@@ -173,7 +169,6 @@ export async function updatePassword(info: any) {
         await supabase.from("account").update({password: info.password}).eq("email", info.email);
         return true;
     } catch(error) {
-        console.log(error);
         return false;
     }
 }
@@ -191,7 +186,6 @@ export async function login(info: any) {
 //Validate if the ID of the user exist.
 export async function validateTeacher(info: any) {
     const {data, error} = await supabase.from("account").select("id").eq("id", info.id).single();
-    console.log(data?.id + " " + info.id);
     if(data) {
         return ({id: data.id});
     } else {

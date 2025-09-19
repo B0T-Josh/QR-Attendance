@@ -33,34 +33,29 @@ export default function RegisterPage() {
             } else {
               setContent(<p className="text-red-500">{data.error}</p>);
               setLoading(false);
-              setTimeout(() => {
-                setContent("");
-              }, 1500);
             }
           } else {
             setContent(<p className="text-red-500">Password and Confirm password doesn't match</p>);
-            setTimeout(() => {
-              setContent("");
-            }, 1500);
           }
         } else {
           setContent(<p className="text-red-500">Enter valid email account</p>);
-          setTimeout(() => {
-            setContent("");
-          }, 1500);
+
         }
       } else {
         setContent(<p className="text-red-500">Enter an email account and password</p>);
-        setTimeout(() => {
-          setContent("");
-        }, 1500);
       }
-      
     } catch (error) {
       alert("Profile creation unsuccessful");
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if(!content || content === "") return;
+    setTimeout(() => {
+      setContent("");
+    }, 2500);
+  }, [content])
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
       if(typeTimeout.current) {
@@ -74,24 +69,31 @@ export default function RegisterPage() {
       }, 500);
   };
 
+    function handleEmail(e: React.ChangeEvent<HTMLInputElement>) {
+      setInfo({
+        ...info,
+        email: e.target.value
+      })
+  };
+
   function handleName(e: React.ChangeEvent<HTMLInputElement>) {
-      if(typeTimeout.current) {
-        clearTimeout(typeTimeout.current);
+    if(typeTimeout.current) {
+      clearTimeout(typeTimeout.current);
+    }
+    typeTimeout.current = setTimeout(() => {
+      const formatted = format(e.target.value);
+      if(formatted?.formatted) {
+        setInfo({
+        ...info,
+          name: formatted.formatted,
+        });
+      } else {
+        setContent(<p className="text-red-500">{formatted?.error}</p>);
+        setTimeout(() => {
+          setContent("");
+        }, 2000);
       }
-      typeTimeout.current = setTimeout(() => {
-        const formatted = format(e.target.value);
-        if(formatted?.formatted) {
-          setInfo({
-          ...info,
-            name: formatted.formatted,
-          });
-        } else {
-          setContent(<p className="text-red-500">{formatted?.error}</p>);
-          setTimeout(() => {
-            setContent("");
-          }, 2000);
-        }
-      }, 500);
+    }, 500);
   };
 
   function handleConfirm(e: React.ChangeEvent<HTMLInputElement>) {
@@ -114,7 +116,7 @@ export default function RegisterPage() {
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
           Email:
         </h1>
-        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} disabled={loading} type="text" name="email" onChange={handleChange} placeholder="example@gmail.com"/>
+        <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[200ms]" : "opacity-0"}`} disabled={loading} type="text" name="email" onChange={handleEmail} placeholder="example@gmail.com"/>
 
         <h1 className={`transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[300ms]" : "opacity-0"}`}>
           Password:
