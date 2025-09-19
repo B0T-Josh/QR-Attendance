@@ -109,10 +109,10 @@ export default function QRScanner() {
 
     return (
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
-            <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
+            <div className="flex flex-col items-center p-4 w-50">
                 {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
-                <select value={subject} name="subject" onChange={handleChange}>
+                <select className="rounded-lg p-2" value={subject} name="subject" onChange={handleChange}>
                   <option value="">Select a subject</option>
                   {subjects ? subjects.length > 1 ? (
                     subjects.map(subject => (
@@ -120,7 +120,7 @@ export default function QRScanner() {
                     ))
                   ) : <option value="">No subject</option> : (<></>)}
                 </select>
-                <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
+                <h2 className="text-xl font-bold mb-4 mt-4">QR Code Scanner</h2>
                 <div>{content}</div><br />
                 <video
                     ref={videoRef}

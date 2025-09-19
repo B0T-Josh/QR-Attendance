@@ -139,57 +139,65 @@ export default function StudentRecords() {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex flex-row items-center flex-1 p-8 gap-8">
+      <div className="flex flex-col items-center flex-1 p-8 gap-8">
         {content}
-        <div className="p-6 border-2 rounded w-[25rem]">
-          <h2 className="text-lg font-bold mb-4">{loading ? "Loading" : "Manage Student"}</h2>
+        <div className="w-full max-w-5xl p-4 border-b border-[#c7c7c79f] flex flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4 flex-1">
+            <input
+              type="text"
+              onChange={handleIdChange}
+              placeholder="Enter student ID"
+              className="p-2 rounded-lg"
+              id="id"
+              ref={id_input}
+            />
 
-          <label className="block mb-2">Enter Student ID:</label>
-          <input
-            type="text"
-            onChange={handleIdChange}
-            placeholder="Enter student ID"
-            className="p-2 border rounded w-full mb-4"
-            id="id"
-            ref={id_input}
-          />
+            <input
+              type="text"
+              onChange={handleNameChange}
+              placeholder="Enter student name"
+              className="p-2 rounded-lg"
+              id="name"
+              ref={name_input}
+            />
 
-          <label className="block mb-2">Enter Student Name:</label>
-          <input
-            type="text"
-            onChange={handleNameChange}
-            placeholder="Enter student name"
-            className="p-2 border rounded w-full mb-4"
-            id="name"
-            ref={name_input}
-          />
-
-          <label className="block mb-2">Enter Subject:</label>
-          <input
-            type="text"
-            onChange={handleSubjectChange}
-            placeholder="Enter subject"
-            className="p-2 border rounded w-full mb-4"
-            id="subjects"
-            ref={subject_input}
-          />
-
-          <div className="flex justify-between">
-            <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
-                Add
+            <input
+              type="text"
+              onChange={handleSubjectChange}
+              placeholder="Enter subject"
+              className="p-2 rounded-lg"
+              id="subjects"
+              ref={subject_input}
+            />
+          </div>
+          
+          <div className="flex gap-4">
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-green-500"
+              onClick={handleAdd}
+            >
+              Add
             </button>
-            <button className="p-3 text-gray-600 hover:text-yellow-500" onClick={handleSearch}>
-                Search
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-yellow-500"
+              onClick={handleSearch}
+            >
+              Search
             </button>
-            <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
-                Remove
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-red-500"
+              onClick={handleRemove}
+            >
+              Remove
             </button>
           </div>
         </div>
 
         {/* Students Table */}
-        <div className="w-full max-w-5xl border-2 rounded-lg overflow-auto">
-          <table className="table-auto border-collapse border border-gray-400 w-full">
+        <div className="w-full max-w-5xl border-2 border-[#8d8a8a] rounded-lg overflow-auto">
+          <table className="table-auto border-collapse border-[#8d8a8a] w-full">
             <thead>
               <tr>
                 <th className="border border-gray-400 px-4 py-2">Student ID</th>

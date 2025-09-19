@@ -83,47 +83,67 @@ export default function StudentRecords() {
                         {content}
                     </div>
 
-                <div className="p-4 flex justify-center items-center m-auto w-1/2">
-                    <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
-                        {loading ? (<h2 className="p-2 text-gray-600">Loading</h2>) : <h2 className="p-2">Add Subject</h2>}
-                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent" value={subject || ""}/>
-                        <br/>
-                        <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
-                            Add
-                        </button>   
-                        <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
-                            Remove
-                        </button>
-                    </div>
-                    
-                    <div className="flex-1 w-full border-2 rounded-lg overflow-y-auto border-[#c7c7c79f]">
-                        <table className="table-auto border-collapse border w-full h-full">
-                            <thead>
-                                <tr>
-                                    <th className="border border-gray-400 px-4 py-2">ID</th>
-                                    <th className="border border-gray-400 px-4 py-2">Subject</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sets.length > 0 ? (
-                                    sets.map((set) => (
-                                    <tr key={set.id} className="text-center">
-                                        <td className="border border-gray-400 px-4 py-2">{set.id}</td>
-                                        <td className="border border-gray-400 px-4 py-2">{set.name}</td>
-                                    </tr>
-                                    ))
-                                ) : (
-                                <tr>
-                                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
-                                        No subjects found
-                                    </td>
-                                </tr>
+                    <div className="p-4 flex flex-col justify-center items-center m-auto w-1/2">
+                        <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-wrap gap-4 items-center">
+                            {loading ? (
+                                <h2 className="p-2 text-gray-600">Loading</h2>
+                            ) : (
+                                <h2 className="p-2 font-medium">Add Subject:</h2>
                             )}
-                            </tbody>
-                        </table>
+
+                            <input
+                                type="text"
+                                name="subject"
+                                onChange={handleChange}
+                                placeholder="Enter subject"
+                                className="p-2 rounded-lg border border-gray-300"
+                                value={subject || ""}
+                            />
+
+                            <button
+                                className="px-4 py-2 text-gray-600 hover:text-green-500"
+                                onClick={handleAdd}
+                            >
+                                Add
+                            </button>
+
+                            <button
+                                className="px-4 py-2 text-gray-600 hover:text-red-500"
+                                onClick={handleRemove}
+                            >
+                                Remove
+                            </button>
+                        </div>
+
+                    
+                        <div className="mt-4 flex-1 w-full border-2 rounded-lg overflow-y-auto border-[#c7c7c79f]">
+                            <table className="table-auto border-collapse border w-full h-full">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-400 px-4 py-2">ID</th>
+                                        <th className="border border-gray-400 px-4 py-2">Subject</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sets.length > 0 ? (
+                                        sets.map((set) => (
+                                        <tr key={set.id} className="text-center">
+                                            <td className="border border-gray-400 px-4 py-2">{set.id}</td>
+                                            <td className="border border-gray-400 px-4 py-2">{set.name}</td>
+                                        </tr>
+                                        ))
+                                    ) : (
+                                    <tr>
+                                        <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
+                                            No subjects found
+                                        </td>
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
             ) : <p></p>}
         </div>
     );

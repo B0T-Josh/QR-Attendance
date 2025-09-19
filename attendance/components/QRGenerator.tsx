@@ -58,16 +58,16 @@ export default function QRGenerator() {
     }, [finalProfile])
 
     return (
-        <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8">
-            <div className="flex flex-col justify-center items-center border rounded-lg w-[25rem] h-[35rem] space-y-6">
+        <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8 dark:bg-white dark:text-black">
+            <div className="flex flex-col justify-center items-center w-[25rem] h-[35rem] space-y-6">
                 <h2 className="text-xl font-bold mb-4">QR Code Generator</h2>
                 {errorBool ? error : ""}
-                <input className="border rounded-lg p-1 w-[17rem]" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
-                <input className="border rounded-lg p-1 w-[17rem]" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
-                <div className="flex flex-col items-center justify-center align-center border rounded-lg p-4 w-[17rem]">
+                <input className="pl-2 bg-[#cfcfcf] rounded-lg p-1 w-[17rem]" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
+                <input className="pl-2 bg-[#cfcfcf] rounded-lg p-1 w-[17rem]" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
+                <div className="flex flex-col items-center justify-center align-center rounded-lg p-4 w-[17rem]">
                     <QRCodeCanvas value={(finalProfile.name) + " | " + (finalProfile.student_id)} size={200} />
                 </div>
-                <div className="border rounded-lg p-1 w-[17rem]">
+                <div className="rounded-lg p-1 w-[17rem]">
                         <p className="mt-2 text-sm text-gray-600">
                             {content}
                         </p>
