@@ -61,7 +61,7 @@ export default function Records() {
     setSearch({
       ...search,
       subject: e.target.value
-    })
+    });
   }
 
   useEffect(() => {

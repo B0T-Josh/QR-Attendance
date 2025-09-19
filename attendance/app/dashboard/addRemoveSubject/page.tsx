@@ -19,10 +19,9 @@ export default function StudentRecords() {
     const [sets, setSets] = useState<Subjects[]>([]);
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [process, setProcess] = useState<any>();
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setSubject(e.target.value);
+        setSubject(e.target.value.toUpperCase());
     }
 
     const get = async () => {
@@ -86,15 +85,12 @@ export default function StudentRecords() {
 
                 <div className="p-4 flex justify-center items-center m-auto w-1/2">
                     <div className="mt-auto mb-auto p-4  w-[20rem] h-auto">
-                        
                         {loading ? (<h2 className="p-2 text-gray-600">Loading</h2>) : <h2 className="p-2">Add Subject</h2>}
-
-                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2" value={subject || ""}/>
-
+                        <input type="text" name="subject" onChange={handleChange} placeholder="Enter subject" className="p-2 bg-transparent" value={subject || ""}/>
+                        <br/>
                         <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
                             Add
-                        </button>
-
+                        </button>   
                         <button className="p-3 text-gray-600 hover:text-red-500" onClick={handleRemove}>
                             Remove
                         </button>
@@ -118,10 +114,7 @@ export default function StudentRecords() {
                                     ))
                                 ) : (
                                 <tr>
-                                    <td
-                                        colSpan={3}
-                                        className="border border-gray-400 px-4 py-2 text-center"
-                                    >
+                                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
                                         No subjects found
                                     </td>
                                 </tr>
@@ -132,7 +125,6 @@ export default function StudentRecords() {
                 </div>
             </div>
             ) : <p></p>}
-            
         </div>
     );
 }
