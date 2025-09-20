@@ -159,97 +159,90 @@ export default function StudentRecords() {
       <Sidebar />
       <div className="flex flex-col items-center flex-1 p-8 gap-8">
         {content}
-        <div className="w-full max-w-5xl p-4 border-b border-[#c7c7c79f] flex flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 flex-1">
-            <input
-              type="text"
-              /* onChange={handleIdChange} */
-              placeholder="Enter student ID"
-              className="p-2 rounded-lg"
-              id="id"
-              ref={id_input}
-            />
-
-            <label className="block mb-2">Enter Student ID:</label>
+        <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
+          <div className="ml-[8rem] flex items-center gap-4 flex-1">
+            {/* <label className="block mb-2">Enter Student ID:</label> */}
             <input
               type="text"
               onChange={handleChange}
               placeholder="Enter student ID"
-              className="p-2 border rounded w-full mb-4"
+              className="p-2 rounded-lg"
               name="student_id"
               ref={id_input}
             />
 
-            <label className="block mb-2">Enter Student Name:</label>
+            {/* <label className="block mb-2">Enter Student Name:</label> */}
             <input
               type="text"
               onChange={handleName}
               placeholder="Enter student name"
-              className="p-2 border rounded w-full mb-4"
+              className="p-2 rounded-lg"
               name="name"
               ref={name_input}
             />
 
-            <label className="block mb-2">Enter Subject:</label>
+            {/* <label className="block mb-2">Enter Subject:</label> */}
             <input
               type="text"
               onChange={handleChange}
               placeholder="Enter subject"
-              className="p-2 border rounded w-full mb-4"
+              className="p-2 rounded-lg"
               name="subjects"
               ref={subject_input}
             />
-
-            <div className="flex justify-between">
-              <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
-                  Add
-              </button>
-
-              <button
-                className="px-4 py-2 text-gray-600 hover:text-yellow-500"
-                onClick={handleSearch}
-              >
-                Search
-              </button>
-
-              <button
-                className="px-4 py-2 text-gray-600 hover:text-red-500"
-                onClick={handleRemove}
-              >
-                Remove
-              </button>
-            </div>
+            
+            
           </div>
+        </div>
 
-          {/* Students Table */}
-          <div className="w-full max-w-5xl border-2 border-[#8d8a8a] rounded-lg overflow-auto">
-            <table className="table-auto border-collapse border-[#8d8a8a] w-full">
-              <thead>
-                <tr>
-                  <th className="border border-gray-400 px-4 py-2">Student ID</th>
-                  <th className="border border-gray-400 px-4 py-2">Name</th>
-                  <th className="border border-gray-400 px-4 py-2">Subject</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.length > 0 ? (
-                  students.map((s) => (
-                    <tr key={s.id} className="text-center">
-                      <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
-                      <td className="border border-gray-400 px-4 py-2">{s.name}</td>
-                      <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
-                      No students found
-                    </td>
+        <div className="flex flex-row justify-between">
+          <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
+              Add
+          </button>
+
+          <button
+            className="px-4 py-2 text-gray-600 hover:text-yellow-500"
+            onClick={handleSearch}
+          >
+            Search
+          </button>
+
+          <button
+            className="px-4 py-2 text-gray-600 hover:text-red-500"
+            onClick={handleRemove}
+          >
+            Remove
+          </button>
+        </div>
+
+        {/* Students Table */}
+        <div className="w-full max-w-5xl rounded-lg overflow-auto">
+          <table className="table-auto border-collapse border-[#8d8a8a] w-full">
+            <thead>
+              <tr>
+                <th className="border border-gray-400 px-4 py-2">Student ID</th>
+                <th className="border border-gray-400 px-4 py-2">Name</th>
+                <th className="border border-gray-400 px-4 py-2">Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.length > 0 ? (
+                students.map((s) => (
+                  <tr key={s.id} className="text-center">
+                    <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
+                    <td className="border border-gray-400 px-4 py-2">{s.name}</td>
+                    <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
+                    No students found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
