@@ -2,6 +2,13 @@
 import { useState, useEffect, useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import format from "@/tools/format"
+import { getStudents } from "@/app/api/requests/request";
+
+type Student = {
+    student_id: string;
+    name: string;
+    subjects: string;
+}
 
 export default function QRGenerator() {
     const [profile, setProfile] = useState<string | null>(null);
@@ -11,18 +18,14 @@ export default function QRGenerator() {
         name : "",
         student_id : ""
     });
+    const [studentList, setStudentList] = useState<Student[]>([]);
     const [content, setContent] = useState<string | "">("");
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
     const [error, setError] = useState<any>(null);
 
     const handleIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        if (typingTimeout.current) {
-            clearTimeout(typingTimeout.current);
-        }
-        typingTimeout.current = setTimeout(() => {
-            setStudentId(value);
-        }, 2000);
+        setStudentId(value);
     };
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,25 +40,55 @@ export default function QRGenerator() {
     
     useEffect(() => {
         setErrorBool(false);
-        if(profile) {
+        if(profile && student_id) {
             const data: any = format(profile);
-            if(data.formatted) {
-                setFinalProfile(prev => ({
-                    ...prev,
-                    name: data.formatted,
-                    student_id: student_id || ""
-                }))
+            const found = studentList.find(item => ((item.student_id === student_id) && (item.name === data.formatted)));
+            if(found) {
+                if(data.formatted) {
+                    setFinalProfile(prev => ({
+                        ...prev,
+                        name: data.formatted,
+                        student_id: student_id || ""
+                    }))
+                } else {
+                    setErrorBool(true);
+                    setError(<p className="text-red-500">{data.error}</p>);
+                }
             } else {
                 setErrorBool(true);
-                setError(<p className="text-red-500">{data.error}</p>);
+                setError(<p className="text-red-500">Student was not enrolled</p>);
+                setContent(`Encoded: `);    
+                setFinalProfile({
+                    ...finalProfile,
+                    name: "",
+                    student_id: ""
+                });
             }
         }
-       
     }, [profile])
 
     useEffect(() => {
-        setContent(`Encoded: ${finalProfile.name} | ${finalProfile.student_id}`);
+        if(studentList.length > 0) return;
+        async function getAllStudents() {
+            const {data, error} = await getStudents();
+            if(data) {
+                setStudentList(data);
+            }
+        }
+        setContent(`Encoded: `);    
+        getAllStudents();
+    }, [])
+
+    useEffect(() => {
+        if(!finalProfile.name && !finalProfile.student_id) return;
+        setContent(`Encoded: ${finalProfile.name} | ${finalProfile.student_id}`);    
     }, [finalProfile])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setErrorBool(false);
+        }, 2000);
+    }, [errorBool]);
 
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8">
