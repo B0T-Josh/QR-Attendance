@@ -22,7 +22,7 @@ export async function scanned(info: any) {
 //Request to add subject.
 export async function handleAddSubject(info: any) {
     //Pass the submitted data to the URL.
-    const res = await fetch("/api/addSubject", {
+    const res = await fetch("/api/subject", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
@@ -38,8 +38,8 @@ export async function handleAddSubject(info: any) {
 //Request to remove subject.
 export async function handleRemoveSubject(info: any) {
     //Pass the submitted data to the URL.
-    const res = await fetch("/api/removeSubject", {
-        method: "POST",
+    const res = await fetch("/api/subject", {
+        method: "DELETE",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
