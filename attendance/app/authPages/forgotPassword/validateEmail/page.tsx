@@ -12,15 +12,18 @@ export default function ForgotPassword() {
   const [content, setContent] = useState<any>();
   const [code, setCode] = useState<string | null>(null);
 
+  //Encrypt recovery code
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setCode(String(encryptPassword(e.target.value)));
   }
 
+  //Verify recovery code
   async function handleSubmit() {
     setLoading(true);
     if(code) {
       const { success, error } = await validateCode({code: code, email: localStorage.getItem("email")});
       if(success) {
+        //Redirect to next step
         route.push("/authPages/forgotPassword/validateEmail/resetPassword");   
       } else {
         setContent(<p className="text-red-500">{error}</p>);
@@ -53,7 +56,7 @@ export default function ForgotPassword() {
 
         <div className="transition-all ease-in-out hover:-translate-y-1 hover:scale-105 duration-300 w-full">
               <button id="submit" className={`mt-4 cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-4 py-2 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading} type="submit" onClick={handleSubmit}>
-                {loading ? (<>Loading</>) : (<>Validate</>)}
+                {loading ? (<>Loading</>) : (<>Validate</>)} {/* Changes text value when a process is loading */}
               </button>
         </div>
       </div>

@@ -17,13 +17,11 @@ type Student = {
 
 export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
-    const [valid, setValid] = useState(true);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [subject, setSubject] = useState<string | "">("");
     const [content, setContent] = useState<any>(null);
     const [id, setId] = useState<string | "">("");
     const [loading, setLoading] = useState(false);
-    const typeTimeout = useRef<NodeJS.Timeout | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [student, setStudent] = useState<Student | null>(null);
 
@@ -109,8 +107,7 @@ export default function QRScanner() {
 
     return (
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">
-            <div className="flex flex-col items-center p-4 w-50">
-                {valid ? <p></p> : <p className="text-red-500 p-4">You don't have this {subject}</p>}
+            <div className="flex flex-col items-center p-4 border rounded-lg shadow-md w-50">
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <select className="rounded-lg p-2" value={subject} name="subject" onChange={handleChange}>
                   <option value="">Select a subject</option>

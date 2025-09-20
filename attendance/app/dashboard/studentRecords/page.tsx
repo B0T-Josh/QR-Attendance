@@ -38,13 +38,6 @@ export default function Records() {
   const [subjects, setSubjects] = useState<Subjects[] | null>(null);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  async function getRecord() {
-    setLoading(true);
-    const {data, error} = await getRecords({data: search});
-    setRecord(data);
-    setLoading(false);
-  }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if(typeTimeout.current) {
       clearTimeout(typeTimeout.current);
@@ -85,6 +78,7 @@ export default function Records() {
     setLoading(true);
     async function getSelectedRecord() {
       const {data, error} = await getRecords({data: search});
+      console.log(error);
       if(data) {
         setRecord(data);
         setLoading(false);
