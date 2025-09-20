@@ -160,7 +160,7 @@ export default function StudentRecords() {
       <div className="flex flex-col items-center flex-1 p-8 gap-8">
         {content}
         <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-          <div className="ml-[8rem] flex items-center gap-4 flex-1">
+          <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
             {/* <label className="block mb-2">Enter Student ID:</label> */}
             <input
               type="text"

@@ -137,8 +137,7 @@ export default function HomePage() {
                                                 <td className="px-4 py-2">2025-09-10</td>
                                             </tr>
                                         </tbody>
-                                        </table>
-
+                                    </table>
                                 </div>
                             </div>
                         </Link>
