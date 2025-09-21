@@ -288,10 +288,10 @@ export async function addStudent(info: Student) {
     }
 }
 //Remove student from the table.
-export async function removeStudent(info: Student) {
-    const { error } = await supabase.from("students").delete().eq("student_id", info.student_id);
+export async function removeStudent(student_id: string) {
+    const { error } = await supabase.from("students").delete().eq("student_id", student_id);
     if(!error) {
-        return ({success: `Student ${info.name} was deleted`});
+        return ({success: `Student ${student_id} was deleted`});
     } else {
         return ({error: "Failed to remove student"});
     }

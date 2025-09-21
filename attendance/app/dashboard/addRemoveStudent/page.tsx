@@ -71,29 +71,32 @@ export default function StudentRecords() {
   async function handleAdd() {
     setLoading(true);
     if (student.name && student.student_id && student.subjects) {
-      const formatted = format(student.name);
-      if(formatted?.error) {
-        setContent(<p className="text-red-500">Invalid format.<br/>Must be SURNAME, Firstname M.I.</p>);
-        return;
-      }
-      const { success, error } = await handleAddStudent({
-        student_id: student.student_id,
-        name: formatted?.formatted,
-        subjects: student.subjects
-      });
+      const formatted = format(student.name.trim());
+      if(formatted) {
+        if(formatted?.error) {
+          setContent(<p className="text-red-500">{formatted?.error}</p>);
+        }
+        if(formatted.formatted) {
+          const { success, error } = await handleAddStudent({
+            student_id: student.student_id,
+            name: formatted.formatted,
+            subjects: student.subjects.toUpperCase()
+          });
 
-      setContent(
-        success ? (
-          <p className="text-green-300">{success}</p>
-        ) : (
-          <p className="text-red-500">{error}</p>
-        )
-      );
-      name_input.current && (name_input.current.value = "");
-      id_input.current && (id_input.current.value = "");
-      subject_input.current && (subject_input.current.value = "");
-      get();
-      setLoading(false);
+          setContent(
+            success ? (
+              <p className="text-green-300">{success}</p>
+            ) : (
+              <p className="text-red-500">{error}</p>
+            )
+          );
+          name_input.current && (name_input.current.value = "");
+          id_input.current && (id_input.current.value = "");
+          subject_input.current && (subject_input.current.value = "");
+          get();
+          setLoading(false);
+        }
+      }
     } else {
       setLoading(false);
       setContent(<p className="text-red-500">Fill all fields first</p>);
@@ -122,37 +125,37 @@ export default function StudentRecords() {
     }
   }
 
-    function handleName(e: React.ChangeEvent<HTMLInputElement>) {
-        if(typeTimeout.current) {
-          clearTimeout(typeTimeout.current);
-        }
-        typeTimeout.current = setTimeout(() => {
-          const formatted = format(e.target.value);
-          if(formatted?.formatted) {
-            setStudent({
-              ...student,
-              name: formatted.formatted,
-            });
-          } else {
-            setContent(<p className="text-red-500">{formatted?.error}</p>);
-          }
-        }, 1000);
-    };
-
   async function handleSearch() {
     setLoading(true);
-    if((student.student_id === "" && student.name === "" && student.subjects === "")) {
+    if((student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "")) {
       setContent(<p className="text-red-500">Enter a value first</p>);
       setLoading(false);
       return;
     }
-    const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects});
-    if(data) {
-      setStudents(data || []);
-      setLoading(false);
+    const formatted = format(student.name.trim());
+    if(formatted) {
+      if(formatted?.error) {
+        setContent(<p className="text-red-500">{formatted?.error}</p>);
+      }
+      if(formatted.formatted) {
+        const {data, error} = await getStudent({student_id: student.student_id, name: formatted?.formatted, subjects: student.subjects.toUpperCase()});
+        if(data) {
+          setStudents(data || []);
+          setLoading(false);
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+          setLoading(false);
+        }
+      }
     } else {
-      setContent(<p className="text-red-500">{error}</p>);
-      setLoading(false);
+      const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects.toUpperCase()});
+      if(data) {
+        setStudents(data || []);
+        setLoading(false);
+      } else {
+        setContent(<p className="text-red-500">{error}</p>);
+        setLoading(false);
+      }
     }
   }
 
@@ -183,8 +186,8 @@ export default function StudentRecords() {
             {/* <label className="block mb-2">Enter Student Name:</label> */}
             <input
               type="text"
-              onChange={handleName}
-              placeholder="Enter student name"
+              onChange={handleChange}
+              placeholder="SURNAME, Firstname M.I."
               className="p-2 rounded-lg"
               name="name"
               ref={name_input}
