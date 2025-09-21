@@ -148,7 +148,6 @@ export async function getSubject(subject: string) {
 
 //Adds the subject that the teacher/professor submits from addRemoveSubject page.
 export async function addSubjects(id: string, subject: string) {
-    console.log(id + " " + subject);
     if(await getSubject(subject) === undefined) {
         const { data } = await supabase.from("teacher").select("name").eq("id", id).single();
         await supabase.from("subject").insert({name: subject, teacher_id: id, teacher_name: data?.name});
@@ -206,7 +205,6 @@ export async function login(info: Account) {
 
 //Validate if the ID of the user exist.
 export async function validateTeacher(id: string) {
-    console.log(id);
     const {data, error} = await supabase.from("account").select("id").eq("id", id).single();
     if(data) {
         return ({id: data.id});
@@ -244,7 +242,6 @@ export async function getRecords(info: Student, date: string) {
 
 //Verify if the student is existing
 export async function verifyStudentData(info: Student) {
-    console.log(info);
     const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
     if(data) {
         return ({data: data});
