@@ -173,7 +173,7 @@ export async function updatePassword(password: string | null, email: string | nu
 
 //Gets the data of the user for verification on log in.
 export async function login(info: Account) {
-    const { data, error } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
+    const { data } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
     if(data) {
         return ({data: {id: data.id, password: data.password}});
     } else {
@@ -220,7 +220,7 @@ export async function getRecords(info: Student, date: string) {
 
 //Verify if the student is existing
 export async function verifyStudentData(info: Student) {
-    const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
+    const {data} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
     if(data) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});
