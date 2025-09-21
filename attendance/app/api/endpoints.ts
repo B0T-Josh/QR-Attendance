@@ -22,8 +22,27 @@ function getDate() {
     return formatted;
 }
 
+type Student = {
+    name: string;
+    student_id: string;
+    subjects: string;
+}
+
+type Professor = {
+    id: string;
+    name: string;
+}
+
+type Account = {
+    id: string;
+    email: string;
+    password: string;
+    name: string;
+}
+
 //Comes from the resgistration page. This adds the teacher's account to the database.
-export async function addUser(info: any) {
+export async function addUser(info: Account) {
+
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
         if(error) {
@@ -33,7 +52,7 @@ export async function addUser(info: any) {
         if(err) {
             return({error: "There is an error fetching id"});
         }
-        if(await addTeacher(supabase, info, prof.id)){
+        if(await addTeacher(prof.id, info.name)){
             return ({success: "Profile was successfully created"});
         } else return ({error: "Creating profile failed"});
     } catch (error) {
@@ -42,9 +61,9 @@ export async function addUser(info: any) {
 }
 
 //Adds the name of the teacher to the teacher table from the database.
-export async function addTeacher(supabase: any, info: any, id: number) {
+export async function addTeacher(id: string, name: string) {
     try {
-        const { error: err } = await supabase.from('teacher').insert([{id: id, name: info.name}]);
+        const { error: err } = await supabase.from('teacher').insert([{id: id, name: name}]);
         if(err) {
             return false;
         }else return true;
@@ -54,7 +73,7 @@ export async function addTeacher(supabase: any, info: any, id: number) {
 }
 
 //Checks if the verification code exist from account table.
-export async function getVerification(id: any) {
+export async function getVerification(id: string) {
     try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
         return ({verification: data?.verification});
@@ -64,10 +83,10 @@ export async function getVerification(id: any) {
 }
 
 //Adds attendance record for students aftter scanning the QR.
-export async function addRecord(info: any) {
+export async function addRecord(info: Student) {
     try {
-       if(await validateSubject(info.subject)) {
-        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subject, time_in: getTime()});
+       if(await validateSubject(info.subjects)) {
+        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subjects, time_in: getTime()});
         return ({success: "Attendance recorded for " + info.name});
        } else {
         return({error: "Failed to record attendance. Student " + info.name});
@@ -88,9 +107,9 @@ async function validateSubject(subject: string) {
 }
 
 //Adds verification code to the user's account.
-export async function addVerification(info: any) {
+export async function addVerification(verification: string, id: string) {
     try {
-        await supabase.from('account').update({verification: info.verification}).eq('id', info.id);
+        await supabase.from('account').update({verification: verification}).eq('id', id);
         return true;
     } catch(error) {
         return false;
@@ -98,11 +117,11 @@ export async function addVerification(info: any) {
 }
 
 //Adds time out to the student's record.
-export async function timeOut(info: any) {
+export async function timeOut(info: Student) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject).single();
+    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subjects).single();
     if(data?.time_out === null) {
-        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subject);
+        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subjects);
         return true;
     } else {
         return false;
@@ -110,9 +129,9 @@ export async function timeOut(info: any) {
 }
 
 //Checks if the student has a record for the day.
-export async function checkDate(info: any) {
+export async function checkDate(info: Student) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subject).single();
+    const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subjects).single();
     if(data === null) {
         return false;
     } else {
@@ -127,44 +146,45 @@ export async function getSubject(subject: string) {
 }
 
 //Adds the subject that the teacher/professor submits from addRemoveSubject page.
-export async function addSubjects(info: any) {
-    if(await getSubject(info.name) === undefined) {
-        const { data } = await supabase.from("teacher").select("name").eq("id", info.id).single();
-        await supabase.from("subject").insert({name: info.name, teacher_id: info.id, teacher_name: data?.name});
+export async function addSubjects(id: string, subject: string) {
+    console.log(id + " " + subject);
+    if(await getSubject(subject) === undefined) {
+        const { data } = await supabase.from("teacher").select("name").eq("id", id).single();
+        await supabase.from("subject").insert({name: subject, teacher_id: id, teacher_name: data?.name});
         return true;
     }
     return false;
 }
 
 //Removes the subject that the user submitted.
-export async function removeSubject(info: any) {
-    if(await getSubject(info.name) !== undefined) {
-        await supabase.from("subject").delete().eq("name", info.name).eq("teacher_id", info.id);
+export async function removeSubject(id: string, subjects: string) {
+    if(await getSubject(subjects) !== undefined) {
+        await supabase.from("subject").delete().eq("name", subjects).eq("teacher_id", id);
         return true;
     }
     return false;
 }
 
 //Gets all the subject for the user.
-export async function getAllSubjects(info: any) {
-    const { data } = await supabase.from("subject").select("id, name").eq("teacher_id", info.id);
+export async function getAllSubjects(id: string) {
+    const { data } = await supabase.from("subject").select("id, name").eq("teacher_id", id);
     return data;
 }
 
 //Gets the ID of the user for verification.
-export async function getEmail(info: any) {
+export async function getEmail(info: Account) {
     const { data } = await supabase.from("account").select("id").eq("email", info.email).single();
     return data ? data.id : 0;
 }
 
 //Gets the ID of the user that has the submitted verification code.
-export async function verifyCode(info: any) {
-    const { data } = await supabase.from("account").select("id").eq("verification", info.code).eq('email', info.email).single();
+export async function verifyCode(info: Account, code: string) {
+    const { data } = await supabase.from("account").select("id").eq("verification", code).eq('email', info.email).single();
     return data ? data.id : 0;
 }
 
 //Updates password from forgot password.
-export async function updatePassword(info: any) {
+export async function updatePassword(info: Account) {
     try{
         await supabase.from("account").update({password: info.password}).eq("email", info.email);
         return true;
@@ -174,7 +194,7 @@ export async function updatePassword(info: any) {
 }
 
 //Gets the data of the user for verification on log in.
-export async function login(info: any) {
+export async function login(info: Account) {
     const { data, error } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
     if(data) {
         return ({data: {id: data.id, password: data.password}});
@@ -184,7 +204,7 @@ export async function login(info: any) {
 }
 
 //Validate if the ID of the user exist.
-export async function validateTeacher(info: any) {
+export async function validateTeacher(info: Account) {
     const {data, error} = await supabase.from("account").select("id").eq("id", info.id).single();
     if(data) {
         return ({id: data.id});
@@ -194,24 +214,24 @@ export async function validateTeacher(info: any) {
 }
 
 //Gets all the student records that the user wants. 
-export async function getRecords(info: any) {
-    if(info.data.subject === "") {
+export async function getRecords(info: Student, date: string) {
+    if(info.subjects === "") {
         return({error: "Enter a subject first"});
     }
     let query = supabase.from("attendance").select("*");
-    if(info.data.name && info.data.subject) {
-        query = query.ilike("name", `%${info.data.name}%`).eq("subject", info.data.subject);
+    if(info.name && info.subjects) {
+        query = query.ilike("name", `%${info.name}%`).eq("subject", info.subjects);
     }
-    if(info.data.subject) {
-        query = query.ilike("subject", `%${info.data.subject}%`).eq("subject", info.data.subject);
+    if(info.subjects) {
+        query = query.ilike("subject", `%${info.subjects}%`).eq("subject", info.subjects);
     } 
-    if(info.data.id && info.data.subject) {
-        query = query.ilike("student_id", `%${info.data.id}%`).eq("subject", info.data.subject);
+    if(info.student_id && info.subjects) {
+        query = query.ilike("student_id", `%${info.student_id}%`).eq("subject", info.subjects);
     }
-    if(info.data.date && info.data.subject) {
-        query = query.eq("date", `%${info.data.date}%`).eq("subject", info.data.subject);
+    if(date && info.subjects) {
+        query = query.eq("date", `%${date}%`).eq("subject", info.subjects);
     }
-    if(!(info.data.name || info.data.id || info.data.date || info.data.subject)) {
+    if(!(info.name || info.student_id || date || info.subjects)) {
         return({error: "No data"});
     }
     const {data, error} = await query;
@@ -221,8 +241,8 @@ export async function getRecords(info: any) {
 }
 
 //Verify if the student is existing
-export async function verifyStudentData(info: any) {
-    const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subject}%`).single();
+export async function verifyStudentData(info: Student) {
+    const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
     if(data) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});
@@ -237,7 +257,7 @@ export async function getAllStudent() {
     }
 }
 //Get selected students.
-export async function getStudent(info:any) {
+export async function getStudent(info: Student) {
     
     let query = supabase.from("students").select("*");
     if(info.student_id) {
@@ -257,7 +277,7 @@ export async function getStudent(info:any) {
     }
 }
 //Add students to the database.
-export async function addStudent(info: any) {
+export async function addStudent(info: Student) {
     const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects});
     if(!error) {
         return({success: `Student ${info.name} is added`});
@@ -266,7 +286,7 @@ export async function addStudent(info: any) {
     }
 }
 //Remove student from the table.
-export async function removeStudent(info: any) {
+export async function removeStudent(info: Student) {
     const { error } = await supabase.from("students").delete().eq("student_id", info.student_id);
     if(!error) {
         return ({success: `Student ${info.name} was deleted`});

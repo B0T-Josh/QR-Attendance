@@ -1,5 +1,23 @@
+type Student = {
+    name: string;
+    student_id: string;
+    subjects: string;
+}
+
+type Professor = {
+    id: string;
+    name: string;
+}
+
+type Account = {
+    id: string;
+    email: string;
+    password: string;
+    name: string;
+}
+
 //Request to add student record.
-export async function scanned(info: any) {
+export async function scanned(info: Student) {
     try {
         //Pass the submitted data to the URL.
         const res = await fetch("/api/addRecord", {
