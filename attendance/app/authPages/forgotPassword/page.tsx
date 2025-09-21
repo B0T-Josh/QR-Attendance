@@ -9,7 +9,7 @@ export default function ForgotPassword() {
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   //Changes email value
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
@@ -28,7 +28,7 @@ export default function ForgotPassword() {
       setLoading(false);
       setContent(<p className="text-red-500">{error}</p>)
       setTimeout(() => {
-        setContent("");
+        setContent(null);
       }, 1500);
     }
   }

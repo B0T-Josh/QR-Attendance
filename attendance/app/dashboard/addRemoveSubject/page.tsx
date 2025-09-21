@@ -71,9 +71,10 @@ export default function StudentRecords() {
     }
     
     useEffect(() => {
+        if(!content) return;
         setLoading(false);
         setTimeout(() => {
-            setContent(<></>);
+            setContent(null);
         }, 2500);
     }, [content]);
 

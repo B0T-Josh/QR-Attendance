@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     //Gets the submitted data.
     const {uid} = await req.json();
     //Gets the ID of the user.
-    const {id, error} = await validateTeacher(uid);
+    const {id} = await validateTeacher(uid);
     //If id exist, means user is verified. 
     if(id) {
         return NextResponse.json({id: id}, {status: 200});

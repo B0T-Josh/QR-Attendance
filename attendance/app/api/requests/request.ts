@@ -1,19 +1,7 @@
 type Student = {
-    name: string;
-    student_id: string;
+    name: string | null;
+    student_id: string | null;
     subjects: string;
-}
-
-type Professor = {
-    id: string;
-    name: string;
-}
-
-type Account = {
-    id: string;
-    email: string;
-    password: string;
-    name: string;
 }
 
 //Request to add student record.
@@ -38,7 +26,7 @@ export async function scanned(info: Student) {
 }
 
 //Request to add subject.
-export async function handleAddSubject(info: any) {
+export async function handleAddSubject(info: {id: string | null, subjects: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/subject", {
         method: "POST",
@@ -54,7 +42,7 @@ export async function handleAddSubject(info: any) {
 }
 
 //Request to remove subject.
-export async function handleRemoveSubject(info: any) {
+export async function handleRemoveSubject(info: {id: string | null, subjects: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/subject", {
         method: "DELETE",
@@ -70,7 +58,7 @@ export async function handleRemoveSubject(info: any) {
 }
 
 //Request to get all subjects.
-export async function getSubjects(info: any) {
+export async function getSubjects(info: {id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getSubjects", {
         method: "POST",
@@ -85,8 +73,8 @@ export async function getSubjects(info: any) {
     return ({error: data.error});
 }
 
-//Request to validate user email if it is eisting.
-export async function validateEmail(info: any) {
+//Request to validate user email if it is existing.
+export async function validateEmail(info: {email: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getEmail", {
         method: "POST",
@@ -106,7 +94,7 @@ export async function validateEmail(info: any) {
 }
 
 //Request to verify if the code for the user exist.
-export async function validateCode(info: any) {
+export async function validateCode(info: {code: string | null, email: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getCode", {
         method: "POST",
@@ -122,7 +110,7 @@ export async function validateCode(info: any) {
 }
 
 //Request to update the password of the user.
-export async function updatePassword(info: any) {
+export async function updatePassword(info:{password: string | null, email: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/updatePassword", {
         method: "POST",
@@ -138,7 +126,7 @@ export async function updatePassword(info: any) {
 }
 
 //Request to login.
-export async function logIn(info: any) {
+export async function logIn(info: {email: string | null, password: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch('/api/login', {
       method: 'POST',
@@ -155,7 +143,7 @@ export async function logIn(info: any) {
 }
 
 //Request to add user.
-export async function register(info: any) {
+export async function register(info: {email: string | null, password: string | null, name: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/register", {
         method: "POST",
@@ -171,7 +159,7 @@ export async function register(info: any) {
 }
 
 //Request to remove subject.
-export async function getValidation(info: any) {
+export async function getValidation(info: {id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getVerification", {
         method: "POST",
@@ -187,7 +175,7 @@ export async function getValidation(info: any) {
 }
 
 //Get the teacher ID and if ID is verified, the teacher or user is verified.
-export async function validateTeacher(info: any) {
+export async function validateTeacher(info: {uid: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyUser", {
         method: "POST",
@@ -204,7 +192,7 @@ export async function validateTeacher(info: any) {
 }
 
 //Request to add student.
-export async function handleAddStudent(info: any) {
+export async function handleAddStudent(info: {student_id: string | null, name: string | null, subjects: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "POST",
@@ -220,7 +208,7 @@ export async function handleAddStudent(info: any) {
 }
 
 //Request to delete a student from the table.
-export async function handleRemoveStudent(info: any) {
+export async function handleRemoveStudent(info: {student_id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "DELETE",
@@ -250,7 +238,7 @@ export async function getStudents() {
 }
 
 //Get selected student from the database.
-export async function getStudent(info: any) {
+export async function getStudent(info: {student_id: string | null, name: string | null, subjects: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getStudents", {
         method: "POST",
@@ -266,7 +254,7 @@ export async function getStudent(info: any) {
 }
 
 //Get all student record base on the subject.
-export async function getRecords(info: any) {
+export async function getRecords(info: {student_id: string | null, name: string | null, subjects: string | null, date: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getRecords", {
         method: "POST",
@@ -282,7 +270,7 @@ export async function getRecords(info: any) {
 }
 
 //Verify if the student is enrolled or exist.
-export async function verifyStudentData(info: any) {
+export async function verifyStudentData(info: {name: string | null, student_id: string | null, subjects: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyStudentData", {
         method: "POST",

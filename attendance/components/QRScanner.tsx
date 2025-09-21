@@ -22,7 +22,7 @@ export default function QRScanner() {
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [subject, setSubject] = useState<string | "">("");
-    const [content, setContent] = useState<any>(null);
+    const [content, setContent] = useState<React.ReactElement | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -92,7 +92,7 @@ export default function QRScanner() {
                 setLoading(false);
                 setContent(<p className="text-red-500">{error}</p>);
                 setTimeout(() => {
-                    setContent("");
+                    setContent(null);
                 }, 2000);
             }
         }
@@ -108,7 +108,7 @@ export default function QRScanner() {
                 const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject });
                 setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
                 setTimeout(() => {
-                    setContent("");
+                    setContent(null);
                 }, 2500);
                 setLoading(false);
             };
@@ -116,7 +116,7 @@ export default function QRScanner() {
         } else {
             setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
             setTimeout(() => {
-                setContent("");
+                setContent(null);
             }, 2500);
             setLoading(false);
         }

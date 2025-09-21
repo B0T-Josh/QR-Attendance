@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect, useRef, ReactNode } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import {
@@ -27,10 +27,8 @@ export default function StudentRecords() {
     name: "",
     subjects: ""
   })
-  const [id, setId] = useState<string | null>(null);
-  const [content, setContent] = useState<any>(null);
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
-  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const name_input = useRef<HTMLInputElement | null>(null);
   const id_input = useRef<HTMLInputElement | null>(null);
   const subject_input = useRef<HTMLInputElement | null>(null);
@@ -53,19 +51,20 @@ export default function StudentRecords() {
   }, [student])
 
   useEffect(() => {
-      if(parseInt(getId() || '0') <= 0) {
+    setLoading(true);
+    if(parseInt(getId() || '0') <= 0) {
+        route.push("/authPages/login");
+    }
+    async function validate() {
+        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
+        if(!success) {
+          setLoading(false);
+          localStorage.removeItem("id");
           route.push("/authPages/login");
-      }
-      async function validate() {
-          const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-          if(success) {
-              setId(localStorage.getItem("id"));
-          } else {
-              localStorage.removeItem("id");
-              route.push("/authPages/login");
-          }
-      }
-      validate();
+        }
+        setLoading(false);
+    }
+    validate();
     }, []);
 
   async function handleAdd() {
@@ -132,37 +131,20 @@ export default function StudentRecords() {
       setLoading(false);
       return;
     }
-    const formatted = format(student.name.trim());
-    if(formatted) {
-      if(formatted?.error) {
-        setContent(<p className="text-red-500">{formatted?.error}</p>);
-      }
-      if(formatted.formatted) {
-        const {data, error} = await getStudent({student_id: student.student_id, name: formatted?.formatted, subjects: student.subjects.toUpperCase()});
-        if(data) {
-          setStudents(data || []);
-          setLoading(false);
-        } else {
-          setContent(<p className="text-red-500">{error}</p>);
-          setLoading(false);
-        }
-      }
+    const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects.toUpperCase()});
+    if(data) {
+      setStudents(data || []);
+      setLoading(false);
     } else {
-      const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects.toUpperCase()});
-      if(data) {
-        setStudents(data || []);
-        setLoading(false);
-      } else {
-        setContent(<p className="text-red-500">{error}</p>);
-        setLoading(false);
-      }
+      setContent(<p className="text-red-500">{error}</p>);
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    if(content === "") return;
+    if(!content) return;
     setTimeout(() => {
-        setContent("");
+        setContent(null);
       }, 2000);
   }, [content]);
 
@@ -208,13 +190,14 @@ export default function StudentRecords() {
         </div>
 
         <div className="flex flex-row justify-between">
-          <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd}>
+          <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
               Add
           </button>
 
           <button
             className="px-4 py-2 text-gray-600 hover:text-yellow-500"
             onClick={handleSearch}
+            disabled={loading}
           >
             Search
           </button>
@@ -222,6 +205,7 @@ export default function StudentRecords() {
           <button
             className="px-4 py-2 text-gray-600 hover:text-red-500"
             onClick={handleRemove}
+            disabled={loading}
           >
             Remove
           </button>

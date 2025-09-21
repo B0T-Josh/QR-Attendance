@@ -9,7 +9,7 @@ import { validateTeacher } from "@/app/api/requests/request";
 
 export default function LogIn() {
   const route = useRouter();
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
@@ -68,9 +68,9 @@ export default function LogIn() {
   };
 
   useEffect(() => {
-    if(content === "") return;
+    if(!content) return;
     setTimeout(() => {
-      setContent("");
+      setContent(null);
     }, 2000);
   }, [content]);
 

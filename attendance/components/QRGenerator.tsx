@@ -21,7 +21,7 @@ export default function QRGenerator() {
     const [studentList, setStudentList] = useState<Student[]>([]);
     const [content, setContent] = useState<string | "">("");
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<React.ReactElement | null>(null);
 
     const handleIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
@@ -41,28 +41,35 @@ export default function QRGenerator() {
     useEffect(() => {
         setErrorBool(false);
         if(profile && student_id) {
-            const data: any = format(profile);
-            const found = studentList.find(item => ((item.student_id === student_id) && (item.name === data.formatted)));
-            if(found) {
-                if(data.formatted) {
-                    setFinalProfile(prev => ({
-                        ...prev,
-                        name: data.formatted,
-                        student_id: student_id || ""
-                    }))
-                } else {
-                    setErrorBool(true);
+            const data = format(profile);
+            if(data) {
+                if(data.error) {
                     setError(<p className="text-red-500">{data.error}</p>);
+                    return;
+                } else if(data.formatted) {
+                    const found = studentList.find(item => ((item.student_id === student_id) && (item.name === data.formatted)));
+                    if(found) {
+                        if(data.formatted) {
+                            setFinalProfile(prev => ({
+                                ...prev,
+                                name: data.formatted,
+                                student_id: student_id || ""
+                            }))
+                        } else {
+                            setErrorBool(true);
+                            setError(<p className="text-red-500">{data.error}</p>);
+                        }
+                    } else {
+                        setErrorBool(true);
+                        setError(<p className="text-red-500">Student was not enrolled</p>);
+                        setContent(`Encoded: `);    
+                        setFinalProfile({
+                            ...finalProfile,
+                            name: "",
+                            student_id: ""
+                        });
+                    }
                 }
-            } else {
-                setErrorBool(true);
-                setError(<p className="text-red-500">Student was not enrolled</p>);
-                setContent(`Encoded: `);    
-                setFinalProfile({
-                    ...finalProfile,
-                    name: "",
-                    student_id: ""
-                });
             }
         }
     }, [profile])
@@ -70,7 +77,7 @@ export default function QRGenerator() {
     useEffect(() => {
         if(studentList.length > 0) return;
         async function getAllStudents() {
-            const {data, error} = await getStudents();
+            const {data} = await getStudents();
             if(data) {
                 setStudentList(data);
             }

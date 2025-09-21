@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { addUser } from "../endpoints"; // adjust path to your supabase client
 
+type Account = {
+    email: string | null;
+    password: string | null;
+    name: string | null;
+}
+
 //Connected to /api/requests/request/addUser
 export async function POST(req: Request) {
     //Checks the request method.
@@ -8,7 +14,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
     }
     //Gets the submitted data.
-    const data = await req.json();
+    const data: Account = await req.json();
     //If data equals to null, return an error message.
     if(data === null) {
         return NextResponse.json({ error: "No data provided" }, { status: 400 });

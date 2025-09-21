@@ -9,7 +9,7 @@ export default function ForgotPassword() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [code, setCode] = useState<string | null>(null);
 
   //Encrypt recovery code
@@ -29,14 +29,14 @@ export default function ForgotPassword() {
         setContent(<p className="text-red-500">{error}</p>);
         setLoading(false);
         setTimeout(() => {
-          setContent("");
+          setContent(null);
         }, 1500);
       }
     } else {
       setContent(<p className="text-red-500">Enter your recovery code</p>);
       setLoading(false);
       setTimeout(() => {
-          setContent("");
+          setContent(null);
       }, 1500);
     }
   }

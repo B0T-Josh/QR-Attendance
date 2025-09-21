@@ -23,25 +23,26 @@ function getDate() {
 }
 
 type Student = {
-    name: string;
-    student_id: string;
-    subjects: string;
-}
-
-type Professor = {
-    id: string;
-    name: string;
+    name: string | null;
+    student_id: string | null;
+    subjects: string | null;
 }
 
 type Account = {
-    id: string;
-    email: string;
-    password: string;
-    name: string;
+    id: string | null;
+    email: string | null;
+    password: string | null;
+    name: string | null;
+}
+
+type AccountProf = {
+    email: string | null;
+    password: string | null;
+    name: string | null;
 }
 
 //Comes from the resgistration page. This adds the teacher's account to the database.
-export async function addUser(info: Account) {
+export async function addUser(info: AccountProf) {
 
     try{
         const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
@@ -61,7 +62,7 @@ export async function addUser(info: Account) {
 }
 
 //Adds the name of the teacher to the teacher table from the database.
-export async function addTeacher(id: string, name: string) {
+export async function addTeacher(id: string | null, name: string | null) {
     try {
         const { error: err } = await supabase.from('teacher').insert([{id: id, name: name}]);
         if(err) {
@@ -73,7 +74,7 @@ export async function addTeacher(id: string, name: string) {
 }
 
 //Checks if the verification code exist from account table.
-export async function getVerification(id: string) {
+export async function getVerification(id: string | null) {
     try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
         return ({verification: data?.verification});
@@ -172,21 +173,21 @@ export async function getAllSubjects(id: string) {
 }
 
 //Gets the ID of the user for verification.
-export async function getEmail(info: Account) {
-    const { data } = await supabase.from("account").select("id").eq("email", info.email).single();
+export async function getEmail(email: string | null) {
+    const { data } = await supabase.from("account").select("id").eq("email", email).single();
     return data ? data.id : 0;
 }
 
 //Gets the ID of the user that has the submitted verification code.
-export async function verifyCode(info: Account, code: string) {
-    const { data } = await supabase.from("account").select("id").eq("verification", code).eq('email', info.email).single();
+export async function verifyCode(code: string | null, email: string | null) {
+    const { data } = await supabase.from("account").select("id").eq("verification", code).eq('email', email).single();
     return data ? data.id : 0;
 }
 
 //Updates password from forgot password.
-export async function updatePassword(info: Account) {
+export async function updatePassword(password: string | null, email: string | null) {
     try{
-        await supabase.from("account").update({password: info.password}).eq("email", info.email);
+        await supabase.from("account").update({password: password}).eq("email", email);
         return true;
     } catch(error) {
         return false;
@@ -260,7 +261,6 @@ export async function getAllStudent() {
 }
 //Get selected students.
 export async function getStudent(info: Student) {
-    
     let query = supabase.from("students").select("*");
     if(info.student_id) {
         query = query.ilike("student_id", `%${info.student_id}%`);
