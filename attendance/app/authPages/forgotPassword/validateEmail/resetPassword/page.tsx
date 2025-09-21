@@ -40,7 +40,7 @@ export default function ForgotPassword() {
                     }, 1500);
                 }
             } else {
-                setContent(<p className="text-red-500">New password doesn't match Confirm password</p>);
+                setContent(<p className="text-red-500">{"New password doesn't match Confirm password"}</p>);
                 setTimeout(() => {
                     setContent(null);
                 }, 1500);

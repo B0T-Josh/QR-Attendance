@@ -89,9 +89,9 @@ export default function StudentRecords() {
               <p className="text-red-500">{error}</p>
             )
           );
-          name_input.current && (name_input.current.value = "");
-          id_input.current && (id_input.current.value = "");
-          subject_input.current && (subject_input.current.value = "");
+          name_input.current.value = "";
+          id_input.current.value = "";
+          subject_input.current.value = "";
           get();
           setLoading(false);
         }
@@ -113,9 +113,9 @@ export default function StudentRecords() {
           <p className="text-red-500">{error}</p>
         )
       );
-      name_input.current && (name_input.current.value = "");
-      id_input.current && (id_input.current.value = "");
-      subject_input.current && (subject_input.current.value = "");
+      name_input.current.value = "";
+      id_input.current.value = "";
+      subject_input.current.value = "";
       get();
       setLoading(false);
     } else {

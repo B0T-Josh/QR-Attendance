@@ -20,7 +20,7 @@ export async function scanned(info: Student) {
         } else {
             return {message: data.success};
         }
-    } catch(error: any) {
+    } catch(error) {
         return {err: error};
     }
 }
