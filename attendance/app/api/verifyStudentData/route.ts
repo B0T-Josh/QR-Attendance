@@ -6,9 +6,9 @@ export async function POST(req: Request) {
     //Checks the request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid Method"}, {status: 400});
     //Gets the submitted data.
-    const info = await req.json();
+    const {name, student_id, subjects} = await req.json();
     //Gets the response of verifyStudent from endpoints.
-    const {data, error} = await verifyStudentData({student_id: info.id, name: info.name, subject: info.subject});
+    const {data, error} = await verifyStudentData({student_id: student_id, name: name, subjects: subjects});
     //If data exist, the student exist. Otherwise return an error message.
     if(data) {
         return NextResponse.json({data: data}, {status: 200});

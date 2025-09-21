@@ -6,9 +6,9 @@ export async function POST(req: Request) {
     //Checks the request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
     //Gets the data submitted.
-    const data = await req.json();
+    const {email} = await req.json();
     //Checks if the email account exist.
-    if(await getEmail(data) > 0) {
+    if(await getEmail(email) > 0) {
         return NextResponse.json({success: "Email account exist"}, {status: 200});
     }
     //If not, return an error message.

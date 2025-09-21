@@ -8,7 +8,6 @@ export default function StudentRecords() {
             <div>
                 <QRGenerator />
             </div>
-            
         </div>
     );
 }

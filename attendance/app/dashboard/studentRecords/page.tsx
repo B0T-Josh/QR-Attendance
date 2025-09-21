@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import Popup from "@/components/Popup"
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
+import format from "@/tools/format";
 
 type Record = {
   id: string;
@@ -28,9 +28,9 @@ export default function Records() {
   const [record, setRecord] = useState<Record[]>([]);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [search, setSearch] = useState({
-    id: "",
+    student_id: "",
     name: "",
     subject: "",
     date: ""
@@ -45,7 +45,7 @@ export default function Records() {
     typeTimeout.current = setTimeout(() => {
       setSearch({
         ...search,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value.trim()
       });
     }, 1000);
   }
@@ -62,7 +62,7 @@ export default function Records() {
           route.push("/authPages/login");
       }
       async function validate() {
-        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
         if(!success) {
             localStorage.removeItem("id");
             route.push("/authPages/login");
@@ -74,20 +74,42 @@ export default function Records() {
   }, []);
 
   useEffect(() => {
-    if(!(search.date || search.id || search.name || search.subject)) return;
+    if(!(search.date || search.student_id || search.name || search.subject)) return;
     setLoading(true);
-    async function getSelectedRecord() {
-      const {data, error} = await getRecords({data: search});
-      console.log(error);
-      if(data) {
-        setRecord(data);
-        setLoading(false);
-      } else {
-        setContent(<p className="text-red-500">{error}</p>);
-        setLoading(false);
+    if(search.name) {
+      const formatted = format(search.name);
+      if(formatted) {
+        if(formatted.formatted) {
+          const name = formatted?.formatted;
+          async function getSelectedRecord() {
+            const {data, error} = await getRecords({student_id: search.student_id, name: name, subjects: search.subject, date: search.date});
+            if(data) {
+              setRecord(data);
+              setLoading(false);
+            } else {
+              setContent(<p className="text-red-500">{error}</p>);
+              setLoading(false);
+            }
+          }
+          getSelectedRecord();
+        } else if(formatted.error) {
+
+        }
       }
+    } else {
+      async function getSelectedRecord() {
+        const {data, error} = await getRecords({student_id: search.student_id, name: search.name, subjects: search.subject, date: search.date});
+        if(data) {
+          setRecord(data);
+          setLoading(false);
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+          setLoading(false);
+        }
+      }
+      getSelectedRecord();
     }
-    getSelectedRecord();
+    
   }, [search]);
 
   useEffect(() => {
@@ -104,7 +126,7 @@ export default function Records() {
   useEffect(() => {
     if(!content) return;
     setTimeout(() => {
-      setContent("");
+      setContent(null);
     }, 2000);
   }, [content])
 
@@ -147,7 +169,7 @@ export default function Records() {
 
             <input
               type="text"
-              name="id"
+              name="student_id"
               onChange={handleChange}
               placeholder="Enter student id"
               className="p-2 rounded-lg"

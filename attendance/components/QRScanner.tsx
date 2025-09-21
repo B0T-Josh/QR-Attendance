@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { scanned, verifyStudentData } from "@/app/api/requests/request";
+import { scanned, validateTeacher, verifyStudentData } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
+import { useRouter } from "next/navigation";
+import { getId } from "@/tools/getId";
 
 type Subject = {
     id: string;
@@ -16,19 +18,33 @@ type Student = {
 }
 
 export default function QRScanner() {
+    const route = useRouter();
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [subject, setSubject] = useState<string | "">("");
-    const [content, setContent] = useState<any>(null);
-    const [id, setId] = useState<string | "">("");
+    const [content, setContent] = useState<React.ReactElement | null>(null);
+    const [id, setId] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [student, setStudent] = useState<Student | null>(null);
 
     useEffect(() => {
-        const temp = localStorage.getItem("id");
-        if(temp === null) return;
-        setId(temp);
+        if(parseInt(getId() || '0') <= 0) {
+            route.push("/authPages/login");
+        }
+        async function validate() {
+            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
+            if(success) {
+                setId(localStorage.getItem("id"));
+            } else {
+                localStorage.removeItem("id");
+                route.push("/authPages/login");
+            }
+        }
+        validate();
+    }, []);
+
+    useEffect(() => {
         const codeReader = new BrowserQRCodeReader();
 
         let controls: any;
@@ -49,6 +65,7 @@ export default function QRScanner() {
     }
 
     useEffect(() => {
+        if(!id) return;
         if(subject) return;
         async function verifySubject() {
             const res = await getSubjects({id: id});
@@ -68,14 +85,14 @@ export default function QRScanner() {
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
         async function verifyStudent() {
-            const {data, error} = await verifyStudentData({name: name, id: student_id, subject: subject});
+            const {data, error} = await verifyStudentData({name: name, student_id: student_id, subjects: subject});
             if(data) {
                 setStudent(data);
             } else {
                 setLoading(false);
                 setContent(<p className="text-red-500">{error}</p>);
                 setTimeout(() => {
-                    setContent("");
+                    setContent(null);
                 }, 2000);
             }
         }
@@ -87,19 +104,19 @@ export default function QRScanner() {
         let student_subject = student?.subjects;
         const found = student_subject?.includes(subject);
         if(found) {
-            const handleAdd = async (data: any) => {
-                const { message, error } = await scanned({ name: data.name, student_id: data.student_id, subject: subject });
+            const handleAdd = async () => {
+                const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject });
                 setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
                 setTimeout(() => {
-                    setContent("");
+                    setContent(null);
                 }, 2500);
                 setLoading(false);
             };
-            handleAdd({ name: student.name, student_id: student.student_id, subject: subject });
+            handleAdd();
         } else {
             setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
             setTimeout(() => {
-                setContent("");
+                setContent(null);
             }, 2500);
             setLoading(false);
         }
@@ -111,7 +128,7 @@ export default function QRScanner() {
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <select className="rounded-lg p-2" value={subject} name="subject" onChange={handleChange}>
                   <option value="">Select a subject</option>
-                  {subjects ? subjects.length > 1 ? (
+                  {subjects ? subjects.length > 0 ? (
                     subjects.map(subject => (
                       <option key={subject.id} value={subject.name}>{subject.name}</option>
                     ))

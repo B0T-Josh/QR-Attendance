@@ -5,7 +5,7 @@ import encryptPassword from '../tools/encrypt';
 
 export default function Popup() {
     const [loaded, setLoaded] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     const [verification, setVerification] = useState<{
         verification: string | null;
         confirm: string | null;
@@ -15,7 +15,6 @@ export default function Popup() {
         confirm: "",
         id: ""
     });
-    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         setVerification({
@@ -33,6 +32,7 @@ export default function Popup() {
     }
 
     async function submit() {
+        setLoading(true);
         if(verification.verification !== verification.confirm) {
             alert("Confirm verification code doesn't match verification code");
             return;
@@ -45,9 +45,11 @@ export default function Popup() {
         const {success, error} = await res.json();
         if(res.ok) {
             if(success) {
+                setLoading(false);
                 window.location.reload();
             }
         } else {
+            setLoading(false);
             alert(error);
         }
     }
@@ -59,12 +61,12 @@ export default function Popup() {
             </div>  
             <div className='flex flex-col justify-center items-center p-2'>
                 <p className="text-left p-2">Enter your verification code: </p>
-                <input name="verification" disabled={disabled} type="password" onChange={handleChange} placeholder="Enter recovery code" className='rounded-lg p-2'/>
+                <input name="verification" type="password" onChange={handleChange} placeholder="Enter recovery code" className='rounded-lg p-2'/>
                 <p className="text-left p-2">Confirm your verification code: </p>
-                <input name="confirm" disabled={disabled} type="password" onChange={handleChange} placeholder="Confirm recovery code" className='rounded-lg p-2'/>
+                <input name="confirm" type="password" onChange={handleChange} placeholder="Confirm recovery code" className='rounded-lg p-2'/>
             </div>
             <div className='p-4'>
-                <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-10 py-1 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={disabled} onClick={submit}>Submit</button>
+                <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-10 py-1 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading} onClick={submit}>Submit</button>
             </div>
         </div>
     )

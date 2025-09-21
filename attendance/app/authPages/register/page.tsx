@@ -10,7 +10,7 @@ import format from "@/tools/format";
 export default function RegisterPage() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false);
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [loading, setLoading] = useState(false);
   const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
   const [info, setInfo ] = useState({
@@ -53,9 +53,9 @@ export default function RegisterPage() {
 
   //Clears content
   useEffect(() => {
-    if(!content || content === "") return;
+    if(!content) return;
     setTimeout(() => {
-      setContent("");
+      setContent(null);
     }, 2500);
   }, [content])
 
@@ -96,7 +96,7 @@ export default function RegisterPage() {
       } else {
         setContent(<p className="text-red-500">{formatted?.error}</p>);
         setTimeout(() => {
-          setContent("");
+          setContent(<></>);
         }, 2000);
       }
     }, 500);

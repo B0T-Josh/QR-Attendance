@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "All fields are required" }, { status: 400 });
   }
 
-  const {success, error} = await addStudent({student_id: data.student_id, name: data.name, subjects: data.subjects});
+  const {success, error} = await addStudent(data);
 
   if(success) {
     return NextResponse.json({success: success}, {status: 200});
@@ -28,13 +28,13 @@ export async function POST(req: Request) {
 
 // DELETE: remove a student
 export async function DELETE(req: Request) {
-  const data = await req.json();
+  const {student_id} = await req.json();
 
-  if (!data.student_id) {
+  if (!student_id) {
     return NextResponse.json({ error: "Missing student_id or user_id" }, { status: 400 });
   }
 
-  const {success, error} = await removeStudent({student_id: data.student_id});
+  const {success, error} = await removeStudent(student_id);
 
   if (success) return NextResponse.json({ success: success }, { status: 200 });
 

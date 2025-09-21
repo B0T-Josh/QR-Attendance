@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId"
-import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, getSubjects, validateTeacher } from "@/app/api/requests/request";
 
 type Subjects = {
     id: any;
@@ -15,7 +15,7 @@ export default function StudentRecords() {
     const route = useRouter();
     const [subject, setSubject] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
-    const [content, setContent] = useState<any>(null);
+    const [content, setContent] = useState<React.ReactElement | null>(null);
     const [sets, setSets] = useState<Subjects[]>([]);
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -33,9 +33,18 @@ export default function StudentRecords() {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
-        setId(getId());
+        async function validate() {
+            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
+            if(success) {
+                setId(localStorage.getItem("id"));
+            } else {
+                localStorage.removeItem("id");
+                route.push("/authPages/login");
+            }
+        }
+        validate();
     }, []);
-
+    
     useEffect(() => {
         if(!id) return;
         get();
@@ -44,7 +53,7 @@ export default function StudentRecords() {
     async function handleAdd() {
         setLoading(true);
         if(subject) {
-            const { message, error } = await handleAddSubject({name: subject, id: id});
+            const { message, error } = await handleAddSubject({id: id, subjects: subject});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
             setSubject("");
             get();
@@ -54,7 +63,7 @@ export default function StudentRecords() {
     async function handleRemove() {
         setLoading(true);
         if(subject) {
-            const { message, error } = await handleRemoveSubject({name: subject, id: id});
+            const { message, error } = await handleRemoveSubject({subjects: subject, id: id});
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
             setSubject("");
             get();
@@ -62,9 +71,10 @@ export default function StudentRecords() {
     }
     
     useEffect(() => {
+        if(!content) return;
         setLoading(false);
         setTimeout(() => {
-            setContent("");
+            setContent(null);
         }, 2500);
     }, [content]);
 

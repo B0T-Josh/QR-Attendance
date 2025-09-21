@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
     const route = useRouter();
-    const [content, setContent] = useState<any>();
+    const [content, setContent] = useState<React.ReactElement | null>(null);
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
     const [password, setPassword] = useState({
@@ -36,19 +36,19 @@ export default function ForgotPassword() {
                     setLoading(false);
                     setContent(<p className="text-red-500">{error}</p>);
                     setTimeout(() => {
-                        setContent("");
+                        setContent(null);
                     }, 1500);
                 }
             } else {
                 setContent(<p className="text-red-500">New password doesn't match Confirm password</p>);
                 setTimeout(() => {
-                    setContent("");
+                    setContent(null);
                 }, 1500);
             }
         } else {
             setContent(<p className="text-red-500">Enter a new password and confirm password</p>);
             setTimeout(() => {
-                setContent("");
+                setContent(null);
             }, 1500);
         }
     }
@@ -60,6 +60,7 @@ export default function ForgotPassword() {
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="space-y-4 w-80">
+                {content}
                 <h1 className={`mb-4 transition-opacity ease-out duration-1000 ${loaded ? "animate-fadeInUp delay-[100ms]" : "opacity-0"}`}>
                     Set a new password:
                 </h1>

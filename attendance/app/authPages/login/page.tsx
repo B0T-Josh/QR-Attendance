@@ -9,7 +9,7 @@ import { validateTeacher } from "@/app/api/requests/request";
 
 export default function LogIn() {
   const route = useRouter();
-  const [content, setContent] = useState<any>();
+  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
@@ -21,7 +21,7 @@ export default function LogIn() {
   useEffect(() => {
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
       async function validate() {
-        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
         if(success) {
           route.push("/dashboard/homePage");
         } else {
@@ -68,11 +68,11 @@ export default function LogIn() {
   };
 
   useEffect(() => {
-    if(content === "") return;
+    if(!content) return;
     setTimeout(() => {
-      setContent("");
+      setContent(null);
     }, 2000);
-  }, content);
+  }, [content]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

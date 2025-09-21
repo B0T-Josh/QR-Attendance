@@ -6,9 +6,9 @@ export async function POST(req: Request) {
     //Checks the request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid Method"}, {status: 400});
     //Gets the submitted data.
-    const info = await req.json();
+    const {student_id, name, subjects, date} = await req.json();
     //Gets the response from getRecords.
-    const {data, error} = await getRecords({data: info.data});
+    const {data, error} = await getRecords({student_id: student_id, name: name, subjects: subjects}, date);
     //If data is not null, returns data. Otherwise, returns an error message.
     if(data) {
         return NextResponse.json({data: data}, {status: 200});

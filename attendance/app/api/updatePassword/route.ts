@@ -8,13 +8,13 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
     }
     //Gets the submitted data.
-    const data: any = await req.json();
+    const {password, email} = await req.json();
     //If data is null, returns error message.
-    if(data === null) {
+    if((password && email) === null) {
         return NextResponse.json({ error: "No data provided" }, { status: 400 });
     }
     //Updates the password submitted by the user to the database.
-    if(await updatePassword({password: data.password, email: data.email})) {
+    if(await updatePassword(password, email)) {
         return NextResponse.json({ success: "Password updated" }, { status: 200 });
     } else {
         return NextResponse.json({ error: "Failed to updated password" }, { status: 401 });
