@@ -30,7 +30,7 @@ export default function Records() {
   const [id, setId] = useState<string | null>(null);
   const [content, setContent] = useState<any>();
   const [search, setSearch] = useState({
-    id: "",
+    student_id: "",
     name: "",
     subject: "",
     date: ""
@@ -62,7 +62,7 @@ export default function Records() {
           route.push("/authPages/login");
       }
       async function validate() {
-        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
         if(!success) {
             localStorage.removeItem("id");
             route.push("/authPages/login");
@@ -74,10 +74,10 @@ export default function Records() {
   }, []);
 
   useEffect(() => {
-    if(!(search.date || search.id || search.name || search.subject)) return;
+    if(!(search.date || search.student_id || search.name || search.subject)) return;
     setLoading(true);
     async function getSelectedRecord() {
-      const {data, error} = await getRecords({data: search});
+      const {data, error} = await getRecords({info: {student_id: search.student_id, name: search.name, subjects: search.subject}, date: search.date});
       console.log(error);
       if(data) {
         setRecord(data);
@@ -147,7 +147,7 @@ export default function Records() {
 
             <input
               type="text"
-              name="id"
+              name="student_id"
               onChange={handleChange}
               placeholder="Enter student id"
               className="p-2 rounded-lg"

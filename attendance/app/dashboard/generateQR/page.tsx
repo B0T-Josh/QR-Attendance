@@ -10,16 +10,15 @@ import { validateTeacher } from "@/app/api/requests/request";
 export default function StudentRecords() {
     const route = useRouter();
     const [loaded, setLoaded] = useState(false);
-    const [id, setId] = useState<string | null>(null);
-
-        useEffect(() => {
+    
+    useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
         async function validate() {
             const {success} = await validateTeacher({uid: localStorage.getItem("id")});
             if(success) {
-                setId(getId());
+                setLoaded(true);
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");

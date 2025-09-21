@@ -21,7 +21,7 @@ export default function HomePage() {
         async function validate() {
             const {success} = await validateTeacher({uid: localStorage.getItem("id")});
             if(success) {
-                setId(getId());
+                setId(localStorage.getItem("id"));
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");
