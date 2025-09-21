@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId"
-import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, getSubjects, validateTeacher } from "@/app/api/requests/request";
 
 type Subjects = {
     id: any;
@@ -33,9 +33,18 @@ export default function StudentRecords() {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
         }
-        setId(getId());
+        async function validate() {
+            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
+            if(success) {
+                setId(getId());
+            } else {
+                localStorage.removeItem("id");
+                route.push("/authPages/login");
+            }
+        }
+        validate();
     }, []);
-
+    
     useEffect(() => {
         if(!id) return;
         get();
@@ -64,7 +73,7 @@ export default function StudentRecords() {
     useEffect(() => {
         setLoading(false);
         setTimeout(() => {
-            setContent("");
+            setContent(<></>);
         }, 2500);
     }, [content]);
 

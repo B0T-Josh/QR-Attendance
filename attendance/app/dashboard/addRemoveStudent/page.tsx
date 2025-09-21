@@ -8,7 +8,8 @@ import {
   handleAddStudent,
   handleRemoveStudent,
   getStudents,
-  getStudent
+  getStudent,
+  validateTeacher
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 
@@ -20,12 +21,13 @@ type Students = {
 };
 
 export default function StudentRecords() {
-  const router = useRouter();
+  const route = useRouter();
   const [student, setStudent] = useState({
     student_id: "",
     name: "",
     subjects: ""
   })
+  const [id, setId] = useState<string | null>(null);
   const [content, setContent] = useState<any>(null);
   const [students, setStudents] = useState<Students[]>([]);
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -51,12 +53,19 @@ export default function StudentRecords() {
   }, [student])
 
   useEffect(() => {
-    const uid = getId();
-    if (!uid) {
-      alert("Unauthorized. Log in first.");
-      router.push("/authPages/login");
-    } 
-    get();
+      if(parseInt(getId() || '0') <= 0) {
+          route.push("/authPages/login");
+      }
+      async function validate() {
+          const {success} = await validateTeacher({uid: localStorage.getItem("id")});
+          if(success) {
+              setId(getId());
+          } else {
+              localStorage.removeItem("id");
+              route.push("/authPages/login");
+          }
+      }
+      validate();
   }, []);
 
   async function handleAdd() {

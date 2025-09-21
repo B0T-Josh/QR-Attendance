@@ -6,9 +6,10 @@ export async function POST(req: Request) {
   if(req.method !== "POST") return NextResponse.json({error: "Invalid Method"}, {status: 400});
   try {
     //Gets the submitted data.
-    const data: any = await req.json();
+    const {id} = await req.json();
+    console.log(id);
     //Gets the data from getVerification.
-    const { verification, error } = await getVerification(data.id)
+    const { verification, error } = await getVerification(id)
     //If verification is not null, return a message. Otherwise return an error message.
     if(verification) {
       return NextResponse.json({ message: "Value returned" }, {status: 200});

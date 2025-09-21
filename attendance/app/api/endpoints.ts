@@ -83,13 +83,13 @@ export async function getVerification(id: string) {
 }
 
 //Adds attendance record for students aftter scanning the QR.
-export async function addRecord(info: Student) {
+export async function addRecord(student_id: string, subjects: string, name: string) {
     try {
-       if(await validateSubject(info.subjects)) {
-        await supabase.from('attendance').insert({student_id: info.student_id, name: info.name, subject: info.subjects, time_in: getTime()});
-        return ({success: "Attendance recorded for " + info.name});
+       if(await validateSubject(subjects)) {
+        await supabase.from('attendance').insert({student_id: student_id, name: name, subject: subjects, time_in: getTime()});
+        return ({success: "Attendance recorded for " + name});
        } else {
-        return({error: "Failed to record attendance. Student " + info.name});
+        return({error: "Failed to record attendance. Student " + name});
        }
     } catch(error) {
         return({error: error});
@@ -117,11 +117,11 @@ export async function addVerification(verification: string, id: string) {
 }
 
 //Adds time out to the student's record.
-export async function timeOut(info: Student) {
+export async function timeOut(student_id: string, subjects: string) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subjects).single();
+    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", student_id).eq("subject", subjects).single();
     if(data?.time_out === null) {
-        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", info.student_id).eq("subject", info.subjects);
+        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", student_id).eq("subject", subjects);
         return true;
     } else {
         return false;
@@ -129,9 +129,9 @@ export async function timeOut(info: Student) {
 }
 
 //Checks if the student has a record for the day.
-export async function checkDate(info: Student) {
+export async function checkDate(student_id: string, subjects: string) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("date").eq("student_id", info.student_id).eq("date", formatted).eq("subject", info.subjects).single();
+    const { data } = await supabase.from('attendance').select("date").eq("student_id", student_id).eq("date", formatted).eq("subject", subjects).single();
     if(data === null) {
         return false;
     } else {
@@ -204,8 +204,9 @@ export async function login(info: Account) {
 }
 
 //Validate if the ID of the user exist.
-export async function validateTeacher(info: Account) {
-    const {data, error} = await supabase.from("account").select("id").eq("id", info.id).single();
+export async function validateTeacher(id: string) {
+    console.log(id);
+    const {data, error} = await supabase.from("account").select("id").eq("id", id).single();
     if(data) {
         return ({id: data.id});
     } else {
@@ -242,6 +243,7 @@ export async function getRecords(info: Student, date: string) {
 
 //Verify if the student is existing
 export async function verifyStudentData(info: Student) {
+    console.log(info);
     const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
     if(data) {
         return ({data: data});

@@ -21,7 +21,7 @@ export default function LogIn() {
   useEffect(() => {
     if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
       async function validate() {
-        const {success} = await validateTeacher({id: localStorage.getItem("id")});
+        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
         if(success) {
           route.push("/dashboard/homePage");
         } else {
@@ -72,7 +72,7 @@ export default function LogIn() {
     setTimeout(() => {
       setContent("");
     }, 2000);
-  }, content);
+  }, [content]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
