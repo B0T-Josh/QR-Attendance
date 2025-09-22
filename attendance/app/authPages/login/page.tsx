@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
@@ -47,20 +47,14 @@ export default function LogIn() {
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
-      try{
-        const { id, error } = await logIn({email: credentials.email, password: credentials.password});
-        if(id) {
-          localStorage.setItem("id", id);
-          route.push("/dashboard/homePage");
-        } else {
-          setContent(<p className="text-red-500">{error}</p>);
-          setLoading(false);
-        }
-      } catch(error) {
-        setContent(<p className="text-red-500">Server error...</p>);
+      const { id, error } = await logIn({email: credentials.email, password: credentials.password});
+      if(id) {
+        localStorage.setItem("id", id);
+        route.push("/dashboard/homePage");
+      } else {
+        setContent(<p className="text-red-500">{error}</p>);
         setLoading(false);
       }
-      
     } else {
       setContent(<p className="text-red-500">Enter an email account and password</p>);
       setLoading(false);
@@ -107,7 +101,7 @@ export default function LogIn() {
           </Link>
         </h3>
       </div>
-      ) : (<p></p>)}
+      ) : (<></>)}
     </div>
   );
 }

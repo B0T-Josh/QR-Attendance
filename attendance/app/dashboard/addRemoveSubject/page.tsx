@@ -7,8 +7,8 @@ import { getId } from "@/tools/getId"
 import { handleAddSubject, handleRemoveSubject, getSubjects, validateTeacher } from "@/app/api/requests/request";
 
 type Subjects = {
-    id: any;
-    name: any;
+    id: string | null;
+    name: string | null;
 }
 
 export default function StudentRecords() {

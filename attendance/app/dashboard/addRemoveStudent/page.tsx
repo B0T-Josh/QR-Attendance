@@ -29,9 +29,6 @@ export default function StudentRecords() {
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
-  const name_input = useRef<HTMLInputElement | null>(null);
-  const id_input = useRef<HTMLInputElement | null>(null);
-  const subject_input = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -81,7 +78,6 @@ export default function StudentRecords() {
             name: formatted.formatted,
             subjects: student.subjects.toUpperCase()
           });
-
           setContent(
             success ? (
               <p className="text-green-300">{success}</p>
@@ -89,9 +85,12 @@ export default function StudentRecords() {
               <p className="text-red-500">{error}</p>
             )
           );
-          name_input.current && (name_input.current.value = "");
-          id_input.current && (id_input.current.value = "");
-          subject_input.current && (subject_input.current.value = "");
+          setStudent({
+            ...student,
+            student_id: "",
+            name: "",
+            subjects: ""
+          });
           get();
           setLoading(false);
         }
@@ -113,9 +112,12 @@ export default function StudentRecords() {
           <p className="text-red-500">{error}</p>
         )
       );
-      name_input.current && (name_input.current.value = "");
-      id_input.current && (id_input.current.value = "");
-      subject_input.current && (subject_input.current.value = "");
+      setStudent({
+        ...student,
+        student_id: "",
+        name: "",
+        subjects: ""
+      });
       get();
       setLoading(false);
     } else {
@@ -162,7 +164,7 @@ export default function StudentRecords() {
               placeholder="Enter student ID"
               className="p-2 rounded-lg"
               name="student_id"
-              ref={id_input}
+              value={student.student_id}
             />
 
             {/* <label className="block mb-2">Enter Student Name:</label> */}
@@ -172,7 +174,7 @@ export default function StudentRecords() {
               placeholder="SURNAME, Firstname M.I."
               className="p-2 rounded-lg"
               name="name"
-              ref={name_input}
+              value={student.name}
             />
 
             {/* <label className="block mb-2">Enter Subject:</label> */}
@@ -182,7 +184,7 @@ export default function StudentRecords() {
               placeholder="Enter subject"
               className="p-2 rounded-lg"
               name="subjects"
-              ref={subject_input}
+              value={student.subjects}
             />
             
             
