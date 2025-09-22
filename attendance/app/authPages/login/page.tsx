@@ -95,7 +95,7 @@ export default function LogIn() {
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
-          Don't have an account? 
+          {"Don't have an account?"}
           <Link href="/authPages/register" className="ml-1 text-purple-800 hover:text-purple-600">
             Sign Up
           </Link>

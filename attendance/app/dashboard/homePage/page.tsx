@@ -8,11 +8,6 @@ import { useEffect, useState } from "react";
 import { getValidation, validateTeacher } from "@/app/api/requests/request";
 import Popup from "@/components/Popup";
 
-type Subject = {
-    id: string | null;
-    name: string | null;
-}
-
 export default function HomePage() {
     const route = useRouter();
     const [hasVerification, setHasVerification] = useState(false); 

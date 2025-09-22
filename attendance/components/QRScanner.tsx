@@ -49,7 +49,7 @@ export default function QRScanner() {
 
         if (videoRef.current) {
         codeReader
-            .decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
+            .decodeFromVideoDevice(undefined, videoRef.current, (res) => {
                 if (res) {
                     setScannedData(res.getText());
                 }

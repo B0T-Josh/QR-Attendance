@@ -70,7 +70,7 @@ export async function addTeacher(id: string | null, name: string | null) {
 
 //Checks if the verification code exist from account table.
 export async function getVerification(id: string | null) {
-        const { data, error } = await supabase.from('account').select('verification').eq('id', id).single();
+        const { data } = await supabase.from('account').select('verification').eq('id', id).single();
         if(data) {
             return ({verification: data?.verification});
         } else {
