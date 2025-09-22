@@ -47,13 +47,14 @@ export default function Records() {
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const [attendees, setAttendees] = useState<Attendance[] | []>([]);
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
-  let studentAttendance: Attendance[] = [];
+  const studentAttendance: Attendance[] = [];
 
   useEffect(() => {
-    if(!record) return;
-    record.map(items => {
-      studentAttendance.push({id: items.id, attendance: items.time_out ? "Present" : "Absent"})
-    });
+    if (!record) return;
+    const studentAttendance: Attendance[] = record.map(items => ({
+      id: items.id,
+      attendance: items.time_out ? "Present" : "Absent"
+    }));
     setAttendees(studentAttendance);
   }, [record]);
 

@@ -36,7 +36,7 @@ export default function RegisterPage() {
               setLoading(false);
             }
           } else {
-            setContent(<p className="text-red-500">Password and Confirm password doesn't match</p>);
+            setContent(<p className="text-red-500">{"Password and Confirm password doesn't match"}</p>);
           }
         } else {
           setContent(<p className="text-red-500">Enter valid email account</p>);
