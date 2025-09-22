@@ -47,7 +47,6 @@ export default function Records() {
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const [attendees, setAttendees] = useState<Attendance[] | []>([]);
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
-  const studentAttendance: Attendance[] = [];
 
   useEffect(() => {
     if (!record) return;
