@@ -1,12 +1,13 @@
 "use client";
 
 import Sidebar from "@/components/Sidebar";
+import Popup from "@/components/Popup";
+import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
 import { getAllRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
-import Popup from "@/components/Popup";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 
@@ -107,6 +108,9 @@ export default function HomePage() {
 
     return (
         <div className="flex min-h-screen">
+            <div className="z-50">
+                <ToggleSidebar />
+            </div>
             <Sidebar />
             {loaded ? hasVerification ? (
                 <div className="flex-1 p-6">
