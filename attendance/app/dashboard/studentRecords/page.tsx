@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { getAllRecords, getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
 import format from "@/tools/format";
+import { IoCheckmarkCircle } from "react-icons/io5";
+import { IoCloseCircle } from "react-icons/io5";
 
 type Record = {
   id: string | null | undefined;
@@ -228,6 +230,12 @@ export default function Records() {
               <h2 className="p-2 font-medium">Search:</h2>
             )}
 
+            <select className="p-2 rounded-lg w-[12rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
+              <option value="">Select attendance</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+
             <select
               className="p-2 rounded-lg w-[12rem]"
               value={search.subject}
@@ -250,14 +258,14 @@ export default function Records() {
               type="date"
               name="date"
               onChange={handleChange}
-              className="p-2 rounded-lg w-[12rem]"
+              className="p-1.5 rounded-lg w-[12rem]"
             />
 
             <input
               type="text"
               name="student_id"
               onChange={handleChange}
-              placeholder="Enter student id"
+              placeholder="Enter student ID"
               className="p-2 rounded-lg w-[12rem]"
             />
 
@@ -269,13 +277,9 @@ export default function Records() {
               className="p-2 rounded-lg w-[12rem]"
             />
 
-            <select className="p-2 rounded-lg w-[12rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
-              <option value="">Select attendance</option>
-              <option value="Present">Present</option>
-              <option value="Absent">Absent</option>
-            </select>
+            
           </div>
-          <div className="mt-4 border border-[#c7c7c79f] rounded-lg">
+          <div className="mt-4 border border-[#c7c7c79f] rounded-lg max-h-[600px] overflow-auto">
               <table className="table-auto border-collapse w-[65rem]">
                 <thead>
                     <tr>
@@ -300,7 +304,13 @@ export default function Records() {
                           <td className="border border-gray-400 px-4 py-2">{rec.date}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.time_in}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.time_out}</td>
-                          <td className="border border-gray-400 px-4 py-2">{rec.attendance === "Present" ? <p>✅</p> : <p>❌</p>}</td>
+                          <td className="border border-gray-400 px-4 py-2 flex justify-center items-center">
+                            {rec.attendance === "Present" ? 
+                            <IoCheckmarkCircle color="#27B757" size={24} />
+                            : 
+                            <IoCloseCircle color="#B62424" size={24} />
+                            }
+                          </td>
                       </tr> 
                       ))
                     ) : (
