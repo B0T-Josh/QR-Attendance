@@ -216,7 +216,7 @@ export default function Records() {
   }, [content])
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen min-w-screen">
       <Sidebar />
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
@@ -275,8 +275,8 @@ export default function Records() {
               <option value="Absent">Absent</option>
             </select>
           </div>
-          <div className="mt-4 border border-[#c7c7c79f] rounded-lg overflow-hidden">
-              <table className="table-auto border-collapse w-full h-full">
+          <div className="mt-4 border border-[#c7c7c79f] rounded-lg">
+              <table className="table-auto border-collapse w-[65rem]">
                 <thead>
                     <tr>
                       <th className="border border-gray-400 px-4 py-2">ID</th>
@@ -305,7 +305,7 @@ export default function Records() {
                       ))
                     ) : (
                     <tr>
-                      <td colSpan={7} className="border border-gray-400 px-4 py-2 text-center">
+                      <td colSpan={8} className="border border-gray-400 px-4 py-2 text-center">
                         No data found
                       </td>
                     </tr>
