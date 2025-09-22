@@ -5,14 +5,69 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getValidation, validateTeacher } from "@/app/api/requests/request";
+import { getAllRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
 import Popup from "@/components/Popup";
+
+type Subjects = {
+  id: string;
+  name: string;
+}
+
+type Record = {
+  id: string | null | undefined;
+  student_id: string | null | undefined;
+  name: string | null | undefined;
+  date: string | null | undefined;
+  subject: string | null | undefined;
+  time_in: string | null | undefined;
+  time_out: string | null | undefined;
+}
+
+type Students = {
+  id: string;          // primary key in Supabase
+  student_id: string;  // school/student number
+  name: string;        // student name
+  subjects: string;     // subject they’re enrolled in
+};
 
 export default function HomePage() {
     const route = useRouter();
     const [hasVerification, setHasVerification] = useState(false); 
     const [id, setId] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
+    const [subjects, setSubjects] = useState<Subjects[] | []>([]);
+    const [record, setRecord] = useState<Record[] | []>([]);
+    const [students, setStudents] = useState<Students[]>([]);
+
+    const get = async () => {
+        const res = await getStudents();
+        setStudents(res.data || []);
+    };
+
+    useEffect(() => {
+    if(!subjects) return;
+    async function getRecords() {
+        const {data, error} = await getAllRecords({subjects: subjects});
+        if(data) {
+            setRecord(data);
+        } else {
+            console.log({error});
+        }
+    }
+    getRecords();
+    }, [subjects]);
+
+    useEffect(() => {
+        if(!id) return;
+        if(subjects.length == 0) {
+            async function getSubject() {
+                const res = await getSubjects({id: id});
+                console.log({res});
+                setSubjects(res.data || []);
+            }
+            getSubject();
+        }
+    }, [id]);
 
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
@@ -22,6 +77,7 @@ export default function HomePage() {
             const {success} = await validateTeacher({uid: localStorage.getItem("id")});
             if(success) {
                 setId(localStorage.getItem("id"));
+                get();
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");
@@ -67,11 +123,17 @@ export default function HomePage() {
                                             </thead>
 
                                             <tbody>
-                                                <tr><td className="px-4 py-2">Santos, Joshua A.</td></tr>
-                                                <tr><td className="px-4 py-2">Santos, Joshua B.</td></tr>
-                                                <tr><td className="px-4 py-2">Santos, Joshua C.</td></tr>
-                                                <tr><td className="px-4 py-2">Santos, Joshua D.</td></tr>
-                                                <tr><td className="px-4 py-2">Santos, Joshua E.</td></tr>
+                                                {students.length > 0 ? (
+                                                    students.map(stud => (
+                                                        <tr key={stud.id}>
+                                                            <td>{stud.name}</td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td>No records</td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </table>
                                     </div>
@@ -87,11 +149,17 @@ export default function HomePage() {
                                     <div className="text-left overflow-auto max-h-[300px]">
                                         <table className="w-full">
                                             <tbody>
-                                                <tr><td className="px-4 py-2 text-left">[Subject]</td></tr>
-                                                <tr><td className="px-4 py-2 text-left">[Subject]</td></tr>
-                                                <tr><td className="px-4 py-2 text-left">[Subject]</td></tr>
-                                                <tr><td className="px-4 py-2 text-left">[Subject]</td></tr>
-                                                <tr><td className="px-4 py-2 text-left">[Subject]</td></tr>
+                                                {subjects.length > 0 ? (
+                                                    subjects.map(sub => (
+                                                        <tr key={sub.id}>
+                                                            <td>{sub.name}</td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td>No records</td>
+                                                    </tr>
+                                                )}
                                             </tbody>
                                         </table>
                                     </div>
@@ -104,38 +172,30 @@ export default function HomePage() {
                         <Link href={"/dashboard/studentRecords"}>
                             <div className="p-4 h-full">
                                 <h2 className="mb-4">Students Records:</h2>
-                                <div className="text-left overflow-auto max-h-[300px]">
+                                <div className="text-left overflow-auto max-h-[50rem]">
                                     <table className="w-full">
-                                        <thead>
+                                        <thead className="justify-center text-center">
                                             <tr>
-                                                <th className="px-4 py-2">Present</th>
-                                                <th className="px-4 py-2">Absent</th>
+                                                <th className="px-4 py-2">Attendance</th>
                                                 <th className="px-4 py-2">Name</th>
                                                 <th className="px-4 py-2">Date</th>
                                             </tr>
                                         </thead>
 
-                                        <tbody>
-                                            <tr>
-                                                <td className="px-4 py-2">[Check]</td>
-                                                <td className="px-4 py-2">[X]</td>
-                                                <td className="px-4 py-2">Santos, Joshua A.</td>
-                                                <td className="px-4 py-2">2025-09-12</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td className="px-4 py-2">[Check]</td>
-                                                <td className="px-4 py-2">[X]</td>
-                                                <td className="px-4 py-2">Santos, Joshua B.</td>
-                                                <td className="px-4 py-2">2025-09-11</td>
-                                            </tr>
-
-                                            <tr>
-                                                <td className="px-4 py-2">[Check]</td>
-                                                <td className="px-4 py-2">[X]</td>
-                                                <td className="px-4 py-2">Santos, Joshua C.</td>
-                                                <td className="px-4 py-2">2025-09-10</td>
-                                            </tr>
+                                        <tbody className="justify-center text-center">
+                                            {record.length > 0 ? (
+                                                record.map(att => (
+                                                    <tr key={att.id}>
+                                                        <td>{att.time_out ? <p>✅</p> : <p>❌</p>}</td>
+                                                        <td>{att.name}</td>
+                                                        <td>{att.date}</td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td>No records</td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
