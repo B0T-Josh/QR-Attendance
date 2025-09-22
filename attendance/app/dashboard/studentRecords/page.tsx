@@ -121,6 +121,11 @@ export default function Records() {
     }
     setLoading(true);
     if(search.name) {
+      if(search.subject === "") {
+        setContent(<p className="text-red-500">Select a subject</p>);
+        setLoading(false);
+        return;
+      }
       const formatted = format(search.name);
       if(formatted) {
         if(formatted.formatted) {
@@ -144,6 +149,11 @@ export default function Records() {
       }
     } else {
       if(search.date === "" && search.name === "" && search.student_id === "" && search.subject === "") return;
+      if(search.subject === "") {
+        setContent(<p className="text-red-500">Select a subject</p>);
+        setLoading(false);
+        return;
+      }
       async function getSelectedRecord() {
         const {data, error} = await getRecords({student_id: search.student_id, name: search.name, subjects: search.subject, date: search.date});
         if(data) {
@@ -210,6 +220,7 @@ export default function Records() {
       <Sidebar />
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
+          {content}
           <div className="w-full max-w-5xl p-4 border-b border-[#c7c7c79f] flex flex-wrap gap-4 items-center">
             {loading ? (
               <h2 className="p-2 font-medium">Loading...</h2>
