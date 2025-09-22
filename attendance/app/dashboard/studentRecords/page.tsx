@@ -49,6 +49,7 @@ export default function Records() {
   const typeTimeout = useRef<NodeJS.Timeout | null>(null);
   const [attendees, setAttendees] = useState<Attendance[] | []>([]);
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
+  const [tempRecord, setTempRecord] = useState<RecordList[] | []>([]);
 
   useEffect(() => {
     if (!record) return;
@@ -58,6 +59,15 @@ export default function Records() {
     }));
     setAttendees(studentAttendance);
   }, [record]);
+
+  useEffect(() => {
+    if(tempRecord.length > 0) return;
+    setTempRecord(recordList);
+  }, [recordList]);
+
+  function refreshRecord() {
+    setRecordList(tempRecord);
+  }
 
   useEffect(() => {
     if(!attendees) return;
@@ -109,66 +119,39 @@ export default function Records() {
 
   useEffect(() => {
     if(!(search.date || search.student_id || search.name || search.subject)) {
-      async function getRecords() {
-        const {data, error} = await getAllRecords({subjects: subjects});
-        if(data) {
-          setRecord(data);
-          setLoading(false);
-        } else {
-          setContent(<p className="text-red-500">{error}</p>);
-          setLoading(false);
-        }
-      }
-      getRecords();
-    }
-    setLoading(true);
-    if(search.name) {
-      if(search.subject === "") {
-        setContent(<p className="text-red-500">Select a subject</p>);
-        setLoading(false);
-        return;
-      }
-      const formatted = format(search.name);
-      if(formatted) {
-        if(formatted.formatted) {
-          const name = formatted?.formatted;
-          async function getSelectedRecord() {
-            const {data, error} = await getRecords({student_id: search.student_id, name: name, subjects: search.subject, date: search.date});
-            if(data) {
-              setRecord(data);
-              setLoading(false);
-            } else {
-              setContent(<p className="text-red-500">{error}</p>);
-              setLoading(false);
-            }
-          }
-          getSelectedRecord();
-        } else if(formatted.error) {
-            setContent(<p className="text-red-500">{formatted.error}</p>);
+      if(tempRecord.length == 0) {
+        async function getRecords() {
+          const {data, error} = await getAllRecords({subjects: subjects});
+          if(data) {
+            setRecord(data);
             setLoading(false);
-            return;
+          } else {
+            setContent(<p className="text-red-500">{error}</p>);
+            setLoading(false);
+          }
         }
+        getRecords();
       }
-    } else {
-      if(search.date === "" && search.name === "" && search.student_id === "" && search.subject === "") return;
-      if(search.subject === "") {
-        setContent(<p className="text-red-500">Select a subject</p>);
-        setLoading(false);
-        return;
-      }
-      async function getSelectedRecord() {
-        const {data, error} = await getRecords({student_id: search.student_id, name: search.name, subjects: search.subject, date: search.date});
-        if(data) {
-          setRecord(data);
-          setLoading(false);
-        } else {
-          setContent(<p className="text-red-500">{error}</p>);
-          setLoading(false);
-        }
-      }
-      getSelectedRecord();
+      refreshRecord();
+      setLoading(false);
+    }    
+    if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && attendance === "") {
+      refreshRecord();
+      return;
     }
-  }, [search]);
+    const studentList: RecordList[] = tempRecord.filter((att) => {
+      return (
+        (search.subject === "" || att.subject === search.subject) &&
+        (attendance === "" || att.attendance === attendance) &&
+        (search.date === "" || att.date?.trim() === search.date.trim()) &&
+        (search.name === "" || att.name?.includes(search.name.trim())) &&
+        (search.student_id === "" || att.student_id?.includes(search.student_id.trim()))
+      );
+    });
+
+    setRecordList(studentList);
+  
+  }, [search, attendance]);
 
   useEffect(() => {
     if(!id) return;
@@ -192,7 +175,6 @@ export default function Records() {
       const studentList: RecordList[] = recordList.filter((item) => item.attendance === attendance);
       setRecordList(studentList);
     }
-
   }, [attendance]);
 
   useEffect(() => {
@@ -276,10 +258,9 @@ export default function Records() {
               placeholder="Enter student name"
               className="p-2 rounded-lg w-[12rem]"
             />
-
             
           </div>
-          <div className="mt-4 border border-[#c7c7c79f] rounded-lg max-h-[600px] overflow-auto">
+          <div className="mt-4 border border-[#c7c7c79f] rounded-lg max-h-[550px] overflow-auto">
               <table className="table-auto border-collapse w-[65rem]">
                 <thead>
                     <tr>
