@@ -74,7 +74,17 @@ export default function Records() {
   }, []);
 
   useEffect(() => {
-    if(!(search.date || search.student_id || search.name || search.subject)) return;
+    if(!(search.date || search.student_id || search.name || search.subject)) {
+      async function getRecords() {
+        const {data, error} = await getAllRecords({subjects: subjects});
+        if(data) {
+          setRecord(data);
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+        }
+      }
+      getRecords();
+    }
     setLoading(true);
     if(search.name) {
       const formatted = format(search.name);
