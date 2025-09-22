@@ -281,7 +281,7 @@ export default function Records() {
           </div>
           <div className="mt-4 border border-[#c7c7c79f] rounded-lg max-h-[600px] overflow-auto">
               <table className="table-auto border-collapse w-[65rem]">
-                <thead>
+                <thead className="sticky top-0 bg-[#222222]">
                     <tr>
                       <th className="border border-gray-400 px-4 py-2">ID</th>
                       <th className="border border-gray-400 px-4 py-2">Student ID</th>
