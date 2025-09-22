@@ -221,15 +221,15 @@ export default function Records() {
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
           {content}
-          <div className="w-full max-w-5xl p-4 border-b border-[#c7c7c79f] flex flex-wrap gap-4 items-center">
+          <div className="w-full max-w-5xl py-4 border-b border-[#c7c7c79f] flex flex-row gap-4 items-center">
             {loading ? (
               <h2 className="p-2 font-medium">Loading...</h2>
             ) : (
-              <h2 className="p-2 font-medium">Search</h2>
+              <h2 className="p-2 font-medium">Search:</h2>
             )}
 
             <select
-              className="p-2 rounded-lg"
+              className="p-2 rounded-lg w-[12rem]"
               value={search.subject}
               name="subject"
               onChange={handleSelect}
@@ -250,7 +250,7 @@ export default function Records() {
               type="date"
               name="date"
               onChange={handleChange}
-              className="p-2 rounded-lg"
+              className="p-2 rounded-lg w-[12rem]"
             />
 
             <input
@@ -258,7 +258,7 @@ export default function Records() {
               name="student_id"
               onChange={handleChange}
               placeholder="Enter student id"
-              className="p-2 rounded-lg"
+              className="p-2 rounded-lg w-[12rem]"
             />
 
             <input
@@ -266,10 +266,10 @@ export default function Records() {
               name="name"
               onChange={handleChange}
               placeholder="Enter student name"
-              className="p-2 rounded-lg"
+              className="p-2 rounded-lg w-[12rem]"
             />
 
-            <select className="p-2 rounded-lg" name="attendance" value={attendance || ""} onChange={handleAttendees}>
+            <select className="p-2 rounded-lg w-[12rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
               <option value="">Select attendance</option>
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
