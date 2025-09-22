@@ -146,7 +146,7 @@ export default function HomePage() {
                             <Link href={"/dashboard/addRemoveSubject"}>
                                 <div className="p-4 h-full">
                                     <h2 className="mb-4">Subjects:</h2>
-                                    <div className="text-left overflow-auto max-h-[300px]">
+                                    <div className="text-left max-h-[300px]">
                                         <table className="w-full">
                                             <tbody>
                                                 {subjects.length > 0 ? (
@@ -186,7 +186,29 @@ export default function HomePage() {
                                             {record.length > 0 ? (
                                                 record.map(att => (
                                                     <tr key={att.id}>
-                                                        <td>{att.time_out ? <p>✅</p> : <p>❌</p>}</td>
+                                                        <td className="flex justify-center items-center">{
+                                                            att.time_out ? 
+                                                            <svg 
+                                                                xmlns="http://www.w3.org/2000/svg" 
+                                                                height="24px" 
+                                                                viewBox="0 -960 960 960" 
+                                                                width="24px" 
+                                                                fill="#e3e3e3"
+                                                            >
+                                                                <path d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/>
+                                                            </svg>
+                                                            : 
+                                                            <svg 
+                                                                xmlns="http://www.w3.org/2000/svg" 
+                                                                height="24px" 
+                                                                viewBox="0 -960 960 960" 
+                                                                width="24px" 
+                                                                fill="#9a1313"
+                                                            >
+                                                                <path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/>
+                                                            </svg>
+                                                            }
+                                                        </td>
                                                         <td>{att.name}</td>
                                                         <td>{att.date}</td>
                                                     </tr>
