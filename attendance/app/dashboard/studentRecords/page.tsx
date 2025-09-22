@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
+import { getAllRecords, getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
 import format from "@/tools/format";
 
 type Record = {
@@ -93,7 +93,9 @@ export default function Records() {
           }
           getSelectedRecord();
         } else if(formatted.error) {
-
+            setContent(<p className="text-red-500">{formatted.error}</p>);
+            setLoading(false);
+            return;
         }
       }
     } else {
@@ -122,6 +124,19 @@ export default function Records() {
       getSubject();
     }
   }, [id]);
+
+  useEffect(() => {
+    if(!subjects) return;
+    async function getRecords() {
+      const {data, error} = await getAllRecords({subjects: subjects});
+      if(data) {
+        setRecord(data);
+      } else {
+        setContent(<p className="text-red-500">{error}</p>);
+      }
+    }
+    getRecords();
+  }, [subjects]);
 
   useEffect(() => {
     if(!content) return;
@@ -194,6 +209,7 @@ export default function Records() {
                       <th className="border border-gray-400 px-4 py-2">Date</th>
                       <th className="border border-gray-400 px-4 py-2">Time In</th>
                       <th className="border border-gray-400 px-4 py-2">Time Out</th>
+                      <th className="border border-gray-400 px-4 py-2">Attendance</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -207,6 +223,7 @@ export default function Records() {
                           <td className="border border-gray-400 px-4 py-2">{rec.date}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.time_in}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.time_out}</td>
+                          <td className="border border-gray-400 px-4 py-2">{rec.time_out ? (<p className="text-green-300">Present</p>) : (<p className="text-red-500">Absent</p>) }</td>
                       </tr>
                       ))
                     ) : (
