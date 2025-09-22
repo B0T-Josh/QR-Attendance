@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { getAllRecords, getRecords, validateTeacher, getSubjects } from "@/app/api/requests/request";
+import { getRecords, validateTeacher, getSubjects, getAllRecords } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
@@ -118,23 +118,6 @@ export default function Records() {
   }, []);
 
   useEffect(() => {
-    if(!(search.date || search.student_id || search.name || search.subject)) {
-      if(tempRecord.length == 0) {
-        async function getRecords() {
-          const {data, error} = await getAllRecords({subjects: subjects});
-          if(data) {
-            setRecord(data);
-            setLoading(false);
-          } else {
-            setContent(<p className="text-red-500">{error}</p>);
-            setLoading(false);
-          }
-        }
-        getRecords();
-      }
-      refreshRecord();
-      setLoading(false);
-    }    
     if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && attendance === "") {
       refreshRecord();
       return;
@@ -148,10 +131,19 @@ export default function Records() {
         (search.student_id === "" || att.student_id?.includes(search.student_id.trim()))
       );
     });
-
     setRecordList(studentList);
-  
   }, [search, attendance]);
+
+  useEffect(() => {
+    async function getAll() {
+      const res = await getAllRecords();
+      const data: Record[] | [] = res.data;
+      if(data.length > 0) {
+          setRecord(data);
+      }
+    }
+    getAll();
+  }, [subjects]);
 
   useEffect(() => {
     if(!id) return;
@@ -176,21 +168,6 @@ export default function Records() {
       setRecordList(studentList);
     }
   }, [attendance]);
-
-  useEffect(() => {
-    if(!subjects) return;
-    async function getRecords() {
-      const {data, error} = await getAllRecords({subjects: subjects});
-      if(data) {
-        setRecord(data);
-        setLoading(false);
-      } else {
-        setContent(<p className="text-red-500">{error}</p>);
-        setLoading(false);
-      }
-    }
-    getRecords();
-  }, [subjects]);
 
   useEffect(() => {
     if(!content) return;

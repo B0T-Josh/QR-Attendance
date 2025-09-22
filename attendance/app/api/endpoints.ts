@@ -200,45 +200,24 @@ export async function validateTeacher(id: string) {
 }
 
 //Gets all the student records that the user wants. 
-export async function getRecords(info: Student, date: string) {
-    if(info.subjects === "") {
+export async function getRecords(subject: string) {
+    if(subject === "") {
         return({error: "Enter a subject first"});
     }
     let query = supabase.from("attendance").select("*");
-    if(info.name && info.subjects) {
-        query = query.ilike("name", `%${info.name}%`).eq("subject", info.subjects);
-    }
-    if(info.subjects) {
-        query = query.ilike("subject", `%${info.subjects}%`).eq("subject", info.subjects);
-    } 
-    if(info.student_id && info.subjects) {
-        query = query.ilike("student_id", `%${info.student_id}%`).eq("subject", info.subjects);
-    }
-    if(date && info.subjects) {
-        query = query.eq("date", `%${date}%`).eq("subject", info.subjects);
-    }
-    if(!(info.name || info.student_id || date || info.subjects)) {
-        return({error: "No data"});
-    }
+    query = query.ilike("subject", `${subject}`);
     const {data, error} = await query;
     if(data) {
         return ({data: data});
     } return ({error: error});
 }
 
-export async function getAllRecords(info: Subjects[]) {
-    let query = supabase.from("attendance").select("*");
-    if(info.length > 0) {
-        for(let i = 0; i < info.length; i++) {
-            query = query.eq("subject", `${info[i].name}`); 
-        }
-    }
-    const {data} = await query;
+
+export async function getAllRecords() {
+    const {data, error} = await supabase.from("attendance").select("*");
     if(data) {
-        return {data: data};
-    } else {
-        return {error: "Failed to fetch records"};
-    }
+        return ({data: data});
+    } return ({error: error});
 }
 
 //Verify if the student is existing
@@ -248,6 +227,7 @@ export async function verifyStudentData(info: Student) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});
 }
+
 //Get all students.
 export async function getAllStudent() {
     const { data, error } = await supabase.from("students").select("*");
@@ -257,6 +237,7 @@ export async function getAllStudent() {
         return ({error});
     }
 }
+
 //Get selected students.
 export async function getStudent(info: Student) {
     let query = supabase.from("students").select("*");

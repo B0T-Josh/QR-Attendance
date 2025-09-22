@@ -258,7 +258,7 @@ export async function getStudent(info: {student_id: string | null, name: string 
 }
 
 //Get all student record base on the subject.
-export async function getRecords(info: {student_id: string | null, name: string | null, subjects: string | null, date: string | null}) {
+export async function getRecords(info: {subject: string}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getRecords", {
         method: "POST",
@@ -273,18 +273,18 @@ export async function getRecords(info: {student_id: string | null, name: string 
     return ({error: error});
 }
 
-export async function getAllRecords(info: {subjects: Subject[] | null}) {
+//Get all student record.
+export async function getAllRecords() {
+    //Pass the submitted data to the URL.
     const res = await fetch("/api/getAllRecords", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify(info)
+        method: "GET"
     });
+    //Processes response from URL.
     const {data, error} = await res.json();
-    if(data) {
+    if(res.ok) {
         return ({data: data});
-    } else {
-        return ({error: error});
-    }
+    } 
+    return ({error: error});
 }
 
 //Verify if the student is enrolled or exist.

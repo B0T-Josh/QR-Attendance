@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getAllRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
+import { getAllRecords, getRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 
@@ -17,13 +17,13 @@ type Subjects = {
 }
 
 type Record = {
-  id: string | null | undefined;
-  student_id: string | null | undefined;
-  name: string | null | undefined;
-  date: string | null | undefined;
-  subject: string | null | undefined;
-  time_in: string | null | undefined;
-  time_out: string | null | undefined;
+  id: string | null;
+  student_id: string | null;
+  name: string | null;
+  date: string | null;
+  subject: string | null;
+  time_in: string | null;
+  time_out: string | null;
 }
 
 type Students = {
@@ -48,29 +48,15 @@ export default function HomePage() {
     };
 
     useEffect(() => {
-    if(!subjects) return;
-    async function getRecords() {
-        const {data, error} = await getAllRecords({subjects: subjects});
-        if(data) {
-            setRecord(data);
-        } else {
-            console.log({error});
-        }
-    }
-    getRecords();
-    }, [subjects]);
-
-    useEffect(() => {
-        if(!id) return;
-        if(subjects.length == 0) {
-            async function getSubject() {
-                const res = await getSubjects({id: id});
-                console.log({res});
-                setSubjects(res.data || []);
+        async function getAll() {
+            const res = await getAllRecords();
+            const data: Record[] | [] = res.data;
+            if(data.length > 0) {
+                setRecord(data);
             }
-            getSubject();
         }
-    }, [id]);
+        getAll();
+    }, [subjects]);
 
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
@@ -98,6 +84,15 @@ export default function HomePage() {
             }
         }
         validate();    
+        if(!id) return;
+        if(subjects.length == 0) {
+            async function getSubject() {
+                const res = await getSubjects({id: id});
+                console.log({res});
+                setSubjects(res.data || []);
+            }
+            getSubject();
+        }
     }, [id]);
 
     useEffect(() => {
