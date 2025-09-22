@@ -18,7 +18,7 @@ export default function Sidebar() {
     }
 
   return (
-    <div className="fixed flex min-h-screen">
+    <div className="flex min-h-screen">
         <div className={`bg-purple-900 text-white h-screen transition-all duration-300 flex flex-col ${expanded ? "w-32" : "w-24"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
             <div className="flex items-center justify-center flex-col gap-8 h-screen">
                 <div className="relative group flex items-center">
