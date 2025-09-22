@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
@@ -47,14 +47,20 @@ export default function LogIn() {
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
-      const { id, error } = await logIn({email: credentials.email, password: credentials.password});
-      if(id) {
-        localStorage.setItem("id", id);
-        route.push("/dashboard/homePage");
-      } else {
-        setContent(<p className="text-red-500">{error}</p>);
+      try{
+        const { id, error } = await logIn({email: credentials.email, password: credentials.password});
+        if(id) {
+          localStorage.setItem("id", id);
+          route.push("/dashboard/homePage");
+        } else {
+          setContent(<p className="text-red-500">{error}</p>);
+          setLoading(false);
+        }
+      } catch(error) {
+        setContent(<p className="text-red-500">Server error...</p>);
         setLoading(false);
       }
+      
     } else {
       setContent(<p className="text-red-500">Enter an email account and password</p>);
       setLoading(false);
@@ -95,13 +101,13 @@ export default function LogIn() {
           </button>
         </div>
         <h3 className={`mt-4 transition-opacity ease-out duration-1000 text-center text-gray-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
-          {"Don't have an account?"} 
+          Don't have an account? 
           <Link href="/authPages/register" className="ml-1 text-purple-800 hover:text-purple-600">
             Sign Up
           </Link>
         </h3>
       </div>
-      ) : (<></>)}
+      ) : (<p></p>)}
     </div>
   );
 }

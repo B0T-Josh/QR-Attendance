@@ -24,7 +24,7 @@ export async function scanned(info: Student) {
         } else {
             return {message: data.success};
         }
-    } catch(error) {
+    } catch(error: any) {
         return {err: error};
     }
 }

@@ -47,40 +47,57 @@ type Subjects = {
 
 //Comes from the resgistration page. This adds the teacher's account to the database.
 export async function addUser(info: AccountProf) {
-    const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
-    if(error) {
-        return ({error: "Email address already exist"});
+
+    try{
+        const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
+        if(error) {
+            return ({error: "Email address already exist"});
+        }
+        const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
+        if(err) {
+            return({error: "There is an error fetching id"});
+        }
+        if(await addTeacher(prof.id, info.name)){
+            return ({success: "Profile was successfully created"});
+        } else return ({error: "Creating profile failed"});
+    } catch (error) {
+        return ({error: "Server error"});
     }
-    const { data: prof, error: err } = await supabase.from('account').select('id').eq('email', info.email).single();
-    if(err) {
-        return({error: "There is an error fetching id"});
-    }
-    if(await addTeacher(prof.id, info.name)){
-        return ({success: "Profile was successfully created"});
-    } else return ({error: "Creating profile failed"});
 }
 
 //Adds the name of the teacher to the teacher table from the database.
 export async function addTeacher(id: string | null, name: string | null) {
-    const { error: err } = await supabase.from('teacher').insert([{id: id, name: name}]);
-    if(err) {
+    try {
+        const { error: err } = await supabase.from('teacher').insert([{id: id, name: name}]);
+        if(err) {
+            return false;
+        }else return true;
+    } catch (error) {
         return false;
-    }else return true;
+    }
 }
 
 //Checks if the verification code exist from account table.
 export async function getVerification(id: string | null) {
+    try {
         const { data } = await supabase.from('account').select('verification').eq('id', id).single();
         return ({verification: data?.verification});
+    } catch (error) {
+        return ({error: "There is no verification code"});
+    }
 }
 
 //Adds attendance record for students aftter scanning the QR.
 export async function addRecord(student_id: string, subjects: string, name: string) {
-    if(await validateSubject(subjects)) {
+    try {
+       if(await validateSubject(subjects)) {
         await supabase.from('attendance').insert({student_id: student_id, name: name, subject: subjects, time_in: getTime()});
         return ({success: "Attendance recorded for " + name});
-    } else {
+       } else {
         return({error: "Failed to record attendance. Student " + name});
+       }
+    } catch(error) {
+        return({error: error});
     }
 }
 
@@ -96,8 +113,12 @@ async function validateSubject(subject: string) {
 
 //Adds verification code to the user's account.
 export async function addVerification(verification: string, id: string) {
+    try {
         await supabase.from('account').update({verification: verification}).eq('id', id);
         return true;
+    } catch(error) {
+        return false;
+    }
 }
 
 //Adds time out to the student's record.
@@ -168,16 +189,17 @@ export async function verifyCode(code: string | null, email: string | null) {
 
 //Updates password from forgot password.
 export async function updatePassword(password: string | null, email: string | null) {
-    const {error} = await supabase.from("account").update({password: password}).eq("email", email);
-    if(error) {
+    try{
+        await supabase.from("account").update({password: password}).eq("email", email);
+        return true;
+    } catch(error) {
         return false;
     }
-    return true;
 }
 
 //Gets the data of the user for verification on log in.
 export async function login(info: Account) {
-    const { data } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
+    const { data, error } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
     if(data) {
         return ({data: {id: data.id, password: data.password}});
     } else {
@@ -239,7 +261,7 @@ export async function getAllRecords(info: Subjects[]) {
 
 //Verify if the student is existing
 export async function verifyStudentData(info: Student) {
-    const {data} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
+    const {data, error} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
     if(data) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});

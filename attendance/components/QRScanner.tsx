@@ -47,13 +47,16 @@ export default function QRScanner() {
     useEffect(() => {
         const codeReader = new BrowserQRCodeReader();
 
+        let controls: any;
+
         if (videoRef.current) {
         codeReader
-            .decodeFromVideoDevice(undefined, videoRef.current, (res) => {
+            .decodeFromVideoDevice(undefined, videoRef.current, (res, err) => {
                 if (res) {
                     setScannedData(res.getText());
                 }
             })
+            .catch((err) => console.error("Camera error:", err));
         }
     }, []);
 
@@ -98,7 +101,7 @@ export default function QRScanner() {
 
     useEffect(() => {  
         if(!student) return;
-        const student_subject = student?.subjects;
+        let student_subject = student?.subjects;
         const found = student_subject?.includes(subject);
         if(found) {
             const handleAdd = async () => {
