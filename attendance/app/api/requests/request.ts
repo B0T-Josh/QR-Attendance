@@ -4,6 +4,10 @@ type Student = {
     subjects: string;
 }
 
+type Subject = {
+    name: string | null
+}
+
 //Request to add student record.
 export async function scanned(info: Student) {
     try {
@@ -267,6 +271,20 @@ export async function getRecords(info: {student_id: string | null, name: string 
         return ({data: data});
     } 
     return ({error: error});
+}
+
+export async function getAllRecords(info: {subjects: Subject[] | null}) {
+    const res = await fetch("/api/getAllRecords", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    const {data, error} = await res.json();
+    if(data) {
+        return ({data: data});
+    } else {
+        return ({error: error});
+    }
 }
 
 //Verify if the student is enrolled or exist.

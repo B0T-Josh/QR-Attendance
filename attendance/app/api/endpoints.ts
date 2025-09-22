@@ -41,6 +41,10 @@ type AccountProf = {
     name: string | null;
 }
 
+type Subjects = {
+    name: string | null;
+}
+
 //Comes from the resgistration page. This adds the teacher's account to the database.
 export async function addUser(info: AccountProf) {
     const { error } = await supabase.from('account').insert([{email: info.email, password: info.password}]);
@@ -216,6 +220,21 @@ export async function getRecords(info: Student, date: string) {
     if(data) {
         return ({data: data});
     } return ({error: error});
+}
+
+export async function getAllRecords(info: Subjects[]) {
+    let query = supabase.from("attendance").select("*");
+    if(info.length > 0) {
+        for(let i = 0; i < info.length; i++) {
+            query = query.eq("subject", `${info[i].name}`); 
+        }
+    }
+    const {data} = await query;
+    if(data) {
+        return {data: data};
+    } else {
+        return {error: "Failed to fetch records"};
+    }
 }
 
 //Verify if the student is existing
