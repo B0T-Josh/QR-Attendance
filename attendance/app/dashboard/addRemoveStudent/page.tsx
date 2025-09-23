@@ -99,6 +99,7 @@ export default function StudentRecords() {
       const formatted = format(student.name.trim());
       if(formatted) {
         if(formatted?.error) {
+          setLoading(false);
           setContent(<p className="text-red-500">{formatted?.error}</p>);
         }
         if(formatted.formatted) {
@@ -111,18 +112,18 @@ export default function StudentRecords() {
               teacher_id: id
             });
             if(success) {
+              setLoading(false);
               setContent(<p className="text-green-300">Student is added</p>);
               resetInput();
               getStudentById();
-              setLoading(false);
             } else {
-              setContent(<p className="text-red-500">{error}</p>);
               setLoading(false);
+              setContent(<p className="text-red-500">{error}</p>);
             }
           } else if(exist) {
             resetInput();
-            setContent(<p className="text-red-500">Student exist</p>);
             setLoading(false);
+            setContent(<p className="text-red-500">Student exist</p>);
           }
         }
       }
@@ -136,6 +137,7 @@ export default function StudentRecords() {
     setLoading(true);
     if (student.student_id) {
       const { success, error } = await handleRemoveStudent({ student_id: student.student_id, teacher_id: id });
+      setLoading(false);
       setContent(
         success ? (
           <p className="text-green-300">{success}</p>
@@ -145,7 +147,6 @@ export default function StudentRecords() {
       );
       resetInput();
       getStudentById();
-      setLoading(false);
     } else {
       setLoading(false);
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
@@ -171,12 +172,12 @@ export default function StudentRecords() {
       const {success, error} = await updateSubject({student_id: student.student_id, teacher_id: id, subjects: student.subjects});
       if(success) {
         resetInput();
+        setLoading(false);
         setContent(<p className="text-green-300">{success}</p>);
         getStudentById();
-        setLoading(false);
       } else {
-        setContent(<p className="text-green-300">{error}</p>);
         setLoading(false);
+        setContent(<p className="text-green-300">{error}</p>);
       }
     }
   }
