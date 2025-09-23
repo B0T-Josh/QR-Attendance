@@ -47,7 +47,6 @@ export default function RegisterPage() {
       }
     } catch (error) {
       alert("Profile creation unsuccessful");
-      console.log(error);
     }
   };
 

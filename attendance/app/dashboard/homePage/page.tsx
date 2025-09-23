@@ -88,7 +88,6 @@ export default function HomePage() {
         if(subjects.length == 0) {
             async function getSubject() {
                 const res = await getSubjects({id: id});
-                console.log({res});
                 setSubjects(res.data || []);
             }
             getSubject();

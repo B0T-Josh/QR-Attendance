@@ -220,7 +220,6 @@ export async function getAllRecords(teacher_id:string) {
 //Verify if the student is existing
 export async function verifyStudent(student_id: string, teacher_id: string) {
     const {data} = await supabase.from("students").select("id").eq("student_id", student_id.trim()).eq("teacher_id", teacher_id).maybeSingle();
-    console.log(data);
     if(data) {
         return ({exist: "Student exist"});
     } return ({empty: "Student doesn't exist"});
@@ -257,9 +256,7 @@ export async function getAllStudent() {
 
 //Add students to the database.
 export async function addStudent(info: Student) {
-    console.log({info});
     const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects, teacher_id: info.teacher_id});
-    console.log({error});
     if(!error) {
         return({success: `Student ${info.name} is added`});
     } else {

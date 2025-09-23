@@ -94,7 +94,6 @@ export default function QRScanner() {
             (student_id == stud.student_id) &&
             (stud.subjects.includes(subject)) 
         )});
-        console.log({found});
         if(found) {
             setStudent(found);
         } else {

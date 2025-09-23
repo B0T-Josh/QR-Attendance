@@ -7,7 +7,6 @@ export async function POST(req: Request) {
   try {
     //Gets the submitted data.
     const {id} = await req.json();
-    console.log(id);
     //Gets the data from getVerification.
     const { verification, error } = await getVerification(id)
     //If verification is not null, return a message. Otherwise return an error message.

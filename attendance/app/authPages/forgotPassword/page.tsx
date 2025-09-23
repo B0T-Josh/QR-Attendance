@@ -18,7 +18,6 @@ export default function ForgotPassword() {
   async function handleSubmit() {
     setLoading(true);
     const { success, error } = await validateEmail({email: email});
-    console.log(success);
     if(success) {
       //Redirects to the next step of verification
       route.push("/authPages/forgotPassword/validateEmail");   
