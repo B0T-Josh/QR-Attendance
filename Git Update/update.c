@@ -12,6 +12,15 @@ bool fetch(char *branch) {
     return false;
 }
 
+bool use(char *branch) {
+    char command[256];
+    sprintf(command, "git checkout %s", branch);
+    if(system(command) == 0) {
+        return true;
+    }
+    return false;
+}
+
 bool merge(char *branch) {
     char command[256];
     sprintf(command, "git merge origin/%s", branch);
@@ -62,14 +71,15 @@ bool updateAll(char *branch) {
 
 void printError() {
     printf("Syntax:\n\tupdate [command] [option]\n"); 
-    printf("Command\n\t['-a', '-c', '-p', '-f', '-m', '-A']\n");
+    printf("Command\n\t['-a', '-c', '-p', '-f', '-m', '-A', '-P', '-u']\n");
     printf("Option\n\t- -a - type the name of the file that you wanted to add changes into.\n\t");
     printf("- -c - type the message for the commit.\n\t");
     printf("- -p - you need to type the branch to where you will push your work. This pushes your updates to the remote branch.\n\t");
     printf("- -f - you need to type the branch that you want to fetch. This fetches updates from the remote branch.\n\t");
     printf("- -m - you need to type the branch that you want to merge with. This merges your local repository with the updates from the remote branch.\n\t");
     printf("- -A - you don't need to type anything after it. This will fetch, merge, add changes, commit and push with one command.\n\t");
-    printf("- -P - you need to type the branch that you want to fetch and merge. This fetches updates and merges it from the remote branch to your local repository.\n");
+    printf("- -P - you need to type the branch that you want to fetch and merge. This fetches updates and merges it from the remote branch to your local repository.\n\t");
+    printf("- -u - you need to type the branch that you want to use. This uses the branch version and makes you edit the content of that branch without harming or editing the other branches.\n");
     printf("Usage:\n\tupdate -a <filename> / . (to add all changes)\n\t");
     printf("- update -a [filename] / . (to add all changes)\n\t");
     printf("- update -c [comment/message]\n\t");
@@ -82,7 +92,8 @@ void printError() {
     printf("- update -f [branch] -m [branch]\n\t");
     printf("- update -a [filename/.] -c [comment/message] -p [branch]\n\t");
     printf("- update -A [branch]\n\t");
-    printf("- update -P [branch]\n");
+    printf("- update -P [branch]\n\t");
+    printf("- update -u [branch]\n");
     printf("\nImportant note:\nMake sure to fetch and merge before you work on any file.\n");
     printf("Push everytime you finish a file\n");
 }
@@ -146,6 +157,14 @@ int start(int argc, char *argv[]) {
                     }
                 } else {
                     printf("Failed to update all\n"); 
+                    return 0;
+                }
+            } else if(strncmp(argv[i], "-u", 2) == 0) {
+                if(argv[i+1] == NULL) return 0;
+                if(use(argv[i+1])) {
+                    printf("using %s\n", argv[i+1]);
+                } else {
+                    printf("Failed to use %s\n", argv[i+1]); 
                     return 0;
                 }
             } 
