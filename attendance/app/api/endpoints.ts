@@ -54,7 +54,7 @@ export async function addUser(info: AccountProf) {
     }
     if(await addTeacher(prof.id, info.name)){
         return ({success: "Profile was successfully created"});
-    } else return ({error: "Creating profile failed"});
+    } else return ({error: "Profile already existed"});
 }
 
 //Adds the name of the teacher to the teacher table from the database.

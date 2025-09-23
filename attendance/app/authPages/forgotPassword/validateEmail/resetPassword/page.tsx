@@ -54,7 +54,11 @@ export default function ForgotPassword() {
     }
 
     useEffect(() => {
-        setLoaded(true);
+        if(localStorage.getItem("email")) {
+            setLoaded(true);
+        } else {
+            route.push("/authPages/forgotPassword");
+        }
     }, []);
     
     return (

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getAllRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
+import { getAllRecords, getStudentByTeacherID, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 
@@ -44,7 +44,7 @@ export default function HomePage() {
     const [hidden, setHidden] = useState(false);
 
     const get = async () => {
-        const res = await getStudents();
+        const res = await getStudentByTeacherID({teacher_id: id});
         setStudents(res.data || []);
     };
 
@@ -68,7 +68,6 @@ export default function HomePage() {
             const {success} = await validateTeacher({uid: localStorage.getItem("id")});
             if(success) {
                 setId(localStorage.getItem("id"));
-                get();
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");
@@ -94,6 +93,7 @@ export default function HomePage() {
             }
             getSubject();
         }
+        get();
     }, [id]);
 
     useEffect(() => {
