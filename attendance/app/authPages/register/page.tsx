@@ -23,30 +23,25 @@ export default function RegisterPage() {
 
   //Process registation
   const handleSubmit = async () => {
-    try {
-      if(info.email && info.password && info.name && password) {
-        if(emailRegex.test(info.email)) {
-          if(password === info.password) {
-            setLoading(true);
-            const data = await register({email: info.email, password: info.password, name: info.name});
-            if(data.success) {
-              route.push("/authPages/login");
-            } else {
-              setContent(<p className="text-red-500">{data.error}</p>);
-              setLoading(false);
-            }
+    if(info.email && info.password && info.name && password) {
+      if(emailRegex.test(info.email)) {
+        if(password === info.password) {
+          setLoading(true);
+          const data = await register({email: info.email, password: info.password, name: info.name});
+          if(data.success) {
+            route.push("/authPages/login");
           } else {
-            setContent(<p className="text-red-500">{"Password and Confirm password doesn't match"}</p>);
+            setContent(<p className="text-red-500">{data.error}</p>);
+            setLoading(false);
           }
         } else {
-          setContent(<p className="text-red-500">Enter valid email account</p>);
-
+          setContent(<p className="text-red-500">{"Password and Confirm password doesn't match"}</p>);
         }
       } else {
-        setContent(<p className="text-red-500">Enter an email account and password</p>);
+        setContent(<p className="text-red-500">Enter valid email account</p>);
       }
-    } catch (error) {
-      alert("Profile creation unsuccessful");
+    } else {
+      setContent(<p className="text-red-500">Enter an email account and password</p>);
     }
   };
 
