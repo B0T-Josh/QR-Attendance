@@ -273,3 +273,13 @@ export async function removeStudent(student_id: string, teacher_id: string) {
         return ({error: "Failed to remove student"});
     }
 }
+
+export async function updateSubjectForStudent(student_id: string, teacher_id: string, subjects: string) {
+    const {error} = await supabase.from("students").select("id").eq("student_id", student_id).eq("teacher_id", teacher_id);
+    if(!error) {
+        await supabase.from("students").update({subjects: subjects}).eq("student_id", student_id);
+        return ({success: "Subject successfully updated"});
+    } else {
+        return({error: "Student doesn't exist"});
+    }
+}
