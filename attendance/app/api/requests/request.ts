@@ -307,19 +307,3 @@ export async function getAllRecords(info: {teacher_id: string | null}) {
     } 
     return ({error: error});
 }
-
-//Verify if the student is enrolled or exist.
-export async function verifyStudentData(info: {name: string | null, student_id: string | null, subjects: string | null}) {
-    //Pass the submitted data to the URL.
-    const res = await fetch("/api/verifyStudentData", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify(info)
-    });
-    //Processes response from URL.
-    const {data, error} = await res.json();
-    if(res.ok) {
-        return ({data: data});
-    } 
-    return ({error: error});
-}

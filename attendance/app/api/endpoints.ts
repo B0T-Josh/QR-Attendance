@@ -218,15 +218,6 @@ export async function getAllRecords(teacher_id:string) {
 }
 
 //Verify if the student is existing
-export async function verifyStudentData(name: string, student_id: string, subject: string) {
-    const {data} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", student_id.trim()).ilike("name", `%${name.trim()}%`).ilike("subjects", `%${subject.trim()}%`).maybeSingle();
-    console.log(data);
-    if(data) {
-        return ({data: data});
-    } return ({error: "Student doesn't exist"});
-}
-
-//Verify if the student is existing
 export async function verifyStudent(student_id: string, teacher_id: string) {
     const {data} = await supabase.from("students").select("id").eq("student_id", student_id.trim()).eq("teacher_id", teacher_id).maybeSingle();
     console.log(data);
