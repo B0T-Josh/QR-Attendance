@@ -66,6 +66,12 @@ export default function Records() {
     setTempRecord(recordList);
   }, [recordList]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 1000);
+  }, [tempRecord]);
+
   function refreshRecord() {
     setRecordList(tempRecord);
   }
@@ -114,7 +120,6 @@ export default function Records() {
             route.push("/authPages/login");
         } 
         setId(localStorage.getItem("id"));
-        setLoaded(true);
       }
       validate();
   }, []);

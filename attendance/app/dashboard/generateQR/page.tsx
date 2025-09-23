@@ -12,7 +12,8 @@ export default function StudentRecords() {
     const route = useRouter();
     const [loaded, setLoaded] = useState(false);
     const [hidden, setHidden] = useState(false);
-    
+    const [id, setId] = useState<string | null>(null);
+
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
@@ -20,7 +21,7 @@ export default function StudentRecords() {
         async function validate() {
             const {success} = await validateTeacher({uid: localStorage.getItem("id")});
             if(success) {
-                setLoaded(true);
+                setId(localStorage.getItem("id"));
             } else {
                 localStorage.removeItem("id");
                 route.push("/authPages/login");
@@ -28,6 +29,12 @@ export default function StudentRecords() {
         }
         validate();
     }, []);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoaded(true);
+        }, 1000);
+    }, [id]);
 
     function hide() {
         if(!hidden) {

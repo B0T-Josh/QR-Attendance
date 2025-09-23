@@ -23,6 +23,7 @@ type Students = {
 
 export default function StudentRecords() {
   const route = useRouter();
+  const [loaded, setLoaded] = useState(false);
   const [student, setStudent] = useState({
     student_id: "",
     name: "",
@@ -46,6 +47,12 @@ export default function StudentRecords() {
     if(tempStudents.length > 0) return;
     setTempStudents(students);
   }, [students]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoaded(true);
+    }, 1000);
+  }, [tempStudents]);
 
   async function getStudentById() {
     const res = await getStudentByTeacherID({teacher_id: id});
@@ -184,96 +191,98 @@ export default function StudentRecords() {
           <ToggleSidebar onToggle={hide}/>
       </div>
       {hidden ? <div className="w-10"></div> : <Sidebar />}
-      <div className="flex flex-col items-center flex-1 p-8 gap-8">
+      {loaded ? (
+        <div className="flex flex-col items-center flex-1 p-8 gap-8">
         {content}
-        <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-          <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
-            {/* <label className="block mb-2">Enter Student ID:</label> */}
-            <input
-              type="text"
-              onChange={handleChange}
-              placeholder="Enter student ID"
-              className="p-2 rounded-lg"
-              name="student_id"
-              value={student.student_id}
-            />
+          <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
+            <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
+              {/* <label className="block mb-2">Enter Student ID:</label> */}
+              <input
+                type="text"
+                onChange={handleChange}
+                placeholder="Enter student ID"
+                className="p-2 rounded-lg"
+                name="student_id"
+                value={student.student_id}
+              />
 
-            {/* <label className="block mb-2">Enter Student Name:</label> */}
-            <input
-              type="text"
-              onChange={handleChange}
-              placeholder="SURNAME, Firstname M.I."
-              className="p-2 rounded-lg"
-              name="name"
-              value={student.name}
-            />
+              {/* <label className="block mb-2">Enter Student Name:</label> */}
+              <input
+                type="text"
+                onChange={handleChange}
+                placeholder="SURNAME, Firstname M.I."
+                className="p-2 rounded-lg"
+                name="name"
+                value={student.name}
+              />
 
-            {/* <label className="block mb-2">Enter Subject:</label> */}
-            <input
-              type="text"
-              onChange={handleChange}
-              placeholder="Enter subject"
-              className="p-2 rounded-lg"
-              name="subjects"
-              value={student.subjects}
-            />
-            
-            
+              {/* <label className="block mb-2">Enter Subject:</label> */}
+              <input
+                type="text"
+                onChange={handleChange}
+                placeholder="Enter subject"
+                className="p-2 rounded-lg"
+                name="subjects"
+                value={student.subjects}
+              />
+              
+              
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-between">
+            <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
+                Add
+            </button>
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-yellow-500"
+              onClick={handleSearch}
+              disabled={loading}
+            >
+              Search
+            </button>
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-red-500"
+              onClick={handleRemove}
+              disabled={loading}
+            >
+              Remove
+            </button>
+          </div>
+
+          {/* Students Table */}
+          <div className="w-full max-w-5xl rounded-lg overflow-auto">
+            <table className="table-auto border-collapse border-[#8d8a8a] w-full">
+              <thead>
+                <tr>
+                  <th className="border border-gray-400 px-4 py-2">Student ID</th>
+                  <th className="border border-gray-400 px-4 py-2">Name</th>
+                  <th className="border border-gray-400 px-4 py-2">Subject</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.length > 0 ? (
+                  students.map((s) => (
+                    <tr key={s.id} className="text-center">
+                      <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
+                      <td className="border border-gray-400 px-4 py-2">{s.name}</td>
+                      <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
+                      No students found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
-
-        <div className="flex flex-row justify-between">
-          <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
-              Add
-          </button>
-
-          <button
-            className="px-4 py-2 text-gray-600 hover:text-yellow-500"
-            onClick={handleSearch}
-            disabled={loading}
-          >
-            Search
-          </button>
-
-          <button
-            className="px-4 py-2 text-gray-600 hover:text-red-500"
-            onClick={handleRemove}
-            disabled={loading}
-          >
-            Remove
-          </button>
-        </div>
-
-        {/* Students Table */}
-        <div className="w-full max-w-5xl rounded-lg overflow-auto">
-          <table className="table-auto border-collapse border-[#8d8a8a] w-full">
-            <thead>
-              <tr>
-                <th className="border border-gray-400 px-4 py-2">Student ID</th>
-                <th className="border border-gray-400 px-4 py-2">Name</th>
-                <th className="border border-gray-400 px-4 py-2">Subject</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.length > 0 ? (
-                students.map((s) => (
-                  <tr key={s.id} className="text-center">
-                    <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
-                    <td className="border border-gray-400 px-4 py-2">{s.name}</td>
-                    <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
-                    No students found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ) : (<></>)}
     </div>
   );
 }
