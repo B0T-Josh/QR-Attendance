@@ -9,7 +9,8 @@ import {
   handleRemoveStudent,
   validateTeacher,
   verifyStudent,
-  getStudentByTeacherID
+  getStudentByTeacherID,
+  updateSubject
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
@@ -83,6 +84,15 @@ export default function StudentRecords() {
     validate();
     }, []);
 
+  function resetInput() {
+    setStudent({
+      ...student,
+      student_id: "",
+      name: "",
+      subjects: ""
+    });
+  }
+
   async function handleAdd() {
     setLoading(true);
     if (student.name && student.student_id && student.subjects) {
@@ -102,12 +112,7 @@ export default function StudentRecords() {
             });
             if(success) {
               setContent(<p className="text-green-300">Student is added</p>);
-              setStudent({
-                ...student,
-                student_id: "",
-                name: "",
-                subjects: ""
-              });
+              resetInput();
               getStudentById();
               setLoading(false);
             } else {
@@ -115,12 +120,7 @@ export default function StudentRecords() {
               setLoading(false);
             }
           } else if(exist) {
-            setStudent({
-              ...student,
-              student_id: "",
-              name: "",
-              subjects: ""
-            });
+            resetInput();
             setContent(<p className="text-red-500">Student exist</p>);
             setLoading(false);
           }
@@ -143,12 +143,7 @@ export default function StudentRecords() {
           <p className="text-red-500">{error}</p>
         )
       );
-      setStudent({
-        ...student,
-        student_id: "",
-        name: "",
-        subjects: ""
-      });
+      resetInput();
       getStudentById();
       setLoading(false);
     } else {
@@ -168,6 +163,22 @@ export default function StudentRecords() {
     });
     setStudents(studentList);
     setLoading(false);
+  }
+
+  async function handleUpdate() {
+    setLoading(true);
+    if(student.student_id && student.subjects && id) {
+      const {success, error} = await updateSubject({student_id: student.student_id, teacher_id: id, subjects: student.subjects});
+      if(success) {
+        resetInput();
+        setContent(<p className="text-green-300">{success}</p>);
+        getStudentById();
+        setLoading(false);
+      } else {
+        setContent(<p className="text-green-300">{error}</p>);
+        setLoading(false);
+      }
+    }
   }
 
   useEffect(() => {
@@ -193,7 +204,8 @@ export default function StudentRecords() {
       {hidden ? <div className="w-10"></div> : <Sidebar />}
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
-        {content}
+          {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
+          {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
             <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
               {/* <label className="block mb-2">Enter Student ID:</label> */}
@@ -249,6 +261,14 @@ export default function StudentRecords() {
               disabled={loading}
             >
               Remove
+            </button>
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-green-300"
+              onClick={handleUpdate}
+              disabled={loading}
+            >
+              Update
             </button>
           </div>
 

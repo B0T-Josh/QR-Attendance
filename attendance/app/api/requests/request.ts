@@ -307,3 +307,19 @@ export async function getAllRecords(info: {teacher_id: string | null}) {
     } 
     return ({error: error});
 }
+
+export async function updateSubject(info: {teacher_id: string | null, student_id: string | null, subjects: string | null}) {
+    //Pass the submitted data to the URL.
+    const res = await fetch("/api/updateSubject", {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
+    });
+    //Processes response from URL.
+    const {success, error} = await res.json();
+    if(res.ok) {
+        return ({success: success});
+    } 
+    return ({error: error});
+}
+
