@@ -13,7 +13,7 @@ type Student = {
 export default function QRGenerator() {
     const [profile, setProfile] = useState<string | null>(null);
     const [errorBool, setErrorBool] = useState(false);
-    const [student_id, setStudentId] = useState<string | null>(null);
+    const [studentId, setStudentId] = useState<string | null>(null);
     const [finalProfile, setFinalProfile] = useState({
         name : "",
         student_id : ""
@@ -25,7 +25,12 @@ export default function QRGenerator() {
 
     const handleIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        setStudentId(value);
+        if (typingTimeout.current) {
+            clearTimeout(typingTimeout.current);
+        }
+        typingTimeout.current = setTimeout(() => {
+            setStudentId(value);
+        }, 1000);
     };
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,20 +45,20 @@ export default function QRGenerator() {
     
     useEffect(() => {
         setErrorBool(false);
-        if(profile && student_id) {
+        if(profile && studentId) {
             const data = format(profile);
             if(data) {
                 if(data.error) {
                     setError(<p className="text-red-500">{data.error}</p>);
                     return;
                 } else if(data.formatted) {
-                    const found = studentList.find(item => ((item.student_id === student_id) && (item.name === data.formatted)));
+                    const found = studentList.find(item => ((item.student_id === studentId) && (item.name === data.formatted)));
                     if(found) {
                         if(data.formatted) {
                             setFinalProfile(prev => ({
                                 ...prev,
                                 name: data.formatted,
-                                student_id: student_id || ""
+                                student_id: studentId || ""
                             }))
                         } else {
                             setErrorBool(true);
@@ -72,7 +77,7 @@ export default function QRGenerator() {
                 }
             }
         }
-    }, [profile])
+    }, [profile, studentId])
 
     useEffect(() => {
         if(studentList.length > 0) return;

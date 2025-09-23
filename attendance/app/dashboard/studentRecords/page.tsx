@@ -4,10 +4,11 @@ import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { getRecords, validateTeacher, getSubjects, getAllRecords } from "@/app/api/requests/request";
+import { validateTeacher, getSubjects, getAllRecords } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
+import ToggleSidebar from "@/components/ToggleSidebar";
 
 type Record = {
   id: string | null | undefined;
@@ -50,6 +51,7 @@ export default function Records() {
   const [attendees, setAttendees] = useState<Attendance[] | []>([]);
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
   const [tempRecord, setTempRecord] = useState<RecordList[] | []>([]);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     if (!record) return;
@@ -102,6 +104,7 @@ export default function Records() {
   }
 
   useEffect(() => {
+    setLoading(true);
       if(parseInt(getId() || '0') <= 0) {
           route.push("/authPages/login");
       }
@@ -135,14 +138,16 @@ export default function Records() {
   }, [search, attendance]);
 
   useEffect(() => {
+    if(!id) return;
     async function getAll() {
-      const res = await getAllRecords();
+      const res = await getAllRecords({teacher_id: id});
       const data: Record[] | [] = res.data;
       if(data.length > 0) {
-          setRecord(data);
+        setRecord(data);
       }
     }
     getAll();
+    setLoading(false);
   }, [subjects]);
 
   useEffect(() => {
@@ -174,11 +179,22 @@ export default function Records() {
     setTimeout(() => {
       setContent(null);
     }, 2000);
-  }, [content])
+  }, [content]);
+
+  function hide() {
+    if(!hidden) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen min-w-screen">
-      <Sidebar />
+      <div className="z-50">
+          <ToggleSidebar onToggle={hide}/>
+      </div>
+      {hidden ? <div className="w-10"></div> : <Sidebar />}
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
           {content}

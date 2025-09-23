@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
-import { verifyStudentData } from "../endpoints";
+import { verifyStudent } from "../endpoints";
 
 //Connected to /api/requests/request/verifyStudentData.
 export async function POST(req: Request) {
     //Checks the request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid Method"}, {status: 400});
     //Gets the submitted data.
-    const {name, student_id, subjects} = await req.json();
+    const {student_id, teacher_id} = await req.json();
     //Gets the response of verifyStudent from endpoints.
-    const {data, error} = await verifyStudentData(student_id, name, subjects);
+    const {exist, empty} = await verifyStudent(student_id, teacher_id);
     //If data exist, the student exist. Otherwise return an error message.
-    if(data) {
-        return NextResponse.json({data: data}, {status: 200});
+    if(exist) {
+        return NextResponse.json({exist: exist}, {status: 200});
     } else {
-        return NextResponse.json({error: error}, {status: 400});
+        return NextResponse.json({empty: empty}, {status: 200});
     }
 }

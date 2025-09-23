@@ -6,10 +6,12 @@ import {useState, useEffect} from 'react';
 import { useRouter } from 'next/navigation';
 import { getId } from "@/tools/getId"
 import { validateTeacher } from "@/app/api/requests/request";
+import ToggleSidebar from "@/components/ToggleSidebar";
 
 export default function StudentRecords() {
     const route = useRouter();
     const [loaded, setLoaded] = useState(false);
+    const [hidden, setHidden] = useState(false);
     
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
@@ -26,11 +28,20 @@ export default function StudentRecords() {
         }
         validate();
     }, []);
+
+    function hide() {
+        if(!hidden) {
+            setHidden(true);
+        } else {
+            setHidden(false);
+        }
+    }
     
     return (
         <div className="flex">
             <div className="z-50">
-                <Sidebar />
+                <ToggleSidebar onToggle={hide}/>
+                {hidden ? <div className="w-10"></div> : <Sidebar />}
             </div>
             
             {loaded ? (
@@ -38,7 +49,6 @@ export default function StudentRecords() {
                     <QRGenerator />
                 </div>
             ) : <p></p>}
-            
         </div>
     );
 }

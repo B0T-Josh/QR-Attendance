@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { scanned, validateTeacher, verifyStudentData } from "@/app/api/requests/request";
+import { getStudentByTeacherID, scanned, validateTeacher, verifyStudentData } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
@@ -27,6 +27,7 @@ export default function QRScanner() {
     const [loading, setLoading] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [student, setStudent] = useState<Student | null>(null);
+    const [students, setStudents] = useState<Student[] | []>([]);
 
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
@@ -61,6 +62,11 @@ export default function QRScanner() {
         setSubject(e.target.value);
     }
 
+    async function getStudentById() {
+        const res = await getStudentByTeacherID({teacher_id: id});
+        setStudents(res.data || []);
+    }
+
     useEffect(() => {
         if(!id) return;
         if(subject) return;
@@ -69,6 +75,8 @@ export default function QRScanner() {
             setSubjects(res.data);
         }
         verifySubject();
+        if(students.length > 0) return;
+        getStudentById();
     }, [id]);
 
     useEffect(() => {
@@ -81,19 +89,17 @@ export default function QRScanner() {
         }
         setLoading(true);
         const [name, student_id] = scannedData.split(" | ");
-        async function verifyStudent() {
-            const {data, error} = await verifyStudentData({name: name, student_id: student_id, subjects: subject});
-            if(data) {
-                setStudent(data);
-            } else {
-                setLoading(false);
-                setContent(<p className="text-red-500">{error}</p>);
-                setTimeout(() => {
-                    setContent(null);
-                }, 2000);
-            }
+        const found = students.find((stud) => {return (
+            (name == stud.name) &&
+            (student_id == stud.student_id) &&
+            (stud.subjects.includes(subject)) 
+        )});
+        console.log({found});
+        if(found) {
+            setStudent(found);
+        } else {
+            setContent(<p className="text-red-500">Student doesn't exist</p>);
         }
-        verifyStudent();
     }, [scannedData]);
 
     useEffect(() => {  
@@ -102,22 +108,22 @@ export default function QRScanner() {
         const found = student_subject?.includes(subject);
         if(found) {
             const handleAdd = async () => {
-                const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject });
+                const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject, teacher_id: id });
                 setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
-                setTimeout(() => {
-                    setContent(null);
-                }, 2500);
-                setLoading(false);
             };
             handleAdd();
         } else {
             setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
-            setTimeout(() => {
-                setContent(null);
-            }, 2500);
-            setLoading(false);
         }
     }, [student]);
+
+    useEffect(() => {
+        if(!content) return;
+        setTimeout(() => {
+            setContent(null);
+        }, 2500);
+        setLoading(false);
+    }, [content]);
 
     return (
         <div className="fixed inset-0 flex flex-col justify-center items-center h-screen">

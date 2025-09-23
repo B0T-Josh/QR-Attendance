@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { getAllRecords } from "../endpoints";
 
-export async function GET(req: Request) {
-    const {data, error} = await getAllRecords();
+export async function POST(req: Request) {
+    const {teacher_id} = await req.json();
+    const {data, error} = await getAllRecords(teacher_id);
     if(data) {
         return NextResponse.json({data: data}, {status: 200});
     } else if(error) {

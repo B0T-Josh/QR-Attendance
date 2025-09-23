@@ -5,7 +5,7 @@ import { addStudent, getAllStudent, removeStudent } from "../endpoints";
 export async function GET() {
   const {data, error} = await getAllStudent();
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+  if (error) return NextResponse.json({ error: error }, { status: 400 });
 
   return NextResponse.json({ data }, {status: 200});
 }
@@ -28,13 +28,13 @@ export async function POST(req: Request) {
 
 // DELETE: remove a student
 export async function DELETE(req: Request) {
-  const {student_id} = await req.json();
+  const {student_id, teacher_id} = await req.json();
 
   if (!student_id) {
     return NextResponse.json({ error: "Missing student_id or user_id" }, { status: 400 });
   }
 
-  const {success, error} = await removeStudent(student_id);
+  const {success, error} = await removeStudent(student_id, teacher_id);
 
   if (success) return NextResponse.json({ success: success }, { status: 200 });
 

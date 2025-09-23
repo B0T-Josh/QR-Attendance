@@ -26,6 +26,7 @@ type Student = {
     name: string | null;
     student_id: string | null;
     subjects: string | null;
+    teacher_id: string | null;
 }
 
 type Account = {
@@ -38,10 +39,6 @@ type Account = {
 type AccountProf = {
     email: string | null;
     password: string | null;
-    name: string | null;
-}
-
-type Subjects = {
     name: string | null;
 }
 
@@ -79,9 +76,9 @@ export async function getVerification(id: string | null) {
 }
 
 //Adds attendance record for students aftter scanning the QR.
-export async function addRecord(student_id: string, subjects: string, name: string) {
+export async function addRecord(student_id: string, subjects: string, name: string, teacher_id: string) {
     if(await validateSubject(subjects)) {
-        await supabase.from('attendance').insert({student_id: student_id, name: name, subject: subjects, time_in: getTime()});
+        await supabase.from('attendance').insert({student_id: student_id, name: name, subject: subjects, time_in: getTime(), teacher_id: teacher_id});
         return ({success: "Attendance recorded for " + name});
     } else {
         return({error: "Failed to record attendance. Student " + name});
@@ -213,62 +210,75 @@ export async function getRecords(subject: string) {
 }
 
 
-export async function getAllRecords() {
-    const {data, error} = await supabase.from("attendance").select("*");
+export async function getAllRecords(teacher_id:string) {
+    const {data, error} = await supabase.from("attendance").select("*").eq("teacher_id", teacher_id);
     if(data) {
         return ({data: data});
     } return ({error: error});
 }
 
 //Verify if the student is existing
-export async function verifyStudentData(info: Student) {
-    const {data} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", info.student_id).ilike("name", `%${info.name}%`).ilike("subjects", `%${info.subjects}%`).single();
+export async function verifyStudentData(name: string, student_id: string, subject: string) {
+    const {data} = await supabase.from("students").select("student_id, name, subjects").eq("student_id", student_id.trim()).ilike("name", `%${name.trim()}%`).ilike("subjects", `%${subject.trim()}%`).maybeSingle();
+    console.log(data);
     if(data) {
         return ({data: data});
     } return ({error: "Student doesn't exist"});
 }
 
-//Get all students.
-export async function getAllStudent() {
-    const { data, error } = await supabase.from("students").select("*");
+//Verify if the student is existing
+export async function verifyStudent(student_id: string, teacher_id: string) {
+    const {data} = await supabase.from("students").select("id").eq("student_id", student_id.trim()).eq("teacher_id", teacher_id).maybeSingle();
+    console.log(data);
     if(data) {
-        return ({data});
-    } else {
-        return ({error});
-    }
+        return ({exist: "Student exist"});
+    } return ({empty: "Student doesn't exist"});
 }
 
 //Get selected students.
-export async function getStudent(info: Student) {
-    let query = supabase.from("students").select("*");
-    if(info.student_id) {
-        query = query.ilike("student_id", `%${info.student_id}%`);
-    } 
-    if(info.name) {
-        query = query.ilike("name", `%${info.name}%`);
-    }
-    if(info.subjects) {
-        query = query.ilike("subjects", `%${info.subjects}%`);
-    }
-    const {data} = await query;
+export async function getStudent(subject: string) {
+    const {data} = await supabase.from("students").select("id, student_id, name, subjects").ilike("subjects", `%${subject}%`);
     if(data) {
         return ({data});
     } else {
         return ({error: "Student doesn't exist"});
     }
 }
+
+//Get selected students.
+export async function getStudentByTeacherID(teacher_id: string) {
+    const {data} = await supabase.from("students").select("id, student_id, name, subjects").eq("teacher_id", teacher_id);
+    if(data) {
+        return ({data});
+    } else {
+        return ({error: "No data found"});
+    }
+}
+
+export async function getAllStudent() {
+    const {data} = await supabase.from("students").select("*");
+    if(data) {
+        return ({data});
+    } else {
+        return ({error: "Student doesn't exist"});
+    }
+}
+
 //Add students to the database.
 export async function addStudent(info: Student) {
-    const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects});
+    console.log({info});
+    const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects, teacher_id: info.teacher_id});
+    console.log({error});
     if(!error) {
         return({success: `Student ${info.name} is added`});
     } else {
         return({error: "Failed to add student"});
     }
 }
+
 //Remove student from the table.
-export async function removeStudent(student_id: string) {
-    const { error } = await supabase.from("students").delete().eq("student_id", student_id);
+export async function removeStudent(student_id: string, teacher_id: string) {
+    const { error } = await supabase.from("students").delete().eq("student_id", student_id).eq("teacher_id", teacher_id);
     if(!error) {
         return ({success: `Student ${student_id} was deleted`});
     } else {

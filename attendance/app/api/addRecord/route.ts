@@ -5,7 +5,7 @@ import { addRecord, checkDate, timeOut } from "../endpoints"; // adjust path to 
 export async function POST(req: Request) {
   try {
     //Gets the data that was submitted.
-    const {student_id, subjects, name} = await req.json();
+    const {student_id, subjects, name, teacher_id} = await req.json();
     //Check if date was existing for the student.
     if(await checkDate(student_id, subjects)){
       //If date is existing sets time out for the student
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: `Already have time out for student ${name}`}, {status: 400});
     } 
     //If student doesn't have a record for the day, it sets a record for the student.
-    const { success, error } = await addRecord(student_id, subjects, name);
+    const { success, error } = await addRecord(student_id, subjects, name, teacher_id);
     if(success){
       return NextResponse.json({ success: success}, {status: 200});
     } else {

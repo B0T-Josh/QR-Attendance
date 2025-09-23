@@ -41,6 +41,7 @@ export default function HomePage() {
     const [subjects, setSubjects] = useState<Subjects[] | []>([]);
     const [record, setRecord] = useState<Record[] | []>([]);
     const [students, setStudents] = useState<Students[]>([]);
+    const [hidden, setHidden] = useState(false);
 
     const get = async () => {
         const res = await getStudents();
@@ -48,9 +49,10 @@ export default function HomePage() {
     };
 
     useEffect(() => {
+        if(!id) return;
         async function getAll() {
-            const res = await getAllRecords();
-            const data: Record[] | [] = res.data;
+            const res = await getAllRecords({teacher_id: id});
+            const data: Record[] | [] = res.data || [];
             if(data.length > 0) {
                 setRecord(data);
             }
@@ -84,7 +86,6 @@ export default function HomePage() {
             }
         }
         validate();    
-        if(!id) return;
         if(subjects.length == 0) {
             async function getSubject() {
                 const res = await getSubjects({id: id});
@@ -101,12 +102,20 @@ export default function HomePage() {
         }, 1500)
     }, [hasVerification]);
 
+    function hide() {
+        if(!hidden) {
+            setHidden(true);
+        } else {
+            setHidden(false);
+        }
+    }
+
     return (
         <div className="flex min-h-screen">
             <div className="z-50">
-                <ToggleSidebar />
+                <ToggleSidebar onToggle={hide}/>
             </div>
-            <Sidebar />
+            {hidden ? <div className="w-10"></div> : <Sidebar />}
             {loaded ? hasVerification ? (
                 <div className="flex-1 p-6">
                 <div className="flex flex-col md:flex-row gap-6 h-full">

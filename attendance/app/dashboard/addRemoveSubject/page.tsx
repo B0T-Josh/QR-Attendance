@@ -5,6 +5,7 @@ import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId"
 import { handleAddSubject, handleRemoveSubject, getSubjects, validateTeacher } from "@/app/api/requests/request";
+import ToggleSidebar from "@/components/ToggleSidebar";
 
 type Subjects = {
     id: string | null;
@@ -19,6 +20,7 @@ export default function StudentRecords() {
     const [sets, setSets] = useState<Subjects[]>([]);
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [hidden, setHidden] = useState(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value.toUpperCase());
@@ -84,9 +86,20 @@ export default function StudentRecords() {
         }, 1000)
     }, [sets]);
 
+    function hide() {
+        if(!hidden) {
+            setHidden(true);
+        } else {
+            setHidden(false);
+        }
+    }    
+
     return (
         <div className="flex min-h-screen">
-            <Sidebar />
+            <div className="z-50">
+                <ToggleSidebar onToggle={hide}/>
+            </div>
+            {hidden ? <div className="w-10"></div> : <Sidebar />}
             {loaded ? (
                 <div className="flex-1 flex flex-col">
                     <div className="absolute top-1 left-1/2 -translate-x-1/2">

@@ -7,11 +7,13 @@ import { getId } from "@/tools/getId";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  getStudents,
-  getStudent,
-  validateTeacher
+  validateTeacher,
+  getSubjects,
+  verifyStudent,
+  getStudentByTeacherID
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
+import ToggleSidebar from "@/components/ToggleSidebar";
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -29,7 +31,10 @@ export default function StudentRecords() {
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
+  const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
+  const [id, setId] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setStudent({
@@ -38,14 +43,21 @@ export default function StudentRecords() {
     });
   }
 
-  const get = async () => {
-    const res = await getStudents();
+  useEffect(() => {
+    if(tempStudents.length > 0) return;
+    setTempStudents(students);
+  }, [students]);
+
+  async function getStudentById() {
+    const res = await getStudentByTeacherID({teacher_id: id});
     setStudents(res.data || []);
-  };
+  }
 
   useEffect(() => {
-    if((student.name === "" && student.student_id === "" && student.subjects === "")) get();
-  }, [student])
+    if(!id) return;
+    if(students.length > 0) return;
+    getStudentById();
+  }, [id]);
 
   useEffect(() => {
     setLoading(true);
@@ -59,6 +71,7 @@ export default function StudentRecords() {
           localStorage.removeItem("id");
           route.push("/authPages/login");
         }
+        setId(localStorage.getItem("id"));
         setLoading(false);
     }
     validate();
@@ -73,26 +86,38 @@ export default function StudentRecords() {
           setContent(<p className="text-red-500">{formatted?.error}</p>);
         }
         if(formatted.formatted) {
-          const { success, error } = await handleAddStudent({
-            student_id: student.student_id,
-            name: formatted.formatted,
-            subjects: student.subjects.toUpperCase()
-          });
-          setContent(
-            success ? (
-              <p className="text-green-300">{success}</p>
-            ) : (
-              <p className="text-red-500">{error}</p>
-            )
-          );
-          setStudent({
-            ...student,
-            student_id: "",
-            name: "",
-            subjects: ""
-          });
-          get();
-          setLoading(false);
+          const { exist, empty } = await verifyStudent({student_id: student.student_id, teacher_id: id});
+          if(empty) {
+            const { success, error } = await handleAddStudent({
+              student_id: student.student_id,
+              name: formatted.formatted,
+              subjects: student.subjects.toUpperCase(),
+              teacher_id: id
+            });
+            if(success) {
+              setContent(<p className="text-green-300">Student is added</p>);
+              setStudent({
+                ...student,
+                student_id: "",
+                name: "",
+                subjects: ""
+              });
+              getStudentById();
+              setLoading(false);
+            } else {
+              setContent(<p className="text-red-500">{error}</p>);
+              setLoading(false);
+            }
+          } else if(exist) {
+            setStudent({
+              ...student,
+              student_id: "",
+              name: "",
+              subjects: ""
+            });
+            setContent(<p className="text-red-500">Student exist</p>);
+            setLoading(false);
+          }
         }
       }
     } else {
@@ -104,7 +129,7 @@ export default function StudentRecords() {
   async function handleRemove() {
     setLoading(true);
     if (student.student_id) {
-      const { success, error } = await handleRemoveStudent({ student_id: student.student_id });
+      const { success, error } = await handleRemoveStudent({ student_id: student.student_id, teacher_id: id });
       setContent(
         success ? (
           <p className="text-green-300">{success}</p>
@@ -118,7 +143,7 @@ export default function StudentRecords() {
         name: "",
         subjects: ""
       });
-      get();
+      getStudentById();
       setLoading(false);
     } else {
       setLoading(false);
@@ -128,19 +153,15 @@ export default function StudentRecords() {
 
   async function handleSearch() {
     setLoading(true);
-    if((student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "")) {
-      setContent(<p className="text-red-500">Enter a value first</p>);
-      setLoading(false);
-      return;
-    }
-    const {data, error} = await getStudent({student_id: student.student_id, name: student.name, subjects: student.subjects.toUpperCase()});
-    if(data) {
-      setStudents(data || []);
-      setLoading(false);
-    } else {
-      setContent(<p className="text-red-500">{error}</p>);
-      setLoading(false);
-    }
+    const studentList: Students[] | [] = tempStudents.filter((stud) => {
+      return (
+        (student.name.trim() === "" || stud.name.includes(student.name.trim())) &&
+        (student.student_id.trim() === "" || stud.student_id === student.student_id) &&
+        (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim()))
+      );
+    });
+    setStudents(studentList);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -150,9 +171,20 @@ export default function StudentRecords() {
       }, 2000);
   }, [content]);
 
+  function hide() {
+      if(!hidden) {
+          setHidden(true);
+      } else {
+          setHidden(false);
+      }
+  }
+
   return (
     <div className="flex">
-      <Sidebar />
+      <div className="z-50">
+          <ToggleSidebar onToggle={hide}/>
+      </div>
+      {hidden ? <div className="w-10"></div> : <Sidebar />}
       <div className="flex flex-col items-center flex-1 p-8 gap-8">
         {content}
         <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">

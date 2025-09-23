@@ -1,11 +1,8 @@
 type Student = {
     name: string | null;
     student_id: string | null;
-    subjects: string;
-}
-
-type Subject = {
-    name: string | null
+    subjects: string | null;
+    teacher_id: string | null;
 }
 
 //Request to add student record.
@@ -196,7 +193,7 @@ export async function validateTeacher(info: {uid: string | null}) {
 }
 
 //Request to add student.
-export async function handleAddStudent(info: {student_id: string | null, name: string | null, subjects: string | null}) {
+export async function handleAddStudent(info: {student_id: string | null, name: string | null, subjects: string | null, teacher_id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "POST",
@@ -211,8 +208,30 @@ export async function handleAddStudent(info: {student_id: string | null, name: s
     return ({error: error});
 }
 
+//Request to add student.
+export async function verifyStudent(info: {student_id: string | null, teacher_id: string | null}) {
+    //Pass the submitted data to the URL.
+    const res = await fetch("/api/verifyStudent", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(info)
+    });
+    //Processes response from URL.
+    const {exist, empty} = await res.json();
+    if(res.ok) {
+        if(exist) {
+            return ({exist: exist});
+        } else {
+            return ({empty: empty});
+        }
+    }
+    return ({error: "Server error"});
+}
+
+
+
 //Request to delete a student from the table.
-export async function handleRemoveStudent(info: {student_id: string | null}) {
+export async function handleRemoveStudent(info: {student_id: string | null, teacher_id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "DELETE",
@@ -242,7 +261,7 @@ export async function getStudents() {
 }
 
 //Get selected student from the database.
-export async function getStudent(info: {student_id: string | null, name: string | null, subjects: string | null}) {
+export async function getStudentByTeacherID(info: {teacher_id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getStudents", {
         method: "POST",
@@ -274,10 +293,12 @@ export async function getRecords(info: {subject: string}) {
 }
 
 //Get all student record.
-export async function getAllRecords() {
+export async function getAllRecords(info: {teacher_id: string | null}) {
     //Pass the submitted data to the URL.
     const res = await fetch("/api/getAllRecords", {
-        method: "GET"
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(info)
     });
     //Processes response from URL.
     const {data, error} = await res.json();
