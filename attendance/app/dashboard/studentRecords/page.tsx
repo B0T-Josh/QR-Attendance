@@ -5,7 +5,6 @@ import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { validateTeacher, getSubjects, getAllRecords } from "@/app/api/requests/request";
-import format from "@/tools/format";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 import ToggleSidebar from "@/components/ToggleSidebar";

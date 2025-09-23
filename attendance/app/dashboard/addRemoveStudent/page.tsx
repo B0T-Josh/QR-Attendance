@@ -8,7 +8,6 @@ import {
   handleAddStudent,
   handleRemoveStudent,
   validateTeacher,
-  getSubjects,
   verifyStudent,
   getStudentByTeacherID
 } from "@/app/api/requests/request";

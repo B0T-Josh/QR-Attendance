@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { getStudentByTeacherID, scanned, validateTeacher, verifyStudentData } from "@/app/api/requests/request";
+import { getStudentByTeacherID, scanned, validateTeacher } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
@@ -98,7 +98,7 @@ export default function QRScanner() {
         if(found) {
             setStudent(found);
         } else {
-            setContent(<p className="text-red-500">Student doesn't exist</p>);
+            setContent(<p className="text-red-500">{"Student doesn't exist"}</p>);
         }
     }, [scannedData]);
 

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getAllRecords, getRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
+import { getAllRecords, getStudents, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 
