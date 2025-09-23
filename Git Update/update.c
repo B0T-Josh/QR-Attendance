@@ -12,6 +12,15 @@ bool fetch(char *branch) {
     return false;
 }
 
+bool use(char *branch) {
+    char command[256];
+    sprintf(command, "git checkout %s", branch);
+    if(system(command) == 0) {
+        return true;
+    }
+    return false;
+}
+
 bool merge(char *branch) {
     char command[256];
     sprintf(command, "git merge origin/%s", branch);
@@ -146,6 +155,14 @@ int start(int argc, char *argv[]) {
                     }
                 } else {
                     printf("Failed to update all\n"); 
+                    return 0;
+                }
+            } else if(strncmp(argv[i], "-u", 2) == 0) {
+                if(argv[i+1] == NULL) return 0;
+                if(use(argv[i+1])) {
+                    printf("using %s\n", argv[i+1]);
+                } else {
+                    printf("Failed to use %s\n", argv[i+1]); 
                     return 0;
                 }
             } 
