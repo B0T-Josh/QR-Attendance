@@ -5,7 +5,9 @@ import jwt from "jsonwebtoken";
 
 // GET: fetch all students for a user
 export async function GET() {
-  const token = (await cookies()).get("token")?.value;
+  const store = await cookies();
+  const token = store.get("token")?.value;
+  
   if(!token) {
     return NextResponse.json({error: "Unauthorized user"}, {status: 401});
   }
@@ -26,7 +28,9 @@ export async function GET() {
 
 // POST: add a student
 export async function POST(req: Request) {
-  const token = (await cookies()).get("token")?.value;
+  const store = await cookies();
+  const token = store.get("token")?.value;
+  
   if(!token) {
     return NextResponse.json({error: "Unauthorized user"}, {status: 401});
   }
@@ -54,8 +58,9 @@ export async function POST(req: Request) {
 
 // DELETE: remove a student
 export async function DELETE(req: Request) {
-
-const token = (await cookies()).get("token")?.value;
+  const store = await cookies();
+  const token = store.get("token")?.value;
+  
   if(!token) {
     return NextResponse.json({error: "Unauthorized user"}, {status: 401});
   }

@@ -5,7 +5,8 @@ import jwt from "jsonwebtoken";
 
 //Connected to /api/requests/request/scanned. This adds student records for the QR that was scanned from scanner.
 export async function POST(req: Request) {
-  const token = (await cookies()).get("token")?.value;
+  const store = await cookies();
+  const token = store.get("token")?.value;
   if(!token) {
     return NextResponse.json({error: "Unauthorized user"}, {status: 401});
   }

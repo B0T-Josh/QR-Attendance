@@ -5,7 +5,9 @@ import jwt from "jsonwebtoken";
 
 //Get all records related to the teacher ID
 export async function POST(req: Request) {
-    const token = (await cookies()).get("token")?.value;
+    const store = await cookies();
+    const token = store.get("token")?.value;
+    
     if(!token) {
         return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }

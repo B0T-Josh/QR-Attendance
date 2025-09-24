@@ -9,7 +9,9 @@ export async function POST(req: Request) {
         return NextResponse.json({error: "Invalid method"});
     }
     
-    const token = (await cookies()).get("token")?.value;
+    const store = await cookies();
+    const token = store.get("token")?.value;
+    
     if(!token) {
         return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }

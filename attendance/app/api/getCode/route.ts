@@ -5,7 +5,11 @@ import jwt from "jsonwebtoken";
 
 //Connected to /api/requests/request/verifyCode. check if the verification code matches for hte account
 export async function POST(req: Request) {
-    const token = (await cookies()).get("token")?.value;
+    if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
+    
+    const store = await cookies();
+    const token = store.get("token")?.value;
+
     if(!token) {
         return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }
@@ -13,7 +17,7 @@ export async function POST(req: Request) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if(decoded) {
-            if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
+            
             const {code, email} = await req.json();
             if(await verifyCode(code, email) > 0) {
                 return NextResponse.json({success: "Recovery code match"}, {status: 200});
