@@ -5,10 +5,10 @@ import { validateTeacher } from "../endpoints";
 export async function POST(req: Request) {
     if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
     const {uid} = await req.json();
-    const {id} = await validateTeacher(uid);
-    if(id) {
-        return NextResponse.json({id: id}, {status: 200});
+    const {exist} = await validateTeacher(uid);
+    if(exist) {
+        return NextResponse.json({exist: exist}, {status: 200});
     } else {
-        return NextResponse.json({error: "There is no user for this ID"}, {status: 400});
+        return NextResponse.json({error: "There is no user for this ID"}, {status: 200});
     }
 }

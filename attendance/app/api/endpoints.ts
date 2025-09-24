@@ -190,7 +190,7 @@ export async function login(info: Account) {
 export async function validateTeacher(id: string) {
     const {data, error} = await supabase.from("account").select("id").eq("id", id).single();
     if(data) {
-        return ({id: data.id});
+        return ({exist: "User exist"});
     } else {
         return ({error: error});
     }

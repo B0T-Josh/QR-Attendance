@@ -164,8 +164,8 @@ export async function validateTeacher(info: {uid: string | null}) {
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    const {id, error} = await res.json();
-    if(id) {
+    const {exist, error} = await res.json();
+    if(exist) {
         return ({success: "User exist"});
     } else {
         return ({error: error});
