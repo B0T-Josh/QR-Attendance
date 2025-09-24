@@ -4,9 +4,8 @@ import Sidebar from "@/components/Sidebar";
 import QRGenerator from "@/components/QRGenerator";
 import {useState, useEffect} from 'react';
 import { useRouter } from 'next/navigation';
-import { getId } from "@/tools/getId"
-import { validateTeacher } from "@/app/api/requests/request";
 import ToggleSidebar from "@/components/ToggleSidebar";
+import {verifyUser} from "@/app/api/requests/request"
 
 export default function StudentRecords() {
     const route = useRouter();
@@ -16,27 +15,33 @@ export default function StudentRecords() {
 
     //Check if th user is authorized.
     useEffect(() => {
-        if(parseInt(getId() || '0') <= 0) {
-            route.push("/authPages/login");
-        }
         async function validate() {
-            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-            if(success) {
-                setId(localStorage.getItem("id"));
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
             } else {
-                localStorage.removeItem("id");
                 route.push("/authPages/login");
             }
         }
         validate();
     }, []);
 
-    //Set loaded as true after setting the id 
     useEffect(() => {
-        setTimeout(() => {
-            setLoaded(true);
-        }, 1000);
-    }, [id]);
+        setLoaded(true);
+    }, []);
+
+    //Check if user is authorized.
+    useEffect(() => {
+        async function validate() {
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
+            } else {
+                route.push("/authPages/login");
+            }
+        }
+        validate();
+    }, [loaded]);
 
     //Set hide status for navbar.
     function hide() {

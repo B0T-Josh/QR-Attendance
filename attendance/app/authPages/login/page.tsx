@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
 import { logIn } from "@/app/api/requests/request";
-import { validateTeacher } from "@/app/api/requests/request";
+import {verifyUser} from "@/app/api/requests/request"
 
 export default function LogIn() {
   const route = useRouter();
@@ -18,22 +18,16 @@ export default function LogIn() {
   });
 
   //Validates the ID of the user that was inside the localstorage
-  useEffect(() => {
-    if(!(localStorage.getItem("id") == null || localStorage.getItem("id") == undefined)) {
+    useEffect(() => {
       async function validate() {
-        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-        if(success) {
-          route.push("/dashboard/homePage");
-        } else {
-          localStorage.removeItem("id");
+          const {success} = await verifyUser();
+          if (success) {
+            route.push("/dashboard/homePage");
+          } 
           setLoaded(true);
-        }
       }
       validate();
-    } else {
-      setLoaded(true);
-    }
-  }, []);
+    }, []);
 
   //Updates credential values
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +41,8 @@ export default function LogIn() {
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
-      const { id, error } = await logIn({email: credentials.email, password: credentials.password});
-      if(id) {
-        localStorage.setItem("id", id);
+      const { success, error } = await logIn({email: credentials.email, password: credentials.password});
+      if(success) {
         route.push("/dashboard/homePage");
       } else {
         setContent(<p className="text-red-500">{error}</p>);

@@ -1,9 +1,5 @@
 
-import { createClient } from '@supabase/supabase-js';
-
-const url = 'https://ubtgylbwwffsjxlnmxdu.supabase.co';
-const key = 'sb_publishable_f44KRWBKnwS3LG4pMhPTgg_27eY9xrJ';
-const supabase = createClient(url, key);
+import { supabase } from "@/lib/supabase/supabaseClient";
 
 // Gets the time when the QR was scanned 
 function getTime() {
@@ -27,13 +23,6 @@ type Student = {
     student_id: string | null;
     subjects: string | null;
     teacher_id: string | null;
-}
-
-type Account = {
-    id: string | null;
-    email: string | null;
-    password: string | null;
-    name: string | null;
 }
 
 type AccountProf = {
@@ -177,9 +166,10 @@ export async function updatePassword(password: string | null, email: string | nu
 }
 
 //Gets the data of the user for verification on log in.
-export async function login(info: Account) {
-    const { data } = await supabase.from("account").select("id, password").eq("email", info.email).eq("password", info.password).single();
+export async function login(email: string, password: string) {
+    const { data } = await supabase.from("account").select("id, password").eq("email", email).eq("password", password).single();
     if(data) {
+
         return ({data: {id: data.id, password: data.password}});
     } else {
         return ({error: "Invlid credentials."});

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { getId } from '@/tools/getId';
+import { verifyUser } from '@/app/api/requests/request';
 import encryptPassword from '../tools/encrypt';
 
 export default function Popup() {
@@ -15,14 +15,23 @@ export default function Popup() {
         confirm: "",
         id: ""
     });
+    const [id, setId] = useState<String | null>(null);
 
     //set Id for verification
     useEffect(() => {
-        setVerification({
-            ...verification,
-            id: getId()
-        });
+        
         setLoaded(true);
+
+        async function validate() {
+            const {success} = await verifyUser();
+            if (success) {
+                setVerification({
+                    ...verification,
+                    id: success.id
+                });
+            }
+        }
+        validate();
     }, []);
 
     //Handle code input and encryption.

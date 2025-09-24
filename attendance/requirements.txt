@@ -2,3 +2,4 @@ install
 @zxing/browser
 qrcode.react
 react-icons
+--save-dev @types/jsonwebtoken

@@ -3,17 +3,16 @@
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getId } from "@/tools/getId";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  validateTeacher,
   verifyStudent,
   getStudentByTeacherID,
   updateSubject
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
+import {verifyUser} from "@/app/api/requests/request"
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -51,13 +50,6 @@ export default function StudentRecords() {
     setTempStudents(students);
   }, [students]);
 
-  //Set loaded to true after the tempStudents has its value.
-  useEffect(() => {
-    setTimeout(() => {
-      setLoaded(true);
-    }, 1000);
-  }, [tempStudents]);
-
   //Get the students that are inserted by the user.
   async function getStudentById() {
     const res = await getStudentByTeacherID({teacher_id: id});
@@ -71,24 +63,23 @@ export default function StudentRecords() {
     getStudentById();
   }, [id]);
 
-  //Checks if user is authorized.
-  useEffect(() => {
-    setLoading(true);
-    if(parseInt(getId() || '0') <= 0) {
-        route.push("/authPages/login");
-    }
-    async function validate() {
-        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-        if(!success) {
-          setLoading(false);
-          localStorage.removeItem("id");
-          route.push("/authPages/login");
-        }
-        setId(localStorage.getItem("id"));
-        setLoading(false);
-    }
-    validate();
+    useEffect(() => {
+        setLoaded(true);
     }, []);
+
+    //Check if user is authorized.
+    useEffect(() => {
+        async function validate() {
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
+            } else {
+                route.push("/authPages/login");
+            }
+        }
+        validate();
+    }, [loaded]);
+
 
   //Resets the input values.
   function resetInput() {

@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
-import { validateTeacher } from "../endpoints";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
-//Connected to /api/requests/request/validateTeacher. Validate if the user exist.
-export async function POST(req: Request) {
-    if(req.method !== "POST") return NextResponse.json({error: "Invalid method"});
-    const {uid} = await req.json();
-    const {exist} = await validateTeacher(uid);
-    if(exist) {
-        return NextResponse.json({exist: exist}, {status: 200});
-    } else {
-        return NextResponse.json({error: "There is no user for this ID"}, {status: 200});
+export async function GET(req: Request) {
+    const store = await cookies();
+    const token = store.get("token")?.value;
+
+    if (!token) return NextResponse.json({error: "Unauthorized user"}, {status: 401});
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+        if (decoded) {
+            const id = store.get("id")?.value;
+            return NextResponse.json({success: id}, {status: 201});
+        }
+        store.delete("token");
+        store.delete("id");
+        return NextResponse.json({error: "Invalid token"}, {status: 401});
+    } catch {
+    return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }
 }

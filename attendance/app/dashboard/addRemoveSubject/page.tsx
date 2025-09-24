@@ -3,9 +3,9 @@
 import Sidebar from "@/components/Sidebar";
 import {useState, useEffect} from 'react';
 import { useRouter } from "next/navigation";
-import { getId } from "@/tools/getId"
-import { handleAddSubject, handleRemoveSubject, getSubjects, validateTeacher } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
 import ToggleSidebar from "@/components/ToggleSidebar";
+import {verifyUser} from "@/app/api/requests/request"
 
 type Subjects = {
     id: string | null;
@@ -33,22 +33,22 @@ export default function StudentRecords() {
         setSets(res.data || []);
     }
 
+    useEffect(() => {
+        setLoaded(true);
+    }, []);
+
     //Check if user is authorized.
     useEffect(() => {
-        if(parseInt(getId() || '0') <= 0) {
-            route.push("/authPages/login");
-        }
         async function validate() {
-            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-            if(success) {
-                setId(localStorage.getItem("id"));
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
             } else {
-                localStorage.removeItem("id");
                 route.push("/authPages/login");
             }
         }
         validate();
-    }, []);
+    }, [loaded]);
     
     //Execute fetching of subjects after the id was set
     useEffect(() => {
@@ -86,13 +86,6 @@ export default function StudentRecords() {
             setContent(null);
         }, 2500);
     }, [content]);
-
-    //Set loaded as true after fetching data
-    useEffect(() => {
-        setTimeout(() => {
-            setLoaded(true);
-        }, 1000)
-    }, [sets]);
 
     //Set hidden status for navbar.
     function hide() {

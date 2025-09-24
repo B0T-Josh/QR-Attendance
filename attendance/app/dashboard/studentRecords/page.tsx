@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef, ChangeEvent } from "react";
-import { getId } from "@/tools/getId"
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { validateTeacher, getSubjects, getAllRecords } from "@/app/api/requests/request";
+import { getSubjects, getAllRecords } from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 import ToggleSidebar from "@/components/ToggleSidebar";
+import {verifyUser} from "@/app/api/requests/request"
 
 type Record = {
   id: string | null | undefined;
@@ -68,13 +68,6 @@ export default function Records() {
     setTempRecord(recordList);
   }, [recordList]);
 
-  //Set to loaded after tempRecord is set
-  useEffect(() => {
-    setTimeout(() => {
-      setLoaded(true);
-    }, 1000);
-  }, [tempRecord]);
-
   //Refresh record list values.
   function refreshRecord() {
     setRecordList(tempRecord);
@@ -116,22 +109,22 @@ export default function Records() {
     });
   }
 
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
+
   //Check if user is authorized.
   useEffect(() => {
-    setLoading(true);
-      if(parseInt(getId() || '0') <= 0) {
+    async function validate() {
+      const {success} = await verifyUser();
+      if (success) {
+          setId(success);
+      } else {
           route.push("/authPages/login");
       }
-      async function validate() {
-        const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-        if(!success) {
-            localStorage.removeItem("id");
-            route.push("/authPages/login");
-        } 
-        setId(localStorage.getItem("id"));
-      }
-      validate();
-  }, []);
+    }
+    validate();
+  }, [loaded]);
 
   //Filter function.
   useEffect(() => {

@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { getStudentByTeacherID, scanned, validateTeacher } from "@/app/api/requests/request";
+import { getStudentByTeacherID, scanned } from "@/app/api/requests/request";
 import { getSubjects } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
-import { getId } from "@/tools/getId";
+import {verifyUser} from "@/app/api/requests/request"
 
 type Subject = {
     id: string;
@@ -28,23 +28,24 @@ export default function QRScanner() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [student, setStudent] = useState<Student | null>(null);
     const [students, setStudents] = useState<Student[] | []>([]);
+    const [loaded, setLoaded] = useState(false);
 
     //Verify user.
     useEffect(() => {
-        if(parseInt(getId() || '0') <= 0) {
-            route.push("/authPages/login");
-        }
+        setLoaded(true);
+    }, []);
+
+    useEffect(() => {
         async function validate() {
-            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-            if(success) {
-                setId(localStorage.getItem("id"));
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
             } else {
-                localStorage.removeItem("id");
                 route.push("/authPages/login");
             }
         }
         validate();
-    }, []);
+    }, [loaded]);
 
     //Setup for the qr scanner.
     useEffect(() => {

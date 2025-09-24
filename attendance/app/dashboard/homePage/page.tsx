@@ -5,11 +5,11 @@ import Popup from "@/components/Popup";
 import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getId } from "@/tools/getId";
 import { useEffect, useState } from "react";
-import { getAllRecords, getStudentByTeacherID, getSubjects, getValidation, validateTeacher } from "@/app/api/requests/request";
+import { getAllRecords, getStudentByTeacherID, getSubjects, getValidation} from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
+import {verifyUser} from "@/app/api/requests/request"
 
 type Subjects = {
   id: string;
@@ -62,26 +62,27 @@ export default function HomePage() {
         getAll();
     }, [subjects]);
 
+    useEffect(() => {
+        setLoaded(true);
+    }, []);
+
     //Check if user is authorized.
     useEffect(() => {
-        if(parseInt(getId() || '0') <= 0) {
-            route.push("/authPages/login");
-        }
         async function validate() {
-            const {success} = await validateTeacher({uid: localStorage.getItem("id")});
-            if(success) {
-                setId(localStorage.getItem("id"));
+            const {success} = await verifyUser();
+            if (success) {
+                setId(success);
             } else {
-                localStorage.removeItem("id");
                 route.push("/authPages/login");
             }
         }
         validate();
-    }, []);
+    }, [loaded]);
 
     //Check if the user has verification, and execute get subject after id was set.
     useEffect(() => {
-        if(id === null) return;
+        if(!id) return;
+        console.log(id);
         async function validate() {
             const { message } = await getValidation({id: id});
             if(message) {
@@ -99,12 +100,8 @@ export default function HomePage() {
         get();
     }, [id]);
 
-    //set to loaded after confirming has verification
-    useEffect(() => {
-        setTimeout(() => {
-            setLoaded(true);
-        }, 1500)
-    }, [hasVerification]);
+
+    
 
     //Set hidden status for navbar.
     function hide() {

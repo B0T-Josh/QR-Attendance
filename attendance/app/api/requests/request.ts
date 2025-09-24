@@ -120,11 +120,24 @@ export async function logIn(info: {email: string | null, password: string | null
       headers: {  'Content-Type': 'application/json' },
       body: JSON.stringify(info)
     });
-    const data = await res.json();
+    const {success, error} = await res.json();
     if(res.ok) {
-        return ({id: data.id});
+        return ({success: success});
     } else {
-        return ({error: data.error});
+        return ({error: error});
+    }
+}
+
+//Request to login.
+export async function logOut() {
+    const res = await fetch('/api/logout', {
+      method: 'POST'
+    });
+    const {success} = await res.json();
+    if(res.ok) {
+        return ({success: success});
+    } else {
+        return ({error: "Server error"});
     }
 }
 
@@ -155,21 +168,6 @@ export async function getValidation(info: {id: string | null}) {
         return ({message: message})
     }
     return ({error: error});
-}
-
-//Get the teacher ID and if ID is verified, the teacher or user is verified.
-export async function validateTeacher(info: {uid: string | null}) {
-    const res = await fetch("/api/verifyUser", {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify(info)
-    });
-    const {exist, error} = await res.json();
-    if(exist) {
-        return ({success: "User exist"});
-    } else {
-        return ({error: error});
-    }
 }
 
 //Request to add student.
@@ -280,6 +278,17 @@ export async function updateSubject(info: {teacher_id: string | null, student_id
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
+    });
+    const {success, error} = await res.json();
+    if(res.ok) {
+        return ({success: success});
+    } 
+    return ({error: error});
+}
+
+export async function verifyUser() {
+    const res = await fetch("/api/verifyUser", {
+        method: "GET"
     });
     const {success, error} = await res.json();
     if(res.ok) {

@@ -2,19 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { logOut } from "@/app/api/requests/request";
 
 
 export default function Sidebar() {
     const route = useRouter();
     const [expanded, setExpanded] = useState(false);
 
-    function handleLogOut() {
-        localStorage.removeItem("id");
-        if(localStorage.getItem("email")) {
-            localStorage.removeItem("email");
+    async function handleLogOut() {
+        const {success, error} = await logOut();
+        if(success) {
             route.push("/authPages/login");
+        } else {
+            alert(error);
         }
-        route.push("/authPages/login");
     }
 
   return (
