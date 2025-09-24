@@ -23,6 +23,7 @@ export default function QRGenerator() {
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
     const [error, setError] = useState<React.ReactElement | null>(null);
 
+    //Handle student id input.
     const handleIDChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (typingTimeout.current) {
@@ -33,6 +34,7 @@ export default function QRGenerator() {
         }, 1000);
     };
 
+    //Handle name input.
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         if (typingTimeout.current) {
@@ -43,15 +45,18 @@ export default function QRGenerator() {
         }, 1000);
     };
     
+    //Handle QR generation.
     useEffect(() => {
         setErrorBool(false);
         if(profile && studentId) {
+            //Formats the student name to SURNAME, Firstname M.I.
             const data = format(profile);
             if(data) {
                 if(data.error) {
                     setError(<p className="text-red-500">{data.error}</p>);
                     return;
                 } else if(data.formatted) {
+                    //Evaluate the student if enrolled.
                     const found = studentList.find(item => ((item.student_id === studentId) && (item.name === data.formatted)));
                     if(found) {
                         if(data.formatted) {
@@ -79,6 +84,7 @@ export default function QRGenerator() {
         }
     }, [profile, studentId])
 
+    //GetAllStudent from the DB.
     useEffect(() => {
         if(studentList.length > 0) return;
         async function getAllStudents() {
@@ -91,11 +97,13 @@ export default function QRGenerator() {
         getAllStudents();
     }, [])
 
+    //Set content value to the encoded profile.
     useEffect(() => {
         if(!finalProfile.name && !finalProfile.student_id) return;
         setContent(`Encoded: ${finalProfile.name} | ${finalProfile.student_id}`);    
-    }, [finalProfile])
+    }, [finalProfile]);
 
+    //Set error bool to false.
     useEffect(() => {
         setTimeout(() => {
             setErrorBool(false);

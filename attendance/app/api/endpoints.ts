@@ -245,6 +245,7 @@ export async function getStudentByTeacherID(teacher_id: string) {
     }
 }
 
+//Fetches all student.
 export async function getAllStudent() {
     const {data} = await supabase.from("students").select("*");
     if(data) {
@@ -274,6 +275,7 @@ export async function removeStudent(student_id: string, teacher_id: string) {
     }
 }
 
+//Updates the subject for a student in the DB.
 export async function updateSubjectForStudent(student_id: string, teacher_id: string, subjects: string) {
     const {error} = await supabase.from("students").select("id").eq("student_id", student_id).eq("teacher_id", teacher_id);
     if(!error) {

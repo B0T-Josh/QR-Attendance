@@ -22,15 +22,18 @@ export default function StudentRecords() {
     const [loading, setLoading] = useState(false);
     const [hidden, setHidden] = useState(false);
 
+    //Handle input
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setSubject(e.target.value.toUpperCase());
     }
 
+    //Fetch all subject for the user.
     const get = async () => {
         const res = await getSubjects({id: id});
         setSets(res.data || []);
     }
 
+    //Check if user is authorized.
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
@@ -47,11 +50,13 @@ export default function StudentRecords() {
         validate();
     }, []);
     
+    //Execute fetching of subjects after the id was set
     useEffect(() => {
         if(!id) return;
         get();
     }, [id]);
     
+    //Handle add subject
     async function handleAdd() {
         setLoading(true);
         if(subject) {
@@ -62,6 +67,7 @@ export default function StudentRecords() {
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
 
+    //Handle remove subject.
     async function handleRemove() {
         setLoading(true);
         if(subject) {
@@ -72,6 +78,7 @@ export default function StudentRecords() {
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
     
+    //Reset content value.
     useEffect(() => {
         if(!content) return;
         setLoading(false);
@@ -80,12 +87,14 @@ export default function StudentRecords() {
         }, 2500);
     }, [content]);
 
+    //Set loaded as true after fetching data
     useEffect(() => {
         setTimeout(() => {
             setLoaded(true);
         }, 1000)
     }, [sets]);
 
+    //Set hidden status for navbar.
     function hide() {
         if(!hidden) {
             setHidden(true);

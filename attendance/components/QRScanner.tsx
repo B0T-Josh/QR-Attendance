@@ -12,9 +12,9 @@ type Subject = {
 }
 
 type Student = {
-    student_id: string;
-    name: string;
-    subjects: string;
+    student_id: string | null;
+    name: string | null;
+    subjects: string | null;
 }
 
 export default function QRScanner() {
@@ -29,6 +29,7 @@ export default function QRScanner() {
     const [student, setStudent] = useState<Student | null>(null);
     const [students, setStudents] = useState<Student[] | []>([]);
 
+    //Verify user.
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
@@ -45,6 +46,7 @@ export default function QRScanner() {
         validate();
     }, []);
 
+    //Setup for the qr scanner.
     useEffect(() => {
         const codeReader = new BrowserQRCodeReader();
 
@@ -58,15 +60,18 @@ export default function QRScanner() {
         }
     }, []);
 
+    //Handle subject selection
     function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
         setSubject(e.target.value);
     }
 
+    //Get all student related to user.
     async function getStudentById() {
         const res = await getStudentByTeacherID({teacher_id: id});
         setStudents(res.data || []);
     }
 
+    //Set subject after setting id.
     useEffect(() => {
         if(!id) return;
         if(subject) return;
@@ -79,6 +84,7 @@ export default function QRScanner() {
         getStudentById();
     }, [id]);
 
+    //Verify student if he/she exist and set the student to the found value.
     useEffect(() => {
         if (!scannedData) {
             return;
@@ -92,36 +98,36 @@ export default function QRScanner() {
         const found = students.find((stud) => {return (
             (name == stud.name) &&
             (student_id == stud.student_id) &&
-            (stud.subjects.includes(subject)) 
+            (stud.subjects?.includes(subject)) 
         )});
         if(found) {
             setStudent(found);
         } else {
+            setLoading(false);
             setContent(<p className="text-red-500">{"Student doesn't exist"}</p>);
+            setStudent(null);
         }
     }, [scannedData]);
 
-    useEffect(() => {  
-        if(!student) return;
-        const student_subject = student?.subjects;
-        const found = student_subject?.includes(subject);
-        if(found) {
-            const handleAdd = async () => {
-                const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject, teacher_id: id });
-                setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
-            };
-            handleAdd();
-        } else {
-            setContent(<p className="text-red-500">Student was not enrolled in this subject</p>);
+    //After setting student, add student to the record.
+    useEffect(() => { 
+        if(!student) {
+            return;
         }
+        const handleAdd = async () => {
+            const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject, teacher_id: id });
+            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+            setLoading(false);
+        };
+        handleAdd();
     }, [student]);
 
+    //Set reset content value.
     useEffect(() => {
         if(!content) return;
         setTimeout(() => {
             setContent(null);
         }, 2500);
-        setLoading(false);
     }, [content]);
 
     return (

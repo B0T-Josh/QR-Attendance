@@ -52,6 +52,7 @@ export default function Records() {
   const [tempRecord, setTempRecord] = useState<RecordList[] | []>([]);
   const [hidden, setHidden] = useState(false);
 
+  //Evaluate if the student is present or not and set the attendees to the value returned.
   useEffect(() => {
     if (!record) return;
     const studentAttendance: Attendance[] = record.map(items => ({
@@ -61,21 +62,25 @@ export default function Records() {
     setAttendees(studentAttendance);
   }, [record]);
 
+  //Sets a remporary record list for record list refresh.
   useEffect(() => {
     if(tempRecord.length > 0) return;
     setTempRecord(recordList);
   }, [recordList]);
 
+  //Set to loaded after tempRecord is set
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
     }, 1000);
   }, [tempRecord]);
 
+  //Refresh record list values.
   function refreshRecord() {
     setRecordList(tempRecord);
   }
 
+  //Sets record list value after attendees is set.
   useEffect(() => {
     if(!attendees) return;
     const students: RecordList[] = record.map(item => ({
@@ -85,6 +90,7 @@ export default function Records() {
     setRecordList(students);
   }, [attendees]);
 
+  //Handle input.
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     if(typeTimeout.current) {
       clearTimeout(typeTimeout.current);
@@ -97,10 +103,12 @@ export default function Records() {
     }, 1000);
   }
 
+  //Handle attendance input
   function handleAttendees(e: ChangeEvent<HTMLSelectElement>) {
     setAttendance(e.target.value);
   }
 
+  //Handle subject input.
   function handleSelect(e: ChangeEvent<HTMLSelectElement>) {
     setSearch({
       ...search,
@@ -108,6 +116,7 @@ export default function Records() {
     });
   }
 
+  //Check if user is authorized.
   useEffect(() => {
     setLoading(true);
       if(parseInt(getId() || '0') <= 0) {
@@ -124,6 +133,7 @@ export default function Records() {
       validate();
   }, []);
 
+  //Filter function.
   useEffect(() => {
     if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && attendance === "") {
       refreshRecord();
@@ -141,6 +151,7 @@ export default function Records() {
     setRecordList(studentList);
   }, [search, attendance]);
 
+  //Fetches all records that are related to the prof. 
   useEffect(() => {
     if(!id) return;
     async function getAll() {
@@ -154,6 +165,7 @@ export default function Records() {
     setLoading(false);
   }, [subjects]);
 
+  //Get all subjects after id was set.
   useEffect(() => {
     if(!id) return;
     if(!subjects) {
@@ -165,19 +177,7 @@ export default function Records() {
     }
   }, [id]);
 
-  useEffect(() => {
-    if(attendance === "") {
-      const students: RecordList[] = record.map(item => ({
-        ...item,
-        attendance: attendees.find((stud_id) => stud_id.id === item.id) ? attendees.find((stud_id) => stud_id.id === item.id)?.attendance : "",
-      }));
-      setRecordList(students);
-    } else {
-      const studentList: RecordList[] = recordList.filter((item) => item.attendance === attendance);
-      setRecordList(studentList);
-    }
-  }, [attendance]);
-
+  //Reset content value.
   useEffect(() => {
     if(!content) return;
     setTimeout(() => {
@@ -185,6 +185,7 @@ export default function Records() {
     }, 2000);
   }, [content]);
 
+  //Set hide status for navbar.
   function hide() {
     if(!hidden) {
       setHidden(true);

@@ -13,6 +13,7 @@ export default function StudentRecords() {
         setLoaded(true);
     }, [])
     
+    //Set hide status for navbar.
     function hide() {
         if(!hidden) {
             setHidden(true);

@@ -16,6 +16,7 @@ export default function Popup() {
         id: ""
     });
 
+    //set Id for verification
     useEffect(() => {
         setVerification({
             ...verification,
@@ -24,6 +25,7 @@ export default function Popup() {
         setLoaded(true);
     }, []);
 
+    //Handle code input and encryption.
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         setVerification(prev => ({
             ...prev,
@@ -31,6 +33,7 @@ export default function Popup() {
         }));
     }
 
+    //Handle submit code.
     async function submit() {
         setLoading(true);
         if(verification.verification !== verification.confirm) {

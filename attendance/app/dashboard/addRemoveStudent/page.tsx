@@ -37,6 +37,7 @@ export default function StudentRecords() {
   const [id, setId] = useState<string | null>(null);
   const [hidden, setHidden] = useState(false);
 
+  //Handle inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setStudent({
       ...student,
@@ -44,28 +45,33 @@ export default function StudentRecords() {
     });
   }
 
+  //Makes a copy of students values after students got the value
   useEffect(() => {
     if(tempStudents.length > 0) return;
     setTempStudents(students);
   }, [students]);
 
+  //Set loaded to true after the tempStudents has its value.
   useEffect(() => {
     setTimeout(() => {
       setLoaded(true);
     }, 1000);
   }, [tempStudents]);
 
+  //Get the students that are inserted by the user.
   async function getStudentById() {
     const res = await getStudentByTeacherID({teacher_id: id});
     setStudents(res.data || []);
   }
 
+  //Executes getStudentById() after it got the id value of the user.
   useEffect(() => {
     if(!id) return;
     if(students.length > 0) return;
     getStudentById();
   }, [id]);
 
+  //Checks if user is authorized.
   useEffect(() => {
     setLoading(true);
     if(parseInt(getId() || '0') <= 0) {
@@ -84,6 +90,7 @@ export default function StudentRecords() {
     validate();
     }, []);
 
+  //Resets the input values.
   function resetInput() {
     setStudent({
       ...student,
@@ -93,15 +100,18 @@ export default function StudentRecords() {
     });
   }
 
+  //Handle add student
   async function handleAdd() {
     setLoading(true);
     if (student.name && student.student_id && student.subjects) {
       const formatted = format(student.name.trim());
+      //Check if there is a return value.
       if(formatted) {
         if(formatted?.error) {
           setLoading(false);
           setContent(<p className="text-red-500">{formatted?.error}</p>);
         }
+        //If formatted name is valid, execute this block.
         if(formatted.formatted) {
           const { exist, empty } = await verifyStudent({student_id: student.student_id, teacher_id: id});
           if(empty) {
@@ -133,6 +143,7 @@ export default function StudentRecords() {
     }
   }
 
+  //Handle remove function
   async function handleRemove() {
     setLoading(true);
     if (student.student_id) {
@@ -153,6 +164,7 @@ export default function StudentRecords() {
     }
   }
 
+  //Handles search function 
   async function handleSearch() {
     setLoading(true);
     const studentList: Students[] | [] = tempStudents.filter((stud) => {
@@ -166,6 +178,7 @@ export default function StudentRecords() {
     setLoading(false);
   }
 
+  //Handle update function
   async function handleUpdate() {
     setLoading(true);
     if(student.student_id && student.subjects && id) {
@@ -182,6 +195,7 @@ export default function StudentRecords() {
     }
   }
 
+  //Reset content value.
   useEffect(() => {
     if(!content) return;
     setTimeout(() => {
@@ -189,6 +203,7 @@ export default function StudentRecords() {
       }, 2000);
   }, [content]);
 
+  //Set hide to navbar.
   function hide() {
       if(!hidden) {
           setHidden(true);
@@ -209,7 +224,6 @@ export default function StudentRecords() {
           {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
             <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
-              {/* <label className="block mb-2">Enter Student ID:</label> */}
               <input
                 type="text"
                 onChange={handleChange}
@@ -219,7 +233,6 @@ export default function StudentRecords() {
                 value={student.student_id}
               />
 
-              {/* <label className="block mb-2">Enter Student Name:</label> */}
               <input
                 type="text"
                 onChange={handleChange}
@@ -229,7 +242,6 @@ export default function StudentRecords() {
                 value={student.name}
               />
 
-              {/* <label className="block mb-2">Enter Subject:</label> */}
               <input
                 type="text"
                 onChange={handleChange}

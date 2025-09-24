@@ -7,34 +7,31 @@ type Student = {
 
 //Request to add student record.
 export async function scanned(info: Student) {
-    try {
-        //Pass the submitted data to the URL.
-        const res = await fetch("/api/addRecord", {
-            method: "POST",
-            headers: {"Content-type": "application/json"},
-            body: JSON.stringify(info)
-        });
-        //Processes response from URL.
-        const data = await res.json();
-        if(!res.ok) {
-            return {error: data.error};
+    const res = await fetch("/api/addRecord", {
+        method: "POST",
+        headers: {"Content-type": "application/json"},
+        body: JSON.stringify(info)
+    });
+
+    const data = await res.json();
+    if(res.ok) {
+        if(data.success) {
+            return ({message: data.success});
         } else {
-            return {message: data.success};
+            return ({error: data.error});
         }
-    } catch(error) {
-        return {err: error};
+    } else {
+        return {err: data.error};
     }
 }
 
 //Request to add subject.
 export async function handleAddSubject(info: {id: string | null, subjects: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/subject", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return ({message: data.message});
@@ -44,13 +41,11 @@ export async function handleAddSubject(info: {id: string | null, subjects: strin
 
 //Request to remove subject.
 export async function handleRemoveSubject(info: {id: string | null, subjects: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/subject", {
         method: "DELETE",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return ({message: data.message});
@@ -60,13 +55,11 @@ export async function handleRemoveSubject(info: {id: string | null, subjects: st
 
 //Request to get all subjects.
 export async function getSubjects(info: {id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getSubjects", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return (data);
@@ -76,13 +69,11 @@ export async function getSubjects(info: {id: string | null}) {
 
 //Request to validate user email if it is existing.
 export async function validateEmail(info: {email: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getEmail", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {success, error} = await res.json();
     if(res.ok) {
         if(success) {
@@ -96,13 +87,11 @@ export async function validateEmail(info: {email: string | null}) {
 
 //Request to verify if the code for the user exist.
 export async function validateCode(info: {code: string | null, email: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getCode", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return ({success: data.success});
@@ -112,13 +101,11 @@ export async function validateCode(info: {code: string | null, email: string | n
 
 //Request to update the password of the user.
 export async function updatePassword(info:{password: string | null, email: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/updatePassword", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return ({success: data.success});
@@ -128,13 +115,11 @@ export async function updatePassword(info:{password: string | null, email: strin
 
 //Request to login.
 export async function logIn(info: {email: string | null, password: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch('/api/login', {
       method: 'POST',
       headers: {  'Content-Type': 'application/json' },
       body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const data = await res.json();
     if(res.ok) {
         return ({id: data.id});
@@ -145,7 +130,6 @@ export async function logIn(info: {email: string | null, password: string | null
 
 //Request to add user.
 export async function register(info: {email: string | null, password: string | null, name: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -161,13 +145,11 @@ export async function register(info: {email: string | null, password: string | n
 
 //Request to remove subject.
 export async function getValidation(info: {id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getVerification", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {message, error} = await res.json();
     if(res.ok) {
         return ({message: message})
@@ -177,13 +159,11 @@ export async function getValidation(info: {id: string | null}) {
 
 //Get the teacher ID and if ID is verified, the teacher or user is verified.
 export async function validateTeacher(info: {uid: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyUser", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {id, error} = await res.json();
     if(id) {
         return ({success: "User exist"});
@@ -194,13 +174,11 @@ export async function validateTeacher(info: {uid: string | null}) {
 
 //Request to add student.
 export async function handleAddStudent(info: {student_id: string | null, name: string | null, subjects: string | null, teacher_id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {success, error} = await res.json();
     if(res.ok) {
         return ({success: success});
@@ -210,13 +188,11 @@ export async function handleAddStudent(info: {student_id: string | null, name: s
 
 //Request to add student.
 export async function verifyStudent(info: {student_id: string | null, teacher_id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/verifyStudent", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {exist, empty} = await res.json();
     if(res.ok) {
         if(exist) {
@@ -232,13 +208,11 @@ export async function verifyStudent(info: {student_id: string | null, teacher_id
 
 //Request to delete a student from the table.
 export async function handleRemoveStudent(info: {student_id: string | null, teacher_id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "DELETE",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {success, error} = await res.json();
     if(res.ok) {
         return ({success: success});
@@ -248,11 +222,9 @@ export async function handleRemoveStudent(info: {student_id: string | null, teac
 
 //Get all student from the database.
 export async function getStudents() {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/addStudent", {
         method: "GET"
     });
-    //Processes response from URL.
     const {data, error} = await res.json();
     if(res.ok) {
         return ({data: data});
@@ -262,13 +234,11 @@ export async function getStudents() {
 
 //Get selected student from the database.
 export async function getStudentByTeacherID(info: {teacher_id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getStudents", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {data, error} = await res.json();
     if(res.ok) {
         return ({data: data});
@@ -278,13 +248,11 @@ export async function getStudentByTeacherID(info: {teacher_id: string | null}) {
 
 //Get all student record base on the subject.
 export async function getRecords(info: {subject: string}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getRecords", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {data, error} = await res.json();
     if(res.ok) {
         return ({data: data});
@@ -294,13 +262,11 @@ export async function getRecords(info: {subject: string}) {
 
 //Get all student record.
 export async function getAllRecords(info: {teacher_id: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/getAllRecords", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {data, error} = await res.json();
     if(res.ok) {
         return ({data: data});
@@ -308,14 +274,13 @@ export async function getAllRecords(info: {teacher_id: string | null}) {
     return ({error: error});
 }
 
+//Update the subjects of the student
 export async function updateSubject(info: {teacher_id: string | null, student_id: string | null, subjects: string | null}) {
-    //Pass the submitted data to the URL.
     const res = await fetch("/api/updateSubject", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(info)
     });
-    //Processes response from URL.
     const {success, error} = await res.json();
     if(res.ok) {
         return ({success: success});

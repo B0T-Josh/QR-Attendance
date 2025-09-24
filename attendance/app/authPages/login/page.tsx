@@ -60,7 +60,7 @@ export default function LogIn() {
       setLoading(false);
     }
   };
-
+  //Resets the content value.
   useEffect(() => {
     if(!content) return;
     setTimeout(() => {

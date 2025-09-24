@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAllRecords } from "../endpoints";
 
+//Get all records related to the teacher ID
 export async function POST(req: Request) {
     const {teacher_id} = await req.json();
     const {data, error} = await getAllRecords(teacher_id);

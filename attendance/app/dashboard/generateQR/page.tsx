@@ -14,6 +14,7 @@ export default function StudentRecords() {
     const [hidden, setHidden] = useState(false);
     const [id, setId] = useState<string | null>(null);
 
+    //Check if th user is authorized.
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
@@ -30,12 +31,14 @@ export default function StudentRecords() {
         validate();
     }, []);
 
+    //Set loaded as true after setting the id 
     useEffect(() => {
         setTimeout(() => {
             setLoaded(true);
         }, 1000);
     }, [id]);
 
+    //Set hide status for navbar.
     function hide() {
         if(!hidden) {
             setHidden(true);

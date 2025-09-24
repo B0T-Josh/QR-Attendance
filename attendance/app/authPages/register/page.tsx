@@ -89,9 +89,6 @@ export default function RegisterPage() {
         });
       } else {
         setContent(<p className="text-red-500">{formatted?.error}</p>);
-        setTimeout(() => {
-          setContent(<></>);
-        }, 2000);
       }
     }, 500);
   };

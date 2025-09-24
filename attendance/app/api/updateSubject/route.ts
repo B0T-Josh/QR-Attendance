@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { updateSubjectForStudent } from "../endpoints";
 
+//Updates the subject for a student.
 export async function POST(req: Request) {
-    //Checks the request method.
     if(req.method !== "POST") {
         return NextResponse.json({ error: "Method not allowed" }, { status: 404 });
     }
-    //Gets the submitted data.
     const {student_id, teacher_id, subjects} = await req.json();
 
     if(student_id && teacher_id && subjects) {

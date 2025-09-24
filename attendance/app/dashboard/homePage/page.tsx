@@ -43,11 +43,13 @@ export default function HomePage() {
     const [students, setStudents] = useState<Students[]>([]);
     const [hidden, setHidden] = useState(false);
 
+    //Get subjects.
     const get = async () => {
         const res = await getStudentByTeacherID({teacher_id: id});
         setStudents(res.data || []);
     };
 
+    //Get all student record related to user after setting subjects.
     useEffect(() => {
         if(!id) return;
         async function getAll() {
@@ -60,6 +62,7 @@ export default function HomePage() {
         getAll();
     }, [subjects]);
 
+    //Check if user is authorized.
     useEffect(() => {
         if(parseInt(getId() || '0') <= 0) {
             route.push("/authPages/login");
@@ -76,6 +79,7 @@ export default function HomePage() {
         validate();
     }, []);
 
+    //Check if the user has verification, and execute get subject after id was set.
     useEffect(() => {
         if(id === null) return;
         async function validate() {
@@ -95,12 +99,14 @@ export default function HomePage() {
         get();
     }, [id]);
 
+    //set to loaded after confirming has verification
     useEffect(() => {
         setTimeout(() => {
             setLoaded(true);
         }, 1500)
     }, [hasVerification]);
 
+    //Set hidden status for navbar.
     function hide() {
         if(!hidden) {
             setHidden(true);

@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
 import { getRecords } from "../endpoints";
 
-//Connected to /api/requests/request/getRecords.
+//Connected to /api/requests/request/getRecords. Get attendance record depends on the user input
 export async function POST(req: Request) {
-    //Checks the request method.
     if(req.method !== "POST") return NextResponse.json({error: "Invalid Method"}, {status: 400});
-    //Gets the submitted data.
     const {subject} = await req.json();
-    //Gets the response from getRecords.
     const {data, error} = await getRecords(subject);
-    //If data is not null, returns data. Otherwise, returns an error message.
     if(data) {
         return NextResponse.json({data: data}, {status: 200});
     } else {

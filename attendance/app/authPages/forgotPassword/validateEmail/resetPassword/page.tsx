@@ -53,6 +53,7 @@ export default function ForgotPassword() {
         }
     }
 
+    //Checks the localStorage for the email. If not existing, pushes back to the forgot password page.
     useEffect(() => {
         if(localStorage.getItem("email")) {
             setLoaded(true);
