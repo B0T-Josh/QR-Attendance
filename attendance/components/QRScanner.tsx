@@ -29,12 +29,6 @@ export default function QRScanner() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [student, setStudent] = useState<Student | null>(null);
     const [students, setStudents] = useState<Student[] | []>([]);
-    const [loaded, setLoaded] = useState(false);
-
-    //Set loaded to true on the initial render.
-    useEffect(() => {   
-        setLoaded(true);
-    }, [students]);
 
     //Check if user is authorized.
     useEffect(() => {
