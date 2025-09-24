@@ -33,6 +33,7 @@ type Attendance = {
 
 export default function Records() {
   const route = useRouter();
+  const ranOnce = useRef(false); 
   const [loaded, setLoaded] = useState(false); 
   const [record, setRecord] = useState<Record[]>([]);
   const [loading, setLoading] = useState(false);
@@ -109,22 +110,26 @@ export default function Records() {
     });
   }
 
-  useEffect(() => {
-    setLoaded(true);
-  }, []);
+  //Set loaded to true on the initial render.
+  useEffect(() => {   
+      setLoaded(true);
+  }, [record]);
 
   //Check if user is authorized.
   useEffect(() => {
-    async function validate() {
-      const {success} = await verifyUser();
-      if (success) {
-          setId(success);
-      } else {
-          route.push("/authPages/login");
+      if(ranOnce.current) return;
+      ranOnce.current = true;
+
+      async function validate() {
+          const {success} = await verifyUser();
+          if (success) {
+              setId(success);
+          } else {
+              route.push("/authPages/login");
+          }
       }
-    }
-    validate();
-  }, [loaded]);
+      validate();
+  }, []);
 
   //Filter function.
   useEffect(() => {

@@ -19,6 +19,7 @@ type Student = {
 
 export default function QRScanner() {
     const route = useRouter();
+    const ranOnce = useRef(false);
     const [scannedData, setScannedData] = useState<string | null>(null);
     const [subjects, setSubjects] = useState<Subject[]>([]);
     const [subject, setSubject] = useState<string | "">("");
@@ -30,12 +31,16 @@ export default function QRScanner() {
     const [students, setStudents] = useState<Student[] | []>([]);
     const [loaded, setLoaded] = useState(false);
 
-    //Verify user.
-    useEffect(() => {
+    //Set loaded to true on the initial render.
+    useEffect(() => {   
         setLoaded(true);
-    }, []);
+    }, [students]);
 
+    //Check if user is authorized.
     useEffect(() => {
+        if(ranOnce.current) return;
+        ranOnce.current = true;
+
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
@@ -45,7 +50,7 @@ export default function QRScanner() {
             }
         }
         validate();
-    }, [loaded]);
+    }, []);
 
     //Setup for the qr scanner.
     useEffect(() => {

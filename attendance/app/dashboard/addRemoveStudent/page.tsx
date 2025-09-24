@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   handleAddStudent,
@@ -24,6 +24,7 @@ type Students = {
 export default function StudentRecords() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false);
+  const ranOnce = useRef(false);
   const [student, setStudent] = useState({
     student_id: "",
     name: "",
@@ -63,22 +64,26 @@ export default function StudentRecords() {
     getStudentById();
   }, [id]);
 
-    useEffect(() => {
-        setLoaded(true);
-    }, []);
+  useEffect(() => {   
+      setLoaded(true);
+  }, [students]);
 
-    //Check if user is authorized.
-    useEffect(() => {
-        async function validate() {
-            const {success} = await verifyUser();
-            if (success) {
-                setId(success);
-            } else {
-                route.push("/authPages/login");
-            }
-        }
-        validate();
-    }, [loaded]);
+  //Check if user is authorized.
+  useEffect(() => {
+      if(ranOnce.current) return;
+      ranOnce.current = true;
+
+      async function validate() {
+          const {success} = await verifyUser();
+          if (success) {
+              setId(success);
+          } else {
+              route.push("/authPages/login");
+          }
+      }
+      validate();
+  }, []);
+    
 
 
   //Resets the input values.

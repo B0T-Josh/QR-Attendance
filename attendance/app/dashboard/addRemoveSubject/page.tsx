@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { useRouter } from "next/navigation";
 import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
 import ToggleSidebar from "@/components/ToggleSidebar";
@@ -14,6 +14,7 @@ type Subjects = {
 
 export default function StudentRecords() {
     const route = useRouter();
+    const ranOnce = useRef(false);
     const [subject, setSubject] = useState<string | null>(null);
     const [id, setId] = useState<string | null>(null);
     const [content, setContent] = useState<React.ReactElement | null>(null);
@@ -33,12 +34,15 @@ export default function StudentRecords() {
         setSets(res.data || []);
     }
 
-    useEffect(() => {
+    useEffect(() => {   
         setLoaded(true);
-    }, []);
+    }, [sets]);
 
     //Check if user is authorized.
     useEffect(() => {
+        if(ranOnce.current) return;
+        ranOnce.current = true;
+
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
@@ -48,7 +52,7 @@ export default function StudentRecords() {
             }
         }
         validate();
-    }, [loaded]);
+    }, []);
     
     //Execute fetching of subjects after the id was set
     useEffect(() => {

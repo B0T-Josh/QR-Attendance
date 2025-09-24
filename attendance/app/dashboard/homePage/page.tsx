@@ -5,7 +5,7 @@ import Popup from "@/components/Popup";
 import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAllRecords, getStudentByTeacherID, getSubjects, getValidation} from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
@@ -35,6 +35,7 @@ type Students = {
 
 export default function HomePage() {
     const route = useRouter();
+    const ranOnce = useRef(false);
     const [hasVerification, setHasVerification] = useState(false); 
     const [id, setId] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
@@ -62,12 +63,15 @@ export default function HomePage() {
         getAll();
     }, [subjects]);
 
-    useEffect(() => {
+    useEffect(() => {   
         setLoaded(true);
-    }, []);
+    }, [record]);
 
     //Check if user is authorized.
     useEffect(() => {
+        if(ranOnce.current) return;
+        ranOnce.current = true;
+
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
@@ -77,7 +81,7 @@ export default function HomePage() {
             }
         }
         validate();
-    }, [loaded]);
+    }, []);
 
     //Check if the user has verification, and execute get subject after id was set.
     useEffect(() => {
