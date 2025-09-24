@@ -11,37 +11,22 @@ export default function StudentRecords() {
     const route = useRouter();
     const [loaded, setLoaded] = useState(false);
     const [hidden, setHidden] = useState(false);
-    const [id, setId] = useState<string | null>(null);
 
     //Check if th user is authorized.
     useEffect(() => {
         async function validate() {
             const {success} = await verifyUser();
-            if (success) {
-                setId(success);
-            } else {
-                route.push("/authPages/login");
-            }
-        }
-        validate();
-    }, []);
-
-    useEffect(() => {
-        setLoaded(true);
-    }, []);
-
-    //Check if user is authorized.
-    useEffect(() => {
-        async function validate() {
-            const {success} = await verifyUser();
-            if (success) {
-                setId(success);
-            } else {
+            if (!success) {
                 route.push("/authPages/login");
             }
         }
         validate();
     }, [loaded]);
+
+    useEffect(() => {
+        setLoaded(true);
+    }, []);
+
 
     //Set hide status for navbar.
     function hide() {

@@ -15,13 +15,9 @@ export default function Popup() {
         confirm: "",
         id: ""
     });
-    const [id, setId] = useState<String | null>(null);
 
-    //set Id for verification
+    //Check if th user is authorized.
     useEffect(() => {
-        
-        setLoaded(true);
-
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
@@ -32,6 +28,10 @@ export default function Popup() {
             }
         }
         validate();
+    }, [loaded]);
+
+    useEffect(() => { 
+        setLoaded(true);
     }, []);
 
     //Handle code input and encryption.
