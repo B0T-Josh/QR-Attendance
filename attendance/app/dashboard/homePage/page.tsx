@@ -71,7 +71,6 @@ export default function HomePage() {
     useEffect(() => {
         if(ranOnce.current) return;
         ranOnce.current = true;
-
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
@@ -86,7 +85,6 @@ export default function HomePage() {
     //Check if the user has verification, and execute get subject after id was set.
     useEffect(() => {
         if(!id) return;
-        console.log(id);
         async function validate() {
             const { message } = await getValidation({id: id});
             if(message) {
@@ -103,9 +101,6 @@ export default function HomePage() {
         }
         get();
     }, [id]);
-
-
-    
 
     //Set hidden status for navbar.
     function hide() {
