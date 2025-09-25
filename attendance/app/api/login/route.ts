@@ -31,8 +31,6 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24, // 1 day
     });
 
-    console.log(data.id);
-
     cookie.set("id", data.id, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
