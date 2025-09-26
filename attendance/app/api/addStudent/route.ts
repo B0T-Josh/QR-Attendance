@@ -3,6 +3,12 @@ import { addStudent, getAllStudent, removeStudent } from "../endpoints";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
+type Profile = {
+  student_id: string | null;
+  name: string | null;
+  subjects: string[] | [];
+}
+
 // GET: fetch all students for a user
 export async function GET() {
   const store = await cookies();
@@ -38,7 +44,7 @@ export async function POST(req: Request) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     if(decoded) {
-      const data = await req.json();
+      const data: Profile[] = await req.json();
       if (!data) {
         return NextResponse.json({ error: "All fields are required" }, { status: 400 });
       }

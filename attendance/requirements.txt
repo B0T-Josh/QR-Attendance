@@ -3,3 +3,4 @@ install
 qrcode.react
 react-icons
 --save-dev @types/jsonwebtoken
+xlsx

@@ -51,6 +51,7 @@ export default function Records() {
   const [attendees, setAttendees] = useState<Attendance[] | []>([]);
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
   const [tempRecord, setTempRecord] = useState<RecordList[] | []>([]);
+  const [subjectNames, setSubjectNames] = useState<string[] | []>([]);
   const [hidden, setHidden] = useState(false);
 
   //Evaluate if the student is present or not and set the attendees to the value returned.
@@ -151,9 +152,14 @@ export default function Records() {
 
   //Fetches all records that are related to the prof. 
   useEffect(() => {
-    if(!id) return;
+    if(subjects?.length === 0) return;
+    setSubjectNames(subjects?.map(sub => sub.name!) || []);
+  }, [subjects]);
+
+  useEffect(() => {
+    if(subjectNames.length === 0) return;
     async function getAll() {
-      const res = await getAllRecords({teacher_id: id});
+      const res = await getAllRecords({subjects: subjectNames});
       const data: Record[] | [] = res.data;
       if(data.length > 0) {
         setRecord(data);
@@ -161,7 +167,7 @@ export default function Records() {
     }
     getAll();
     setLoading(false);
-  }, [subjects]);
+  }, [subjectNames]);
 
   //Get all subjects after id was set.
   useEffect(() => {

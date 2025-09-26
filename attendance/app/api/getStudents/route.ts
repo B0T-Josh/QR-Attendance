@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getStudentByTeacherID } from "../endpoints";
+import { getStudentByTeacherSubject } from "../endpoints";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
@@ -17,9 +17,9 @@ export async function POST(req: Request) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if(decoded) {
-            
-            const {teacher_id} = await req.json();
-            const {data, error} = await getStudentByTeacherID(teacher_id);
+            const {subjects} = await req.json();
+            const {data, error} = await getStudentByTeacherSubject(subjects);
+            console.log(data);
             if(data) {
                 return NextResponse.json({data}, {status: 200});
             } else {

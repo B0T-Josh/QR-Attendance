@@ -2,8 +2,13 @@ type Student = {
     name: string | null;
     student_id: string | null;
     subjects: string | null;
-    teacher_id: string | null;
 }
+
+type Profile = {
+  student_id: string | null;
+  name: string | null;
+  subjects: string[]; 
+};
 
 //Request to add student record.
 export async function scanned(info: Student) {
@@ -171,7 +176,7 @@ export async function getValidation(info: {id: string | null}) {
 }
 
 //Request to add student.
-export async function handleAddStudent(info: {student_id: string | null, name: string | null, subjects: string | null, teacher_id: string | null}) {
+export async function handleAddStudent(info: Profile[]) {
     const res = await fetch("/api/addStudent", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -185,7 +190,7 @@ export async function handleAddStudent(info: {student_id: string | null, name: s
 }
 
 //Request to add student.
-export async function verifyStudent(info: {student_id: string | null, teacher_id: string | null}) {
+export async function verifyStudent(info: {student_id: string | null}) {
     const res = await fetch("/api/verifyStudent", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -231,7 +236,7 @@ export async function getStudents() {
 }
 
 //Get selected student from the database.
-export async function getStudentByTeacherID(info: {teacher_id: string | null}) {
+export async function getStudentByTeacherSubject(info: {subjects: string[] | []}) {
     const res = await fetch("/api/getStudents", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
@@ -259,7 +264,7 @@ export async function getRecords(info: {subject: string}) {
 }
 
 //Get all student record.
-export async function getAllRecords(info: {teacher_id: string | null}) {
+export async function getAllRecords(info: {subjects: string[] | []}) {
     const res = await fetch("/api/getAllRecords", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},

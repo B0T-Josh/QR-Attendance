@@ -6,7 +6,7 @@ import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { getAllRecords, getStudentByTeacherID, getSubjects, getValidation} from "@/app/api/requests/request";
+import { getStudentByTeacherSubject, getAllRecords, getSubjects, getValidation} from "@/app/api/requests/request";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { IoCloseCircle } from "react-icons/io5";
 import {verifyUser} from "@/app/api/requests/request"
@@ -27,10 +27,10 @@ type Record = {
 }
 
 type Students = {
-  id: string;          // primary key in Supabase
-  student_id: string;  // school/student number
-  name: string;        // student name
-  subjects: string;     // subject they’re enrolled in
+  id: string;          
+  student_id: string;  
+  name: string;        
+  subjects: string[] | [];     
 };
 
 export default function HomePage() {
@@ -43,25 +43,29 @@ export default function HomePage() {
     const [record, setRecord] = useState<Record[] | []>([]);
     const [students, setStudents] = useState<Students[]>([]);
     const [hidden, setHidden] = useState(false);
+    const [subjectNames, setSubjectNames] = useState<string[] | []>([]);
 
     //Get subjects.
     const get = async () => {
-        const res = await getStudentByTeacherID({teacher_id: id});
+        const res = await getStudentByTeacherSubject({subjects: subjectNames});
         setStudents(res.data || []);
     };
 
-    //Get all student record related to user after setting subjects.
     useEffect(() => {
-        if(!id) return;
+        if(!subjects) return;
+        setSubjectNames(subjects.map(sub => sub.name!) || []);
+    }, [subjects]);
+
+    useEffect(() => {
         async function getAll() {
-            const res = await getAllRecords({teacher_id: id});
+            const res = await getAllRecords({subjects: subjectNames});
             const data: Record[] | [] = res.data || [];
             if(data.length > 0) {
                 setRecord(data);
             }
         }
         getAll();
-    }, [subjects]);
+    }, [subjectNames]);
 
     useEffect(() => {   
         setLoaded(true);

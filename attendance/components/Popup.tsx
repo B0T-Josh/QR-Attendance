@@ -1,10 +1,11 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { verifyUser } from '@/app/api/requests/request';
 import encryptPassword from '../tools/encrypt';
 
 export default function Popup() {
     const [loaded, setLoaded] = useState(false);
+    const ranOnce = useRef(false);
     const [loading, setLoading] = useState(false);
     const [verification, setVerification] = useState<{
         verification: string | null;
@@ -18,20 +19,19 @@ export default function Popup() {
 
     //Check if th user is authorized.
     useEffect(() => {
+        if(ranOnce.current) return;
+        ranOnce.current = true;
         async function validate() {
             const {success} = await verifyUser();
             if (success) {
                 setVerification({
                     ...verification,
-                    id: success.id
+                    id: success
                 });
+                setLoaded(true);
             }
         }
         validate();
-    }, [loaded]);
-
-    useEffect(() => { 
-        setLoaded(true);
     }, []);
 
     //Handle code input and encryption.

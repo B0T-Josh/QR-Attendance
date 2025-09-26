@@ -6,13 +6,15 @@ import { useRouter } from "next/navigation";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  verifyStudent,
-  getStudentByTeacherID,
-  updateSubject
+  getStudentByTeacherSubject,
+  updateSubject,
+  getSubjects
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
 import {verifyUser} from "@/app/api/requests/request"
+import * as XLSX from 'xlsx';
+import { get } from "http";
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -20,6 +22,24 @@ type Students = {
   name: string;        // student name
   subjects: string;     // subject they’re enrolled in
 };
+
+type Uploaded = {
+  student_id: string | null;
+  name: string | null;
+  subjects: string | null;
+}
+
+type Student = {
+  id: string | null;
+  student_id: string | null;
+  name: string | null;
+  subjects: string[] | [];
+}
+
+type Subject = {
+  id: string | null;
+  name: string | null;
+}
 
 export default function StudentRecords() {
   const route = useRouter();
@@ -36,6 +56,10 @@ export default function StudentRecords() {
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [hidden, setHidden] = useState(false);
+  const [uploaded, setUploaded] = useState<Uploaded[] | []>([]);
+  const [profile, setProfile] = useState<Student[] | []>([]);
+  const [subjects, setSubjects] = useState<Subject[] | []>([]);
+  const [subjectNames, setSubjectNames] = useState<string[]>([]);
 
   //Handle inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -51,21 +75,42 @@ export default function StudentRecords() {
     setTempStudents(students);
   }, [students]);
 
-  //Get the students that are inserted by the user.
-  async function getStudentById() {
-    const res = await getStudentByTeacherID({teacher_id: id});
+
+  async function getStudentBySubjects() {
+    const res = await getStudentByTeacherSubject({subjects: subjectNames});
     setStudents(res.data || []);
   }
 
-  //Executes getStudentById() after it got the id value of the user.
+  useEffect(() => {
+    if(subjectNames.length > 0) return;
+    setSubjectNames(subjects.map(sub => sub.name!));
+  }, [subjects]);    
+
+  useEffect(() => {
+    if(subjectNames.length === 0) return;
+    getStudentBySubjects();
+  }, [subjectNames]);
+
   useEffect(() => {
     if(!id) return;
     if(students.length > 0) return;
-    getStudentById();
+    async function getSubject() {
+      const res = await getSubjects({id: id});
+      if(res) {
+        
+        if(res.data.length > 0) {
+          setSubjects(res.data || []);
+        } else {
+          setContent(<p className="text-yellow-500">{res.error}</p>);
+          return;
+        }
+      }
+    }
+    getSubject();
   }, [id]);
 
   useEffect(() => {   
-      setLoaded(true);
+    setLoaded(true);
   }, [students]);
 
   //Check if user is authorized.
@@ -83,8 +128,6 @@ export default function StudentRecords() {
       }
       validate();
   }, []);
-    
-
 
   //Resets the input values.
   function resetInput() {
@@ -99,43 +142,49 @@ export default function StudentRecords() {
   //Handle add student
   async function handleAdd() {
     setLoading(true);
-    if (student.name && student.student_id && student.subjects) {
+    if(profile.length > 0) {
+      const { success, error } = await handleAddStudent(profile);
+      if(success) {
+        setLoading(false);
+        setContent(<p className="text-green-300">Student is added</p>);
+        resetInput();
+        getStudentBySubjects();
+      } else {
+        setLoading(false);
+        setContent(<p className="text-red-500">{error}</p>);
+      }
+    }
+    else {
+      if(!student.student_id || !student.name || !student.subjects) {
+        setLoading(false);
+        setContent(<p className="text-red-500">All fields are required</p>);
+        return;
+      }
+
+      const subjArray = student.subjects ? student.subjects.split(",").map(sub => sub.trim().toUpperCase()) : [];
       const formatted = format(student.name.trim());
-      //Check if there is a return value.
-      if(formatted) {
-        if(formatted?.error) {
-          setLoading(false);
-          setContent(<p className="text-red-500">{formatted?.error}</p>);
-        }
-        //If formatted name is valid, execute this block.
+      if(!formatted) {
+        setLoading(false);
+        setContent(<p className="text-red-500">Invalid name format</p>);
+      } else {
         if(formatted.formatted) {
-          const { exist, empty } = await verifyStudent({student_id: student.student_id, teacher_id: id});
-          if(empty) {
-            const { success, error } = await handleAddStudent({
-              student_id: student.student_id,
-              name: formatted.formatted,
-              subjects: student.subjects.toUpperCase(),
-              teacher_id: id
-            });
-            if(success) {
-              setLoading(false);
-              setContent(<p className="text-green-300">Student is added</p>);
-              resetInput();
-              getStudentById();
-            } else {
-              setLoading(false);
-              setContent(<p className="text-red-500">{error}</p>);
-            }
-          } else if(exist) {
-            resetInput();
+          const formattedName = formatted.formatted;
+          const { success, error } = await handleAddStudent([{student_id: student.student_id, name: formattedName, subjects: subjArray}]);
+          if(success) {
             setLoading(false);
-            setContent(<p className="text-red-500">Student exist</p>);
+            setContent(<p className="text-green-300">Student is added</p>);
+            resetInput();
+            getStudentBySubjects();
+          } else {
+            setLoading(false);
+            setContent(<p className="text-red-500">{error}</p>);
           }
+        } else if(formatted.error) {
+          setLoading(false);
+          setContent(<p className="text-red-500">{formatted.error}</p>);
+          return;
         }
       }
-    } else {
-      setLoading(false);
-      setContent(<p className="text-red-500">Fill all fields first</p>);
     }
   }
 
@@ -153,7 +202,7 @@ export default function StudentRecords() {
         )
       );
       resetInput();
-      getStudentById();
+      getStudentBySubjects();
     } else {
       setLoading(false);
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
@@ -183,7 +232,7 @@ export default function StudentRecords() {
         resetInput();
         setLoading(false);
         setContent(<p className="text-green-300">{success}</p>);
-        getStudentById();
+        getStudentBySubjects();
       } else {
         setLoading(false);
         setContent(<p className="text-green-300">{error}</p>);
@@ -191,12 +240,71 @@ export default function StudentRecords() {
     }
   }
 
+  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const binaryString = event.target?.result;
+      if(!binaryString) return;
+
+      const workbook = XLSX.read(binaryString, {type: "binary"});
+      const workSheetName = workbook.SheetNames[0];
+      const workSheet = workbook.Sheets[workSheetName];
+      const jsonData = XLSX.utils.sheet_to_json(workSheet || {}, {defval: null, raw: false, blankrows: false})
+      console.log({jsonData});
+      setUploaded(jsonData as Uploaded[]);
+    }
+    reader.readAsArrayBuffer(file);
+  }
+
+  useEffect(() => {
+    if(uploaded.length === 0) return;
+    
+    uploaded.map((data, index) => {
+      if(!data.student_id) {
+        setContent(<p className="text-red-500">Student ID is required {data.name ? (`for ${data.name}`) : (`for row ${index + 2}`)}</p>);
+        return;
+      }
+      const formatted = format(data.name?.trim() || "");
+      if(formatted) {
+        if(formatted.formatted) {
+          const subjectArray = data.subjects ? data.subjects.split(",").map(sub => sub.trim().toUpperCase()) : [];
+          if(subjectArray.length === 0) {
+            setContent(<p className="text-red-500">Subjects is required for student ID {data.student_id}</p>);
+            return;
+          }
+          setProfile(prev => [...prev, {
+            id: String(index+1),
+            student_id: data.student_id,
+            name: formatted.formatted,
+            subjects: subjectArray
+          }]);
+        }
+        else if(formatted.error) {
+          setContent(<p className="text-red-500">{formatted.error} for student ID {data.student_id}</p>);
+          return;
+        }
+      }
+      else {
+        setContent(<p className="text-red-500">Name is required for student ID {data.student_id}</p>);
+        return;
+      }
+    })
+  }, [uploaded]);
+
+  useEffect(() => {
+    if(profile.length === 0) return;
+    handleAdd();
+  }, [profile]);
+
   //Reset content value.
   useEffect(() => {
     if(!content) return;
     setTimeout(() => {
         setContent(null);
-      }, 2000);
+      }, 3000);
   }, [content]);
 
   //Set hide to navbar.
@@ -246,8 +354,6 @@ export default function StudentRecords() {
                 name="subjects"
                 value={student.subjects}
               />
-              
-              
             </div>
           </div>
 
@@ -281,6 +387,10 @@ export default function StudentRecords() {
             </button>
           </div>
 
+          <div >
+            <input type="file" accept=".xlsx, .xls" onChange={handleUpload}/>
+          </div>
+
           {/* Students Table */}
           <div className="w-full max-w-5xl rounded-lg overflow-auto">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
@@ -297,7 +407,7 @@ export default function StudentRecords() {
                     <tr key={s.id} className="text-center">
                       <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
                       <td className="border border-gray-400 px-4 py-2">{s.name}</td>
-                      <td className="border border-gray-400 px-4 py-2">{s.subjects}</td>
+                      <td className="border border-gray-400 px-4 py-2">{s.subjects.toString().replace(/,\s*/g, ", ")}</td>
                     </tr>
                   ))
                 ) : (
