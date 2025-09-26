@@ -70,7 +70,6 @@ export async function addRecord(student_id: string, subjects: string, name: stri
         if(!error) {
             return({success: `Attendance recorded for student ${name}`});
         } else {
-            console.log(error);
             return({error: "Failed to record attendance. Student " + name});
         }
     } else {
@@ -205,7 +204,7 @@ export async function getRecords(subject: string) {
     } return ({error: error});
 }
 
-
+//Get all records for the subjects that the teacher/professor handles.
 export async function getAllRecords(subjects: string[]) {
     const {data, error} = await supabase.from("attendance").select("*").overlaps("subject", subjects);
     if(data) {
