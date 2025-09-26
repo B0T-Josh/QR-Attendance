@@ -21,8 +21,7 @@ function getDate() {
 type Student = {
     name: string | null;
     student_id: string | null;
-    subjects: string | null;
-    teacher_id: string | null;
+    subjects: string[] | [];
 }
 
 type AccountProf = {
@@ -65,10 +64,14 @@ export async function getVerification(id: string | null) {
 }
 
 //Adds attendance record for students aftter scanning the QR.
-export async function addRecord(student_id: string, subjects: string, name: string, teacher_id: string) {
+export async function addRecord(student_id: string, subjects: string, name: string) {
     if(await validateSubject(subjects)) {
-        await supabase.from('attendance').insert({student_id: student_id, name: name, subject: subjects, time_in: getTime(), teacher_id: teacher_id});
-        return ({success: "Attendance recorded for " + name});
+        const {error} = await supabase.from('attendance').insert({student_id: student_id, name: name, subject: [subjects], time_in: getTime()});
+        if(!error) {
+            return({success: `Attendance recorded for student ${name}`});
+        } else {
+            return({error: "Failed to record attendance. Student " + name});
+        }
     } else {
         return({error: "Failed to record attendance. Student " + name});
     }
@@ -86,16 +89,19 @@ async function validateSubject(subject: string) {
 
 //Adds verification code to the user's account.
 export async function addVerification(verification: string, id: string) {
-        await supabase.from('account').update({verification: verification}).eq('id', id);
-        return true;
+    const {error} = await supabase.from('account').update({verification: verification}).eq('id', id);
+    if(error) {
+        return false;
+    }
+    return true;
 }
 
 //Adds time out to the student's record.
 export async function timeOut(student_id: string, subjects: string) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", student_id).eq("subject", subjects).single();
+    const { data } = await supabase.from('attendance').select("time_out").eq("date", formatted).eq("student_id", student_id).contains("subject", [subjects]).single();
     if(data?.time_out === null) {
-        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", student_id).eq("subject", subjects);
+        await supabase.from('attendance').update({time_out: getTime()}).eq("date", formatted).eq("student_id", student_id).contains("subject", [subjects]);
         return true;
     } else {
         return false;
@@ -105,7 +111,7 @@ export async function timeOut(student_id: string, subjects: string) {
 //Checks if the student has a record for the day.
 export async function checkDate(student_id: string, subjects: string) {
     const formatted = getDate();
-    const { data } = await supabase.from('attendance').select("date").eq("student_id", student_id).eq("date", formatted).eq("subject", subjects).single();
+    const { data } = await supabase.from('attendance').select("date").eq("student_id", student_id).eq("date", formatted).contains("subject", [subjects]).single();
     if(data === null) {
         return false;
     } else {
@@ -122,8 +128,7 @@ export async function getSubject(subject: string) {
 //Adds the subject that the teacher/professor submits from addRemoveSubject page.
 export async function addSubjects(id: string, subject: string) {
     if(await getSubject(subject) === undefined) {
-        const { data } = await supabase.from("teacher").select("name").eq("id", id).single();
-        await supabase.from("subject").insert({name: subject, teacher_id: id, teacher_name: data?.name});
+        await supabase.from("subject").insert({name: subject, teacher_id: id});
         return true;
     }
     return false;
@@ -199,17 +204,17 @@ export async function getRecords(subject: string) {
     } return ({error: error});
 }
 
-
-export async function getAllRecords(teacher_id:string) {
-    const {data, error} = await supabase.from("attendance").select("*").eq("teacher_id", teacher_id);
+//Get all records for the subjects that the teacher/professor handles.
+export async function getAllRecords(subjects: string[]) {
+    const {data, error} = await supabase.from("attendance").select("*").overlaps("subject", subjects);
     if(data) {
         return ({data: data});
     } return ({error: error});
 }
 
 //Verify if the student is existing
-export async function verifyStudent(student_id: string, teacher_id: string) {
-    const {data} = await supabase.from("students").select("id").eq("student_id", student_id.trim()).eq("teacher_id", teacher_id).maybeSingle();
+export async function verifyStudent(student_id: string) {
+    const {data} = await supabase.from("students").select("id").eq("student_id", student_id.trim()).maybeSingle();
     if(data) {
         return ({exist: "Student exist"});
     } return ({empty: "Student doesn't exist"});
@@ -226,8 +231,8 @@ export async function getStudent(subject: string) {
 }
 
 //Get selected students.
-export async function getStudentByTeacherID(teacher_id: string) {
-    const {data} = await supabase.from("students").select("id, student_id, name, subjects").eq("teacher_id", teacher_id);
+export async function getStudentByTeacherSubject(subjects: string[]) {
+    const {data} = await supabase.from("students").select("id, student_id, name, subjects").overlaps("subjects", subjects);
     if(data) {
         return ({data});
     } else {
@@ -246,18 +251,25 @@ export async function getAllStudent() {
 }
 
 //Add students to the database.
-export async function addStudent(info: Student) {
-    const { error } = await supabase.from("students").insert({student_id: info.student_id, name: info.name, subjects: info.subjects, teacher_id: info.teacher_id});
+export async function addStudent(info: Student[]) {
+    const payload = info.map((stud) => ({
+        student_id: stud.student_id,
+        name: stud.name,
+        subjects: stud.subjects
+    }));
+
+    const {error} = await supabase.from("students").insert(payload);
+
     if(!error) {
-        return({success: `Student ${info.name} is added`});
+        return({success: `Student is added`});
     } else {
         return({error: "Failed to add student"});
     }
 }
 
 //Remove student from the table.
-export async function removeStudent(student_id: string, teacher_id: string) {
-    const { error } = await supabase.from("students").delete().eq("student_id", student_id).eq("teacher_id", teacher_id);
+export async function removeStudent(student_id: string) {
+    const { error } = await supabase.from("students").delete().eq("student_id", student_id);
     if(!error) {
         return ({success: `Student ${student_id} was deleted`});
     } else {
@@ -266,10 +278,13 @@ export async function removeStudent(student_id: string, teacher_id: string) {
 }
 
 //Updates the subject for a student in the DB.
-export async function updateSubjectForStudent(student_id: string, teacher_id: string, subjects: string) {
-    const {error} = await supabase.from("students").select("id").eq("student_id", student_id).eq("teacher_id", teacher_id);
+export async function updateSubjectForStudent(student_id: string, subjects: string[]) {
+    const {error} = await supabase.from("students").select("id").eq("student_id", student_id)
     if(!error) {
-        await supabase.from("students").update({subjects: subjects}).eq("student_id", student_id);
+        const {error} = await supabase.from("students").update({subjects: subjects}).eq("student_id", student_id);
+        if(error) {
+            return({error: "Failed to update subject"});
+        }
         return ({success: "Subject successfully updated"});
     } else {
         return({error: "Student doesn't exist"});

@@ -17,8 +17,8 @@ export async function POST(req: Request) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if(decoded) {
-            const {student_id, teacher_id} = await req.json();
-            const {exist, empty} = await verifyStudent(student_id, teacher_id);
+            const {student_id} = await req.json();
+            const {exist, empty} = await verifyStudent(student_id);
             if(exist) {
                 return NextResponse.json({exist: exist}, {status: 200});
             } else {

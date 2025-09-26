@@ -11,12 +11,11 @@ export async function POST(req: Request) {
     if(!token) {
         return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if(decoded) {
-            const {teacher_id} = await req.json();
-            const {data, error} = await getAllRecords(teacher_id);
+            const {subjects} = await req.json();
+            const {data, error} = await getAllRecords(subjects);
             if(data) {
                 return NextResponse.json({data: data}, {status: 200});
             } else if(error) {
