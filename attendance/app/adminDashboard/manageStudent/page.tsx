@@ -233,7 +233,7 @@ export default function StudentRecords() {
       const binaryString = event.target?.result;
       if(!binaryString) return;
 
-      const workbook = XLSX.read(binaryString, {type: "binary"});
+      const workbook = XLSX.read(binaryString, {type: "array"});
       const workSheetName = workbook.SheetNames[0];
       const workSheet = workbook.Sheets[workSheetName];
       const jsonData = XLSX.utils.sheet_to_json(workSheet || {}, {defval: null, raw: false, blankrows: false})

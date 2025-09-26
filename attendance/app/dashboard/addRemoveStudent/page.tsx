@@ -4,16 +4,11 @@ import Sidebar from "@/components/Sidebar";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
-  handleAddStudent,
-  handleRemoveStudent,
-  updateSubject,
   getSubjects,
   getStudentByTeacherSubject
 } from "@/app/api/requests/request";
-import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
 import {verifyUser} from "@/app/api/requests/request"
-import * as XLSX from 'xlsx';
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -56,8 +51,6 @@ export default function StudentRecords() {
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [hidden, setHidden] = useState(false);
-  const [uploaded, setUploaded] = useState<Uploaded[] | []>([]);
-  const [profile, setProfile] = useState<Student[] | []>([]);
   const [subjects, setSubjects] = useState<Subject[] | []>([]);
 
   //Handle inputs
@@ -74,17 +67,19 @@ export default function StudentRecords() {
     setTempStudents(students);
   }, [students]);
 
-
+  //Function to get all students related to user.
   async function getAllStudents() {
     const res = await getStudentByTeacherSubject({subjects: subjects.map(sub => sub.name || "")});
     setStudents(res.data || []);
   }
 
+  //Get all student related to user.
   useEffect(() => {
     if(subjects.length === 0) return;
     getAllStudents();
   }, [subjects]);    
 
+  //Validating and setting id for user
   useEffect(() => {
     if(!id) return;
     if(students.length > 0) return;
