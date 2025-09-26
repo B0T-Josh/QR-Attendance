@@ -52,19 +52,20 @@ export default function HomePage() {
     };
 
     useEffect(() => {
-        if(!subjects) return;
+        if(subjects.length === 0) return;
         setSubjectNames(subjects.map(sub => sub.name!) || []);
     }, [subjects]);
 
     useEffect(() => {
+        if(subjectNames.length == 0) return;
         async function getAll() {
             const res = await getAllRecords({subjects: subjectNames});
-            const data: Record[] | [] = res.data || [];
-            if(data.length > 0) {
-                setRecord(data);
+            if(res.data.length > 0) {
+                setRecord(res.data);
             }
         }
         getAll();
+        get();
     }, [subjectNames]);
 
     useEffect(() => {   

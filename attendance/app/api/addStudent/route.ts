@@ -74,13 +74,13 @@ export async function DELETE(req: Request) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
     if(decoded) {
-      const {student_id, teacher_id} = await req.json();
+      const {student_id} = await req.json();
 
       if (!student_id) {
         return NextResponse.json({ error: "Missing student_id or user_id" }, { status: 400 });
       }
 
-      const {success, error} = await removeStudent(student_id, teacher_id);
+      const {success, error} = await removeStudent(student_id);
 
       if (success) return NextResponse.json({ success: success }, { status: 200 });
 

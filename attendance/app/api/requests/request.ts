@@ -210,7 +210,7 @@ export async function verifyStudent(info: {student_id: string | null}) {
 
 
 //Request to delete a student from the table.
-export async function handleRemoveStudent(info: {student_id: string | null, teacher_id: string | null}) {
+export async function handleRemoveStudent(info: {student_id: string | null}) {
     const res = await fetch("/api/addStudent", {
         method: "DELETE",
         headers: {"Content-Type": "application/json"},
@@ -278,7 +278,7 @@ export async function getAllRecords(info: {subjects: string[] | []}) {
 }
 
 //Update the subjects of the student
-export async function updateSubject(info: {teacher_id: string | null, student_id: string | null, subjects: string | null}) {
+export async function updateSubject(info: { student_id: string | null, subjects: string[] | null}) {
     const res = await fetch("/api/updateSubject", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},

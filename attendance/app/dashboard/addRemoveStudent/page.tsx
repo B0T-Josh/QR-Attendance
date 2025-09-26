@@ -6,15 +6,14 @@ import { useRouter } from "next/navigation";
 import {
   handleAddStudent,
   handleRemoveStudent,
-  getStudentByTeacherSubject,
   updateSubject,
-  getSubjects
+  getSubjects,
+  getStudents
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
 import {verifyUser} from "@/app/api/requests/request"
 import * as XLSX from 'xlsx';
-import { get } from "http";
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -51,6 +50,7 @@ export default function StudentRecords() {
     subjects: ""
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
+  const [duplicatedError, setDuplicatedError] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
   const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,6 @@ export default function StudentRecords() {
   const [uploaded, setUploaded] = useState<Uploaded[] | []>([]);
   const [profile, setProfile] = useState<Student[] | []>([]);
   const [subjects, setSubjects] = useState<Subject[] | []>([]);
-  const [subjectNames, setSubjectNames] = useState<string[]>([]);
 
   //Handle inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -76,20 +75,15 @@ export default function StudentRecords() {
   }, [students]);
 
 
-  async function getStudentBySubjects() {
-    const res = await getStudentByTeacherSubject({subjects: subjectNames});
+  async function getAllStudents() {
+    const res = await getStudents();
     setStudents(res.data || []);
   }
 
   useEffect(() => {
-    if(subjectNames.length > 0) return;
-    setSubjectNames(subjects.map(sub => sub.name!));
+    if(subjects.length === 0) return;
+    getAllStudents();
   }, [subjects]);    
-
-  useEffect(() => {
-    if(subjectNames.length === 0) return;
-    getStudentBySubjects();
-  }, [subjectNames]);
 
   useEffect(() => {
     if(!id) return;
@@ -97,7 +91,6 @@ export default function StudentRecords() {
     async function getSubject() {
       const res = await getSubjects({id: id});
       if(res) {
-        
         if(res.data.length > 0) {
           setSubjects(res.data || []);
         } else {
@@ -148,7 +141,7 @@ export default function StudentRecords() {
         setLoading(false);
         setContent(<p className="text-green-300">Student is added</p>);
         resetInput();
-        getStudentBySubjects();
+        getAllStudents();
       } else {
         setLoading(false);
         setContent(<p className="text-red-500">{error}</p>);
@@ -174,7 +167,7 @@ export default function StudentRecords() {
             setLoading(false);
             setContent(<p className="text-green-300">Student is added</p>);
             resetInput();
-            getStudentBySubjects();
+            getAllStudents();
           } else {
             setLoading(false);
             setContent(<p className="text-red-500">{error}</p>);
@@ -192,7 +185,7 @@ export default function StudentRecords() {
   async function handleRemove() {
     setLoading(true);
     if (student.student_id) {
-      const { success, error } = await handleRemoveStudent({ student_id: student.student_id, teacher_id: id });
+      const { success, error } = await handleRemoveStudent({ student_id: student.student_id });
       setLoading(false);
       setContent(
         success ? (
@@ -202,7 +195,7 @@ export default function StudentRecords() {
         )
       );
       resetInput();
-      getStudentBySubjects();
+      getAllStudents();
     } else {
       setLoading(false);
       setContent(<p className="text-red-500">Enter student ID to remove</p>);
@@ -226,13 +219,19 @@ export default function StudentRecords() {
   //Handle update function
   async function handleUpdate() {
     setLoading(true);
-    if(student.student_id && student.subjects && id) {
-      const {success, error} = await updateSubject({student_id: student.student_id, teacher_id: id, subjects: student.subjects});
+    if(student.student_id && student.subjects) {
+      const found = students.find(stud => stud.student_id === student.student_id);
+      if(!found) {
+        setLoading(false);
+        setContent(<p className="text-red-500">Student ID not found</p>);
+        return;
+      }
+      const {success, error} = await updateSubject({student_id: student.student_id, subjects: student.subjects.split(",").map(sub => sub.trim().toUpperCase())});
       if(success) {
         resetInput();
         setLoading(false);
         setContent(<p className="text-green-300">{success}</p>);
-        getStudentBySubjects();
+        getAllStudents();
       } else {
         setLoading(false);
         setContent(<p className="text-green-300">{error}</p>);
@@ -275,12 +274,27 @@ export default function StudentRecords() {
             setContent(<p className="text-red-500">Subjects is required for student ID {data.student_id}</p>);
             return;
           }
-          setProfile(prev => [...prev, {
-            id: String(index+1),
-            student_id: data.student_id,
-            name: formatted.formatted,
-            subjects: subjectArray
-          }]);
+          const duplicated = students.find(stud => {
+            return (
+              (stud.student_id === data.student_id) &&
+              (stud.name === formatted.formatted) &&
+              (stud.subjects.toString() === subjectArray.toString())
+            );
+          });
+          if(duplicated) {
+            setDuplicatedError(<p className="text-yellow-500">Student ID {data.student_id} is duplicated in the database</p>);
+            setTimeout(() => {
+              setDuplicatedError(null);
+            }, 3000);
+            return;
+          } else {
+            setProfile(prev => [...prev, {
+              id: String(index+1),
+              student_id: data.student_id,
+              name: formatted.formatted,
+              subjects: subjectArray
+            }]);
+          }
         }
         else if(formatted.error) {
           setContent(<p className="text-red-500">{formatted.error} for student ID {data.student_id}</p>);
@@ -325,6 +339,7 @@ export default function StudentRecords() {
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
+          {duplicatedError}
           {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
             <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
@@ -357,7 +372,7 @@ export default function StudentRecords() {
             </div>
           </div>
 
-          <div className="flex flex-row justify-between">
+          <div className="flex flex-row justify-between ">
             <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
                 Add
             </button>
@@ -385,10 +400,11 @@ export default function StudentRecords() {
             >
               Update
             </button>
-          </div>
 
-          <div >
-            <input type="file" accept=".xlsx, .xls" onChange={handleUpload}/>
+            <label htmlFor="upload"
+            className="cursor-pointer text-gray-600 mt-3 hover:text-green-300">Choose File</label>
+
+            <input className="hidden" id="upload" type="file" accept=".xlsx, .xls" onChange={handleUpload}/>
           </div>
 
           {/* Students Table */}

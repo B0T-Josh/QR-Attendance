@@ -268,8 +268,8 @@ export async function addStudent(info: Student[]) {
 }
 
 //Remove student from the table.
-export async function removeStudent(student_id: string, teacher_id: string) {
-    const { error } = await supabase.from("students").delete().eq("student_id", student_id).eq("teacher_id", teacher_id);
+export async function removeStudent(student_id: string) {
+    const { error } = await supabase.from("students").delete().eq("student_id", student_id);
     if(!error) {
         return ({success: `Student ${student_id} was deleted`});
     } else {
@@ -278,10 +278,13 @@ export async function removeStudent(student_id: string, teacher_id: string) {
 }
 
 //Updates the subject for a student in the DB.
-export async function updateSubjectForStudent(student_id: string, teacher_id: string, subjects: string) {
-    const {error} = await supabase.from("students").select("id").eq("student_id", student_id).eq("teacher_id", teacher_id);
+export async function updateSubjectForStudent(student_id: string, subjects: string[]) {
+    const {error} = await supabase.from("students").select("id").eq("student_id", student_id)
     if(!error) {
-        await supabase.from("students").update({subjects: subjects}).eq("student_id", student_id);
+        const {error} = await supabase.from("students").update({subjects: subjects}).eq("student_id", student_id);
+        if(error) {
+            return({error: "Failed to update subject"});
+        }
         return ({success: "Subject successfully updated"});
     } else {
         return({error: "Student doesn't exist"});

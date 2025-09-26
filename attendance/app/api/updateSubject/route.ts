@@ -19,10 +19,10 @@ export async function POST(req: Request) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if(decoded) {
-            const {student_id, teacher_id, subjects} = await req.json();
+            const {student_id, subjects} = await req.json();
 
-            if(student_id && teacher_id && subjects) {
-                const {success, error} = await updateSubjectForStudent(student_id, teacher_id, subjects);
+            if(student_id && subjects) {
+                const {success, error} = await updateSubjectForStudent(student_id, subjects);
                 if(success) {
                     return NextResponse.json({success: success}, {status: 200});
                 } else if(error) {
