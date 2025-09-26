@@ -8,7 +8,7 @@ import {
   handleRemoveStudent,
   updateSubject,
   getSubjects,
-  getStudentByTeacherSubject
+  getStudents
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
@@ -72,39 +72,18 @@ export default function StudentRecords() {
   useEffect(() => {
     if(tempStudents.length > 0) return;
     setTempStudents(students);
+    setLoaded(true);
   }, [students]);
 
 
   async function getAllStudents() {
-    const res = await getStudentByTeacherSubject({subjects: subjects.map(sub => sub.name || "")});
+    const res = await getStudents();
     setStudents(res.data || []);
   }
 
   useEffect(() => {
-    if(subjects.length === 0) return;
     getAllStudents();
-  }, [subjects]);    
-
-  useEffect(() => {
-    if(!id) return;
-    if(students.length > 0) return;
-    async function getSubject() {
-      const res = await getSubjects({id: id});
-      if(res) {
-        if(res.data.length > 0) {
-          setSubjects(res.data || []);
-        } else {
-          setContent(<p className="text-yellow-500">{res.error}</p>);
-          return;
-        }
-      }
-    }
-    getSubject();
   }, [id]);
-
-  useEffect(() => {   
-    setLoaded(true);
-  }, [students]);
 
   //Check if user is authorized.
   useEffect(() => {
@@ -132,6 +111,82 @@ export default function StudentRecords() {
     });
   }
 
+  //Handle add student
+  async function handleAdd() {
+    setLoading(true);
+    if(profile.length > 0) {
+      const { success, error } = await handleAddStudent(profile);
+      if(success) {
+        setLoading(false);
+        setContent(<p className="text-green-300">Student is added</p>);
+        resetInput();
+        getAllStudents();
+      } else {
+        setLoading(false);
+        setContent(<p className="text-red-500">{error}</p>);
+      }
+    }
+    else {
+      if(!student.student_id || !student.name || !student.subjects) {
+        setLoading(false);
+        setContent(<p className="text-red-500">All fields are required</p>);
+        return;
+      }
+      const found = students.find(stud => student.student_id === stud.student_id);
+      if(found) {
+        setContent(<p className="text-red-500">Student already exists</p>);
+        setLoading(false);
+        return;
+      } else {
+        const subjArray = student.subjects ? student.subjects.split(",").map(sub => sub.trim().toUpperCase()) : [];
+        const formatted = format(student.name.trim());
+        if(!formatted) {
+            setLoading(false);
+            setContent(<p className="text-red-500">Invalid name format</p>);
+        } else {
+            if(formatted.formatted) {
+            const formattedName = formatted.formatted;
+            const { success, error } = await handleAddStudent([{student_id: student.student_id, name: formattedName, subjects: subjArray}]);
+            if(success) {
+                setLoading(false);
+                setContent(<p className="text-green-300">Student is added</p>);
+                resetInput();
+                getAllStudents();
+            } else {
+                setLoading(false);
+                setContent(<p className="text-red-500">{error}</p>);
+            }
+            } else if(formatted.error) {
+                setLoading(false);
+                setContent(<p className="text-red-500">{formatted.error}</p>);
+                return;
+            }
+        }
+      }
+    }
+  }
+
+  //Handle remove function
+  async function handleRemove() {
+    setLoading(true);
+    if (student.student_id) {
+      const { success, error } = await handleRemoveStudent({ student_id: student.student_id });
+      setLoading(false);
+      setContent(
+        success ? (
+          <p className="text-green-300">{success}</p>
+        ) : (
+          <p className="text-red-500">{error}</p>
+        )
+      );
+      resetInput();
+      getAllStudents();
+    } else {
+      setLoading(false);
+      setContent(<p className="text-red-500">Enter student ID to remove</p>);
+    }
+  }
+
   //Handles search function 
   async function handleSearch() {
     setLoading(true);
@@ -145,6 +200,103 @@ export default function StudentRecords() {
     setStudents(studentList);
     setLoading(false);
   }
+
+  //Handle update function
+  async function handleUpdate() {
+    setLoading(true);
+    if(student.student_id && student.subjects) {
+      const found = students.find(stud => stud.student_id === student.student_id);
+      if(!found) {
+        setLoading(false);
+        setContent(<p className="text-red-500">Student ID not found</p>);
+        return;
+      }
+      const {success, error} = await updateSubject({student_id: student.student_id, subjects: student.subjects.split(",").map(sub => sub.trim().toUpperCase())});
+      if(success) {
+        resetInput();
+        setLoading(false);
+        setContent(<p className="text-green-300">{success}</p>);
+        getAllStudents();
+      } else {
+        setLoading(false);
+        setContent(<p className="text-green-300">{error}</p>);
+      }
+    }
+  }
+
+  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const binaryString = event.target?.result;
+      if(!binaryString) return;
+
+      const workbook = XLSX.read(binaryString, {type: "binary"});
+      const workSheetName = workbook.SheetNames[0];
+      const workSheet = workbook.Sheets[workSheetName];
+      const jsonData = XLSX.utils.sheet_to_json(workSheet || {}, {defval: null, raw: false, blankrows: false})
+      console.log({jsonData});
+      setUploaded(jsonData as Uploaded[]);
+    }
+    reader.readAsArrayBuffer(file);
+  }
+
+  useEffect(() => {
+    if(uploaded.length === 0) return;
+    
+    uploaded.map((data, index) => {
+      if(!data.student_id) {
+        setContent(<p className="text-red-500">Student ID is required {data.name ? (`for ${data.name}`) : (`for row ${index + 2}`)}</p>);
+        return;
+      }
+      const formatted = format(data.name?.trim() || "");
+      if(formatted) {
+        if(formatted.formatted) {
+          const subjectArray = data.subjects ? data.subjects.split(",").map(sub => sub.trim().toUpperCase()) : [];
+          if(subjectArray.length === 0) {
+            setContent(<p className="text-red-500">Subjects is required for student ID {data.student_id}</p>);
+            return;
+          }
+          const duplicated = students.find(stud => {
+            return (
+              (stud.student_id === data.student_id) &&
+              (stud.name === formatted.formatted) &&
+              (stud.subjects.toString() === subjectArray.toString())
+            );
+          });
+          if(duplicated) {
+            setDuplicatedError(<p className="text-yellow-500">Student ID {data.student_id} is duplicated in the database</p>);
+            setTimeout(() => {
+              setDuplicatedError(null);
+            }, 3000);
+            return;
+          } else {
+            setProfile(prev => [...prev, {
+              id: String(index+1),
+              student_id: data.student_id,
+              name: formatted.formatted,
+              subjects: subjectArray
+            }]);
+          }
+        }
+        else if(formatted.error) {
+          setContent(<p className="text-red-500">{formatted.error} for student ID {data.student_id}</p>);
+          return;
+        }
+      }
+      else {
+        setContent(<p className="text-red-500">Name is required for student ID {data.student_id}</p>);
+        return;
+      }
+    })
+  }, [uploaded]);
+
+  useEffect(() => {
+    if(profile.length === 0) return;
+    handleAdd();
+  }, [profile]);
 
   //Reset content value.
   useEffect(() => {
@@ -206,6 +358,10 @@ export default function StudentRecords() {
           </div>
 
           <div className="flex flex-row justify-between ">
+            <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
+                Add
+            </button>
+
             <button
               className="px-4 py-2 text-gray-600 hover:text-yellow-500"
               onClick={handleSearch}
@@ -216,11 +372,24 @@ export default function StudentRecords() {
 
             <button
               className="px-4 py-2 text-gray-600 hover:text-red-500"
-              onClick={resetInput}
+              onClick={handleRemove}
               disabled={loading}
             >
-              Reset
+              Remove
             </button>
+
+            <button
+              className="px-4 py-2 text-gray-600 hover:text-green-300"
+              onClick={handleUpdate}
+              disabled={loading}
+            >
+              Update
+            </button>
+
+            <label htmlFor="upload"
+            className="cursor-pointer text-gray-600 mt-3 hover:text-green-300">Choose File</label>
+
+            <input className="hidden" id="upload" type="file" accept=".xlsx, .xls" onChange={handleUpload}/>
           </div>
 
           {/* Students Table */}
