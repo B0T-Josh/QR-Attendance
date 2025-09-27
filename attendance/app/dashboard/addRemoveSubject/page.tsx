@@ -64,10 +64,19 @@ export default function StudentRecords() {
     async function handleAdd() {
         setLoading(true);
         if(subject) {
-            const { message, error } = await handleAddSubject({id: id, subjects: subject});
-            setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
-            setSubject("");
-            get();
+            const subjectArray = subject.trim().split(/\s*,\s*|\s+/);
+            console.log(subjectArray);
+            if(subjectArray.length > 1) {
+                setLoading(false);
+                setContent(<p className="text-red-500">Subject cannot contain multiple subjects</p>);
+                setSubject("");
+                return;
+            } else {
+                const { message, error } = await handleAddSubject({id: id, subjects: subject});
+                setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
+                setSubject("");
+                get();
+            }
         } else setContent(<p className="text-red-500">Enter a subject</p>);
     }
 
@@ -124,7 +133,7 @@ export default function StudentRecords() {
                                 type="text"
                                 name="subject"
                                 onChange={handleChange}
-                                placeholder="Enter subject"
+                                placeholder="Enter subject code ex. FILI211"
                                 className="p-2 rounded-lg border border-gray-300"
                                 value={subject || ""}
                             />
