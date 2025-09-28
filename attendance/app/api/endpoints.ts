@@ -66,7 +66,7 @@ export async function getVerification(id: string | null) {
 //Adds attendance record for students aftter scanning the QR.
 export async function addRecord(student_id: string, subjects: string, name: string) {
     if(await validateSubject(subjects)) {
-        const {error} = await supabase.from('attendance').insert({student_id: student_id, name: name, subject: [subjects], time_in: getTime()});
+        const {error} = await supabase.from('attendance').insert({student_id: student_id, name: name, subject: [subjects], date: getDate(), time_in: getTime()});
         if(!error) {
             return({success: `Attendance recorded for student ${name}`});
         } else {

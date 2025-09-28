@@ -5,10 +5,10 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   getSubjects,
-  getStudentByTeacherSubject
+  getStudentByTeacherSubject,
+  verifyUser
 } from "@/app/api/requests/request";
 import ToggleSidebar from "@/components/ToggleSidebar";
-import {verifyUser} from "@/app/api/requests/request"
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -16,19 +16,6 @@ type Students = {
   name: string;        // student name
   subjects: string;     // subject they’re enrolled in
 };
-
-type Uploaded = {
-  student_id: string | null;
-  name: string | null;
-  subjects: string | null;
-}
-
-type Student = {
-  id: string | null;
-  student_id: string | null;
-  name: string | null;
-  subjects: string[] | [];
-}
 
 type Subject = {
   id: string | null;
@@ -45,7 +32,6 @@ export default function StudentRecords() {
     subjects: ""
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
-  const [duplicatedError, setDuplicatedError] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
   const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
@@ -167,7 +153,6 @@ export default function StudentRecords() {
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
-          {duplicatedError}
           {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
             <div className="ml-[7.7rem] flex items-center gap-4 flex-1">

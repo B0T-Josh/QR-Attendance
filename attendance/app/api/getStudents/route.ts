@@ -19,7 +19,6 @@ export async function POST(req: Request) {
         if(decoded) {
             const {subjects} = await req.json();
             const {data, error} = await getStudentByTeacherSubject(subjects);
-            console.log(data);
             if(data) {
                 return NextResponse.json({data}, {status: 200});
             } else {

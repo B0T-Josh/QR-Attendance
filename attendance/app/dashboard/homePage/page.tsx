@@ -6,10 +6,8 @@ import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { getStudentByTeacherSubject, getAllRecords, getSubjects, getValidation} from "@/app/api/requests/request";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { IoCloseCircle } from "react-icons/io5";
-import {verifyUser} from "@/app/api/requests/request"
+import { getStudentByTeacherSubject, getAllRecords, getSubjects, getValidation, verifyUser} from "@/app/api/requests/request";
+import { IoCheckmarkCircle, IoCloseCircle } from "react-icons/io5";
 
 type Subjects = {
   id: string;
@@ -53,7 +51,7 @@ export default function HomePage() {
 
     useEffect(() => {
         if(subjects.length === 0) return;
-        setSubjectNames(subjects.map(sub => sub.name!) || []);
+        setSubjectNames(subjects.map(sub => sub.name) || []);
     }, [subjects]);
 
     useEffect(() => {
@@ -122,7 +120,7 @@ export default function HomePage() {
                 <ToggleSidebar onToggle={hide}/>
             </div>
             {hidden ? <div className="w-10"></div> : <Sidebar />}
-            {loaded ? hasVerification ? (
+            {loaded && hasVerification ? (
                 <div className="flex-1 p-6">
                 <div className="flex flex-col md:flex-row gap-6 h-full">
                     <div className="flex-1 flex flex-col gap-6">
@@ -226,7 +224,7 @@ export default function HomePage() {
                     </div>
                 </div>
             </div>
-        ) : (<Popup />) : <p></p>}
+        ) : (<Popup />)}
         </div>
     );
 }

@@ -3,9 +3,8 @@
 import Sidebar from "@/components/Sidebar";
 import {useState, useEffect, useRef} from 'react';
 import { useRouter } from "next/navigation";
-import { handleAddSubject, handleRemoveSubject, getSubjects } from "@/app/api/requests/request";
+import { handleAddSubject, handleRemoveSubject, getSubjects, verifyUser } from "@/app/api/requests/request";
 import ToggleSidebar from "@/components/ToggleSidebar";
-import {verifyUser} from "@/app/api/requests/request"
 
 type Subjects = {
     id: string | null;
@@ -65,7 +64,6 @@ export default function StudentRecords() {
         setLoading(true);
         if(subject) {
             const subjectArray = subject.trim().split(/\s*,\s*|\s+/);
-            console.log(subjectArray);
             if(subjectArray.length > 1) {
                 setLoading(false);
                 setContent(<p className="text-red-500">Subject cannot contain multiple subjects</p>);

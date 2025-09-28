@@ -3,18 +3,16 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
-import { getSubjects, getAllRecords } from "@/app/api/requests/request";
-import { IoCheckmarkCircle } from "react-icons/io5";
-import { IoCloseCircle } from "react-icons/io5";
+import { getSubjects, getAllRecords, verifyUser } from "@/app/api/requests/request";
+import { IoCheckmarkCircle, IoCloseCircle } from "react-icons/io5";
 import ToggleSidebar from "@/components/ToggleSidebar";
-import {verifyUser} from "@/app/api/requests/request"
 
 type Record = {
   id: string | null | undefined;
   student_id: string | null | undefined;
   name: string | null | undefined;
   date: string | null | undefined;
-  subject: string | null | undefined;
+  subject: string[] | [];
   time_in: string | null | undefined;
   time_out: string | null | undefined;
 }
@@ -134,26 +132,30 @@ export default function Records() {
 
   //Filter function.
   useEffect(() => {
-    if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && attendance === "") {
+    if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && !attendance) {
       refreshRecord();
       return;
     }
     const studentList: RecordList[] = tempRecord.filter((att) => {
       return (
-        (search.subject === "" || att.subject === search.subject) &&
-        (attendance === "" || att.attendance === attendance) &&
+        (search.subject === "" || att.subject[0] === search.subject) &&
+        (!attendance || att.attendance === attendance) &&
         (search.date === "" || att.date?.trim() === search.date.trim()) &&
         (search.name === "" || att.name?.includes(search.name.trim())) &&
         (search.student_id === "" || att.student_id?.includes(search.student_id.trim()))
       );
     });
-    setRecordList(studentList);
+    if(studentList.length === 0) {
+      setContent(<p className="text-red-500 p-2">No record found</p>);
+    } else {
+      setRecordList(studentList);
+    }
   }, [search, attendance]);
 
   //Fetches all records that are related to the prof. 
   useEffect(() => {
     if(subjects?.length === 0) return;
-    setSubjectNames(subjects?.map(sub => sub.name!) || []);
+    setSubjectNames(subjects?.map(sub => sub.name) || []);
   }, [subjects]);
 
   useEffect(() => {

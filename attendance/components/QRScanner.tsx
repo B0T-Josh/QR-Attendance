@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { BrowserQRCodeReader } from "@zxing/browser";
-import { getStudentByTeacherSubject, scanned } from "@/app/api/requests/request";
-import { getSubjects } from "@/app/api/requests/request";
+import { getStudentByTeacherSubject, scanned, verifyUser, getSubjects } from "@/app/api/requests/request";
 import { useRouter } from "next/navigation";
-import {verifyUser} from "@/app/api/requests/request"
 
 type Subject = {
     id: string;
@@ -75,7 +73,7 @@ export default function QRScanner() {
 
     useEffect(() => {
         if(subjectNames.length > 0) return;
-        setSubjectNames(subjects.map(sub => sub.name!));
+        setSubjectNames(subjects.map(sub => sub.name));
     }, [subjects]);    
 
     //Set subject after setting id.
@@ -147,11 +145,11 @@ export default function QRScanner() {
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <select className="rounded-lg p-2" value={subject} name="subject" onChange={handleChange}>
                   <option value="">Select a subject</option>
-                  {subjects ? subjects.length > 0 ? (
+                  {subjects && subjects.length > 0 ? (
                     subjects.map(subject => (
                       <option key={subject.id} value={subject.name}>{subject.name}</option>
                     ))
-                  ) : <option value="">No subject</option> : (<></>)}
+                  ) : <option value="">No subject</option>}
                 </select>
                 <h2 className="text-xl font-bold mb-4 mt-4">QR Code Scanner</h2>
                 <div>{content}</div><br />

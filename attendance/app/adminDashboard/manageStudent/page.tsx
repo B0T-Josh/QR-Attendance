@@ -7,12 +7,11 @@ import {
   handleAddStudent,
   handleRemoveStudent,
   updateSubject,
-  getSubjects,
-  getStudents
+  getStudents,
+  verifyUser
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
 import ToggleSidebar from "@/components/ToggleSidebar";
-import {verifyUser} from "@/app/api/requests/request"
 import * as XLSX from 'xlsx';
 
 type Students = {
@@ -35,11 +34,6 @@ type Student = {
   subjects: string[] | [];
 }
 
-type Subject = {
-  id: string | null;
-  name: string | null;
-}
-
 export default function StudentRecords() {
   const route = useRouter();
   const [loaded, setLoaded] = useState(false);
@@ -58,7 +52,6 @@ export default function StudentRecords() {
   const [hidden, setHidden] = useState(false);
   const [uploaded, setUploaded] = useState<Uploaded[] | []>([]);
   const [profile, setProfile] = useState<Student[] | []>([]);
-  const [subjects, setSubjects] = useState<Subject[] | []>([]);
 
   //Handle inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -143,8 +136,7 @@ export default function StudentRecords() {
         if(!formatted) {
             setLoading(false);
             setContent(<p className="text-red-500">Invalid name format</p>);
-        } else {
-            if(formatted.formatted) {
+        } else if(formatted.formatted) {
             const formattedName = formatted.formatted;
             const { success, error } = await handleAddStudent([{student_id: student.student_id, name: formattedName, subjects: subjArray}]);
             if(success) {
@@ -161,7 +153,6 @@ export default function StudentRecords() {
                 setContent(<p className="text-red-500">{formatted.error}</p>);
                 return;
             }
-        }
       }
     }
   }
@@ -236,8 +227,7 @@ export default function StudentRecords() {
       const workbook = XLSX.read(binaryString, {type: "array"});
       const workSheetName = workbook.SheetNames[0];
       const workSheet = workbook.Sheets[workSheetName];
-      const jsonData = XLSX.utils.sheet_to_json(workSheet || {}, {defval: null, raw: false, blankrows: false})
-      console.log({jsonData});
+      const jsonData = XLSX.utils.sheet_to_json(workSheet || {}, {defval: null, raw: false, blankrows: false});
       setUploaded(jsonData as Uploaded[]);
     }
     reader.readAsArrayBuffer(file);
