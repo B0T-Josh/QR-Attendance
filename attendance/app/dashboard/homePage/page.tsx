@@ -76,14 +76,16 @@ export default function HomePage() {
         ranOnce.current = true;
         async function validate() {
             const {data} = await verifyUser();
-            if (data.admin === "false") {
-                if(data.success) {
-                    setId(data.success);    
-                }
-            } else if(data.admin === "true") {
-                if(data.success) {
-                    route.push("/adminDashboard/manageStudent");
-                }
+            if(data) {
+                if (data.admin === "false") {
+                    if(data.success) {
+                        setId(data.success);    
+                    }
+                } else if(data.admin === "true") {
+                    if(data.success) {
+                        route.push("/adminDashboard/manageStudent");
+                    }
+                } 
             } else {
                 route.push("/authPages/login");
             }

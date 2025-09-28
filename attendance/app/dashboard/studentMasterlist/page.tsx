@@ -43,7 +43,7 @@ export default function StudentRecords() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setStudent({
       ...student,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.name === "subjects" ? e.target.value.toUpperCase(): e.target.value
     });
   }
 
@@ -93,14 +93,16 @@ export default function StudentRecords() {
     ranOnce.current = true;
     async function validate() {
       const {data} = await verifyUser();
-      if (data.admin === "false") {
-        if(data.success) {
-            setId(data.success);    
-        }
-      } else if(data.admin === "true") {
-        if(data.success) {
-            route.push("/adminDashboard/manageStudent");
-        }
+      if(data) {
+        if (data.admin === "false") {
+          if(data.success) {
+              setId(data.success);    
+          }
+        } else if(data.admin === "true") {
+          if(data.success) {
+              route.push("/adminDashboard/manageStudent");
+          }
+        } 
       } else {
         route.push("/authPages/login");
       }
@@ -116,10 +118,16 @@ export default function StudentRecords() {
       name: "",
       subjects: ""
     });
+    setStudents(tempStudents);
   }
 
   //Handles search function 
   async function handleSearch() {
+    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "") {
+      setContent(<p className="text-red-500">No input values</p>);
+      setStudents(tempStudents);
+      return;
+    }
     setLoading(true);
     const studentList: Students[] | [] = tempStudents.filter((stud) => {
       return (
@@ -137,7 +145,7 @@ export default function StudentRecords() {
     if(!content) return;
     setTimeout(() => {
         setContent(null);
-      }, 3000);
+      }, 2000);
   }, [content]);
 
   //Set hide to navbar.

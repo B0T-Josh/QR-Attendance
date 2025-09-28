@@ -23,20 +23,21 @@ export default function LogIn() {
       if(ranOnce.current) return;
       ranOnce.current = true;
       async function validate() {
-          const {data} = await verifyUser();
+        const {data} = await verifyUser();
+        if(data) {
           if (data.admin === "false") {
-              if(data.success) {
-                route.push("/dashboard/homePage");
-              }
+            if(data.success) {
+              route.push("/dashboard/homePage");
+            }
           } else if(data.admin === "true") {
             if(data.success) {
               route.push("/adminDashboard/manageStudent");
             }
-          } else {
-            setLoaded(true);
           }
+        }
       }
       validate();
+      setLoaded(true);
     }, []);
 
   //Updates credential values

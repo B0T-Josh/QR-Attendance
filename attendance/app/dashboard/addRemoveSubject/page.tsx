@@ -38,25 +38,27 @@ export default function StudentRecords() {
     }, [sets]);
 
     //Check if user is authorized.
-    useEffect(() => {
-        if(ranOnce.current) return;
-        ranOnce.current = true;
-        async function validate() {
-            const {data} = await verifyUser();
-            if (data.admin === "false") {
-                if(data.success) {
-                    setId(data.success);    
-                }
-            } else if(data.admin === "true") {
-                if(data.success) {
-                    route.push("/adminDashboard/manageStudent");
-                }
-            } else {
-                route.push("/authPages/login");
-            }
-        }
-        validate();
-    }, []);
+  useEffect(() => {
+    if(ranOnce.current) return;
+    ranOnce.current = true;
+    async function validate() {
+      const {data} = await verifyUser();
+      if(data) {
+        if (data.admin === "false") {
+          if(data.success) {
+            setId(data.success);    
+          }
+        } else if(data.admin === "true") {
+          if(data.success) {
+            route.push("/adminDashboard/manageStudent");
+          }
+        } 
+      } else {
+        route.push("/authPages/login");
+      }
+    }
+    validate();
+  }, []);
     
     //Execute fetching of subjects after the id was set
     useEffect(() => {

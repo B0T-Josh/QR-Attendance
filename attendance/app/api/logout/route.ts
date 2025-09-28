@@ -7,5 +7,13 @@ export async function POST() {
         expires: new Date(0), // expired immediately
         path: "/",
     });
+    cookie.set("id", "", {
+        expires: new Date(0), // expired immediately
+        path: "/",
+    });
+    cookie.set("admin", "", {
+        expires: new Date(0), // expired immediately
+        path: "/",
+    });
     return NextResponse.json({ success: "Logged out" }, {status: 200});
 }

@@ -19,6 +19,6 @@ export async function GET() {
         store.delete("id");
         return NextResponse.json({error: "Invalid token"}, {status: 401});
     } catch {
-    return NextResponse.json({error: "Unauthorized user"}, {status: 401});
+        return NextResponse.json({error: "Unauthorized user"}, {status: 401});
     }
 }
