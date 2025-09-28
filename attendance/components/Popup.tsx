@@ -22,11 +22,11 @@ export default function Popup() {
         if(ranOnce.current) return;
         ranOnce.current = true;
         async function validate() {
-            const {success} = await verifyUser();
-            if (success) {
+            const {data} = await verifyUser();
+            if (data.success) {
                 setVerification({
                     ...verification,
-                    id: success
+                    id: data.success
                 });
                 setLoaded(true);
             }

@@ -12,7 +12,8 @@ export async function GET() {
         const decoded = jwt.verify(token, process.env.JWT_SECRET!);
         if (decoded) {
             const id = store.get("id")?.value;
-            return NextResponse.json({success: id}, {status: 201});
+            const admin = store.get("admin")?.value;
+            return NextResponse.json({data: {success: id, admin: admin}}, {status: 201});
         }
         store.delete("token");
         store.delete("id");

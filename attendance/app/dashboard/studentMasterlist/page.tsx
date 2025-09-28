@@ -89,18 +89,23 @@ export default function StudentRecords() {
 
   //Check if user is authorized.
   useEffect(() => {
-      if(ranOnce.current) return;
-      ranOnce.current = true;
-
-      async function validate() {
-          const {success} = await verifyUser();
-          if (success) {
-              setId(success);
-          } else {
-              route.push("/authPages/login");
-          }
+    if(ranOnce.current) return;
+    ranOnce.current = true;
+    async function validate() {
+      const {data} = await verifyUser();
+      if (data.admin === "false") {
+        if(data.success) {
+            setId(data.success);    
+        }
+      } else if(data.admin === "true") {
+        if(data.success) {
+            route.push("/adminDashboard/manageStudent");
+        }
+      } else {
+        route.push("/authPages/login");
       }
-      validate();
+    }
+    validate();
   }, []);
 
   //Resets the input values.

@@ -172,10 +172,9 @@ export async function updatePassword(password: string | null, email: string | nu
 
 //Gets the data of the user for verification on log in.
 export async function login(email: string, password: string) {
-    const { data } = await supabase.from("account").select("id, password").eq("email", email).eq("password", password).single();
+    const { data } = await supabase.from("account").select("id, password, admin").eq("email", email).eq("password", password).single();
     if(data) {
-
-        return ({data: {id: data.id, password: data.password}});
+        return ({data: {id: data.id, password: data.password, admin: data.admin}});
     } else {
         return ({error: "Invlid credentials."});
     }

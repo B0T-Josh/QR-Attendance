@@ -38,8 +38,16 @@ export async function POST(req: Request) {
         path: "/",
         maxAge: 60 * 60 * 24, // 1 day
     });
+
+    cookie.set("admin", data.admin ? "true" : "false", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        path: "/",
+        maxAge: 60 * 60 * 24, //1 day
+    })
     
-    return NextResponse.json({ success: true }, {status: 200});
+    return NextResponse.json({data: { success: true, admin: data.admin }}, {status: 200});
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
@@ -9,6 +9,7 @@ import {verifyUser} from "@/app/api/requests/request"
 
 export default function LogIn() {
   const route = useRouter();
+  const ranOnce = useRef(false);
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,12 +20,21 @@ export default function LogIn() {
 
   //Validates the ID of the user that was inside the localstorage
     useEffect(() => {
+      if(ranOnce.current) return;
+      ranOnce.current = true;
       async function validate() {
-          const {success} = await verifyUser();
-          if (success) {
-            route.push("/dashboard/homePage");
-          } 
-          setLoaded(true);
+          const {data} = await verifyUser();
+          if (data.admin === "false") {
+              if(data.success) {
+                route.push("/dashboard/homePage");
+              }
+          } else if(data.admin === "true") {
+            if(data.success) {
+              route.push("/adminDashboard/manageStudent");
+            }
+          } else {
+            setLoaded(true);
+          }
       }
       validate();
     }, []);
@@ -41,9 +51,13 @@ export default function LogIn() {
   const handleSubmit = async () => {
     setLoading(true);
     if(credentials.email && credentials.password) {
-      const { success, error } = await logIn({email: credentials.email, password: credentials.password});
-      if(success) {
-        route.push("/dashboard/homePage");
+      const { data, error } = await logIn({email: credentials.email, password: credentials.password});
+      if(data.success) {
+        if(data.admin) {
+          route.push("/adminDashboard/manageStudent");
+        } else {
+          route.push("/dashboard/homePage");
+        }
       } else {
         setContent(<p className="text-red-500">{error}</p>);
         setLoading(false);

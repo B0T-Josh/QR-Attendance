@@ -41,11 +41,16 @@ export default function StudentRecords() {
     useEffect(() => {
         if(ranOnce.current) return;
         ranOnce.current = true;
-
         async function validate() {
-            const {success} = await verifyUser();
-            if (success) {
-                setId(success);
+            const {data} = await verifyUser();
+            if (data.admin === "false") {
+                if(data.success) {
+                    setId(data.success);    
+                }
+            } else if(data.admin === "true") {
+                if(data.success) {
+                    route.push("/adminDashboard/manageStudent");
+                }
             } else {
                 route.push("/authPages/login");
             }

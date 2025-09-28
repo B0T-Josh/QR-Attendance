@@ -125,9 +125,9 @@ export async function logIn(info: {email: string | null, password: string | null
       headers: {  'Content-Type': 'application/json' },
       body: JSON.stringify(info)
     });
-    const {success, error} = await res.json();
+    const {data, error} = await res.json();
     if(res.ok) {
-        return ({success: success});
+        return ({data: data});
     } else {
         return ({error: error});
     }
@@ -295,9 +295,9 @@ export async function verifyUser() {
     const res = await fetch("/api/verifyUser", {
         method: "GET"
     });
-    const {success, error} = await res.json();
+    const {data, error} = await res.json();
     if(res.ok) {
-        return ({success: success});
+        return ({data: data});
     } 
     return ({error: error});
 }
