@@ -4,8 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import encryptPassword from "@/tools/encrypt"
-import { logIn } from "@/app/api/requests/request";
-import {verifyUser} from "@/app/api/requests/request"
+import { logIn, verifyUser } from "@/app/api/requests/request";
 
 export default function LogIn() {
   const route = useRouter();
