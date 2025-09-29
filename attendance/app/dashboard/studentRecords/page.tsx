@@ -115,9 +115,14 @@ export default function Records() {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Student Records");
 
-    sheet.addRow(["ID", "Student ID", "Student Name", "Subject", "Date", "Time In", "Time Out", "Attendance"]);
+    const header = sheet.addRow(["ID", "Student ID", "Student Name", "Subject", "Date", "Time In", "Time Out", "Attendance"]);
+    header.font = {bold: true};
+    header.alignment = {horizontal: "center"};
+
     recordList.forEach((rec) => {
-      sheet.addRow([rec.id, rec.student_id, rec.name, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
+      const row = sheet.addRow([rec.id, rec.student_id, rec.name, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
+      row.alignment = {horizontal: "center"};
+      row.getCell(8).font = rec.attendance === "Present" ? {color: {argb: "FF27B757"}} : {color: {argb: "FFB62424"}};
     })
 
     const buffer = await workbook.xlsx.writeBuffer();
