@@ -329,7 +329,7 @@ export default function StudentRecords() {
                 type="text"
                 onChange={handleChange}
                 placeholder="Enter student ID"
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                 name="student_id"
                 value={student.student_id}
               />
@@ -338,7 +338,7 @@ export default function StudentRecords() {
                 type="text"
                 onChange={handleChange}
                 placeholder="SURNAME, Firstname M.I."
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                 name="name"
                 value={student.name}
               />
@@ -347,7 +347,7 @@ export default function StudentRecords() {
                 type="text"
                 onChange={handleChange}
                 placeholder="Enter subject"
-                className="p-2 rounded-lg"
+                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                 name="subjects"
                 value={student.subjects}
               />

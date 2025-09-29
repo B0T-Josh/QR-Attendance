@@ -73,9 +73,9 @@ export default function Popup() {
             </div>  
             <div className='flex flex-col justify-center items-center p-2'>
                 <p className="text-left p-2">Enter your verification code: </p>
-                <input name="verification" type="password" onChange={handleChange} placeholder="Enter recovery code" className='rounded-lg p-2'/>
+                <input name="verification" type="password" onChange={handleChange} placeholder="Enter recovery code" className='rounded-lg p-2 bg-[#3B3B3B] placeholder-gray'/>
                 <p className="text-left p-2">Confirm your verification code: </p>
-                <input name="confirm" type="password" onChange={handleChange} placeholder="Confirm recovery code" className='rounded-lg p-2'/>
+                <input name="confirm" type="password" onChange={handleChange} placeholder="Confirm recovery code" className='rounded-lg p-2 bg-[#3B3B3B] placeholder-gray'/>
             </div>
             <div className='p-4'>
                 <button className={`cursor-pointer shadow-xl bg-purple-800 hover:bg-purple-600 transition-all ease-out duration-1000 w-full px-10 py-1 rounded-lg ${loaded ? "animate-fadeInUp delay-[600ms]" : "opacity-0"}`} disabled={loading} onClick={submit}>Submit</button>

@@ -223,14 +223,14 @@ export default function Records() {
               <h2 className="p-2 font-medium">Search:</h2>
             )}
 
-            <select className="p-2 rounded-lg w-[12rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
+            <select className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray" name="attendance" value={attendance || ""} onChange={handleAttendees}>
               <option value="">Select attendance</option>
               <option value="Present">Present</option>
               <option value="Absent">Absent</option>
             </select>
 
             <select
-              className="p-2 rounded-lg w-[12rem]"
+              className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
               value={search.subject}
               name="subject"
               onChange={handleSelect}
@@ -251,7 +251,7 @@ export default function Records() {
               type="date"
               name="date"
               onChange={handleChange}
-              className="p-1.5 rounded-lg w-[12rem]"
+              className="p-1.5 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
             />
 
             <input
@@ -259,7 +259,7 @@ export default function Records() {
               name="student_id"
               onChange={handleChange}
               placeholder="Enter student ID"
-              className="p-2 rounded-lg w-[12rem]"
+              className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
             />
 
             <input
@@ -267,7 +267,7 @@ export default function Records() {
               name="name"
               onChange={handleChange}
               placeholder="Enter student name"
-              className="p-2 rounded-lg w-[12rem]"
+              className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
             />
             
           </div>

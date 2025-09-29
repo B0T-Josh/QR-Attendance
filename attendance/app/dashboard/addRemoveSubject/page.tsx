@@ -139,7 +139,7 @@ export default function StudentRecords() {
                                 name="subject"
                                 onChange={handleChange}
                                 placeholder="Enter subject code ex. FILI211"
-                                className="p-2 rounded-lg border border-gray-300"
+                                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                                 value={subject || ""}
                             />
 
