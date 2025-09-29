@@ -6,6 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import { getSubjects, getAllRecords, verifyUser } from "@/app/api/requests/request";
 import { IoCheckmarkCircle, IoCloseCircle } from "react-icons/io5";
 import ToggleSidebar from "@/components/ToggleSidebar";
+import { saveAs } from "file-saver";
+import ExcelJS from "exceljs";
 
 type Record = {
   id: string | null | undefined;
@@ -107,6 +109,21 @@ export default function Records() {
       ...search,
       subject: e.target.value
     });
+  }
+
+  async function handleExport() {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("Student Records");
+
+    sheet.addRow(["ID", "Student ID", "Student Name", "Subject", "Date", "Time In", "Time Out", "Attendance"]);
+    recordList.forEach((rec) => {
+      sheet.addRow([rec.id, rec.student_id, rec.name, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
+    })
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    saveAs(blob, "Student Records.xlsx");
   }
 
   //Set loaded to true on the initial render.
@@ -270,6 +287,10 @@ export default function Records() {
               className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
             />
             
+            <button className="px-4 py-2 text-gray-600 hover:text-green-500" onClick={handleExport}>
+              Export
+            </button>
+
           </div>
           <div className="mt-4 border border-[#c7c7c79f] rounded-lg max-h-[550px] overflow-auto">
               <table className="table-auto border-collapse w-[65rem]">

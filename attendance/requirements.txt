@@ -1,7 +1,7 @@
-install
 @zxing/browser
 qrcode.react
 react-icons
 --save-dev @types/jsonwebtoken
 xlsx
-exceljs file-saver
+--save-dev @types/file-saver
+exceljs@latest
