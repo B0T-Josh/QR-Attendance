@@ -11,25 +11,11 @@ type Profile = {
 
 // GET: fetch all students for a user
 export async function GET() {
-  const store = await cookies();
-  const token = store.get("token")?.value;
-  
-  if(!token) {
-    return NextResponse.json({error: "Unauthorized user"}, {status: 401});
-  }
+  const {data, error} = await getAllStudent();
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
-    if(decoded) {
-      const {data, error} = await getAllStudent();
+  if (error) return NextResponse.json({ error: error }, { status: 400 });
 
-      if (error) return NextResponse.json({ error: error }, { status: 400 });
-
-      return NextResponse.json({ data }, {status: 200});
-    }
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-  }
+  return NextResponse.json({ data }, {status: 200});
 }
 
 // POST: add a student

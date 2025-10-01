@@ -57,7 +57,7 @@ export default function QRGenerator() {
                     return;
                 } else if(data.formatted) {
                     //Evaluate the student if enrolled.
-                    const found = studentList.find(item => ((item.student_id === studentId) && (item.name === data.formatted)));
+                    const found = studentList.find(item => ((item.student_id.trim() === studentId.trim()) && (item.name.trim() === data.formatted)));
                     if(found) {
                         if(data.formatted) {
                             setFinalProfile(prev => ({
@@ -115,8 +115,8 @@ export default function QRGenerator() {
             <div className="flex flex-col justify-center items-center w-[25rem] h-[35rem] space-y-6">
                 <h2 className="text-xl font-bold mb-4 text-black">QR Code Generator</h2>
                 {errorBool ? error : ""}
-                <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be]" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
-                <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be]" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
+                <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
+                <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
                 <div className="flex flex-col items-center justify-center align-center rounded-lg p-4 w-[17rem]">
                     <QRCodeCanvas value={(finalProfile.name) + " | " + (finalProfile.student_id)} size={200} />
                 </div>
