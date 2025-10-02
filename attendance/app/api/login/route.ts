@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
     });
 
     cookie.set("id", data.id, {
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
-        maxAge: 60 * 60 * 24, // 1 day
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 day
     });
 
     cookie.set("admin", data.admin ? "true" : "false", {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
-        maxAge: 60 * 60 * 24, //1 day
+        maxAge: 7 * 24 * 60 * 60 * 1000, //1 day
     })
     
     return NextResponse.json({data: { success: true, admin: data.admin }}, {status: 200});
