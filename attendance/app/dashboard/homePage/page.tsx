@@ -65,8 +65,10 @@ export default function HomePage() {
     }, [subjectNames]);
 
     useEffect(() => {   
-        setLoaded(true);
-    }, [record]);
+        setTimeout(() => {
+            setLoaded(true);
+        }, 850)
+    }, [students]);
 
     //Check if user is authorized.
     useEffect(() => {
@@ -108,13 +110,12 @@ export default function HomePage() {
             }
             getSubject();
         }
-        get();
     }, [id]);
 
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            {loaded && hasVerification ? (
+            {loaded ? hasVerification ? (
                 <div className="flex-1 p-6">
                 <div className="flex flex-col md:flex-row gap-6 h-full">
                     <div className="flex-1 flex flex-col gap-6">
@@ -218,7 +219,7 @@ export default function HomePage() {
                     </div>
                 </div>
             </div>
-        ) : (<Popup />)}
+        ) : (<Popup />) : (<></>)}
         </div>
     );
 }
