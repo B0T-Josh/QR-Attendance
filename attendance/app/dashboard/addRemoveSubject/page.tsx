@@ -4,7 +4,6 @@ import Sidebar from "@/components/Sidebar";
 import {useState, useEffect, useRef} from 'react';
 import { useRouter } from "next/navigation";
 import { handleAddSubject, handleRemoveSubject, getSubjects, verifyUser } from "@/app/api/requests/request";
-import ToggleSidebar from "@/components/ToggleSidebar";
 
 type Subjects = {
     id: string | null;
@@ -20,7 +19,6 @@ export default function StudentRecords() {
     const [sets, setSets] = useState<Subjects[]>([]);
     const [loaded, setLoaded] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [hidden, setHidden] = useState(false);
 
     //Handle input
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -105,21 +103,9 @@ export default function StudentRecords() {
         }, 2500);
     }, [content]);
 
-    //Set hidden status for navbar.
-    function hide() {
-        if(!hidden) {
-            setHidden(true);
-        } else {
-            setHidden(false);
-        }
-    }    
-
     return (
         <div className="flex min-h-screen">
-            <div className="z-50">
-                <ToggleSidebar onToggle={hide}/>
-            </div>
-            {hidden ? <div className="w-10"></div> : <Sidebar />}
+            <Sidebar />
             {loaded ? (
                 <div className="flex-1 flex flex-col">
                     <div className="absolute top-1 left-1/2 -translate-x-1/2">

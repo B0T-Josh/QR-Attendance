@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { logOut } from "@/app/api/requests/request";
+import ToggleSidebar from "./ToggleSidebar";
 
 
 export default function Sidebar() {
     const route = useRouter();
     const [expanded, setExpanded] = useState(false);
+    const [hide, setHide] = useState(false);
 
     async function handleLogOut() {
         const {success, error} = await logOut();
@@ -18,9 +20,21 @@ export default function Sidebar() {
         }
     }
 
+    function hideSidebar() {
+        if(hide) {
+            setHide(false);
+        } else {
+            setHide(true);
+        }
+    }
+
   return (
     <div className="flex min-h-screen">
-        <div className={`bg-purple-900 text-white h-screen transition-all duration-300 flex flex-col ${expanded ? "w-32" : "w-24"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
+        <div className="z-50">
+            <ToggleSidebar onToggle={hideSidebar}/>
+        </div>
+        {hide ? (<div className="p-6"></div>) : (
+            <div className={`bg-purple-900 text-white h-screen transition-all duration-300 flex flex-col ${expanded ? "w-32" : "w-24"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
             <div className="flex items-center justify-center flex-col gap-8 h-screen">
                 <div className="relative group flex items-center">
                     <button className="p-2 rounded hover:scale-125 transition-transform duration-300 ease-in-out" onClick={() => route.push("/dashboard/homePage")}>
@@ -146,6 +160,7 @@ export default function Sidebar() {
                 </div>
             </div>
         </div>
+        )}
     </div>
   );
 }

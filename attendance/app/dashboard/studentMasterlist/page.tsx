@@ -8,7 +8,6 @@ import {
   getStudentByTeacherSubject,
   verifyUser
 } from "@/app/api/requests/request";
-import ToggleSidebar from "@/components/ToggleSidebar";
 
 type Students = {
   id: string;          // primary key in Supabase
@@ -36,7 +35,6 @@ export default function StudentRecords() {
   const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
-  const [hidden, setHidden] = useState(false);
   const [subjects, setSubjects] = useState<Subject[] | []>([]);
 
   //Handle inputs
@@ -148,21 +146,9 @@ export default function StudentRecords() {
       }, 2000);
   }, [content]);
 
-  //Set hide to navbar.
-  function hide() {
-      if(!hidden) {
-          setHidden(true);
-      } else {
-          setHidden(false);
-      }
-  }
-
   return (
     <div className="flex">
-      <div className="z-50">
-          <ToggleSidebar onToggle={hide}/>
-      </div>
-      {hidden ? <div className="w-10"></div> : <Sidebar />}
+      <Sidebar />
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}

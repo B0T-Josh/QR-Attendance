@@ -2,7 +2,6 @@
 
 import Sidebar from "@/components/Sidebar";
 import Popup from "@/components/Popup";
-import ToggleSidebar from "@/components/ToggleSidebar";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -40,7 +39,6 @@ export default function HomePage() {
     const [subjects, setSubjects] = useState<Subjects[] | []>([]);
     const [record, setRecord] = useState<Record[] | []>([]);
     const [students, setStudents] = useState<Students[]>([]);
-    const [hidden, setHidden] = useState(false);
     const [subjectNames, setSubjectNames] = useState<string[] | []>([]);
 
     //Get subjects.
@@ -113,21 +111,9 @@ export default function HomePage() {
         get();
     }, [id]);
 
-    //Set hidden status for navbar.
-    function hide() {
-        if(!hidden) {
-            setHidden(true);
-        } else {
-            setHidden(false);
-        }
-    }
-
     return (
         <div className="flex min-h-screen">
-            <div className="z-50">
-                <ToggleSidebar onToggle={hide}/>
-            </div>
-            {hidden ? <div className="w-10"></div> : <Sidebar />}
+            <Sidebar />
             {loaded && hasVerification ? (
                 <div className="flex-1 p-6">
                 <div className="flex flex-col md:flex-row gap-6 h-full">

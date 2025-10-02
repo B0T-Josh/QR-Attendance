@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import { getSubjects, getAllRecords, verifyUser } from "@/app/api/requests/request";
 import { IoCheckmarkCircle, IoCloseCircle } from "react-icons/io5";
-import ToggleSidebar from "@/components/ToggleSidebar";
 import { saveAs } from "file-saver";
 import ExcelJS from "exceljs";
 
@@ -52,7 +51,6 @@ export default function Records() {
   const [recordList, setRecordList] = useState<RecordList[] | []>([]);
   const [tempRecord, setTempRecord] = useState<RecordList[] | []>([]);
   const [subjectNames, setSubjectNames] = useState<string[] | []>([]);
-  const [hidden, setHidden] = useState(false);
 
   //Evaluate if the student is present or not and set the attendees to the value returned.
   useEffect(() => {
@@ -220,21 +218,9 @@ export default function Records() {
     }, 2000);
   }, [content]);
 
-  //Set hide status for navbar.
-  function hide() {
-    if(!hidden) {
-      setHidden(true);
-    } else {
-      setHidden(false);
-    }
-  }
-
   return (
     <div className="flex min-h-screen min-w-screen">
-      <div className="z-50">
-          <ToggleSidebar onToggle={hide}/>
-      </div>
-      {hidden ? <div className="w-10"></div> : <Sidebar />}
+      <Sidebar />
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
           {content}
