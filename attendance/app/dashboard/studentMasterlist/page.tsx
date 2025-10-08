@@ -123,7 +123,7 @@ export default function StudentRecords() {
 
   //Handles search function 
   async function handleSearch() {
-    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "") {
+    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "" && student.year <= 0) {
       setContent(<p className="text-red-500">No input values</p>);
       setStudents(tempStudents);
       return;
@@ -133,7 +133,8 @@ export default function StudentRecords() {
       return (
         (student.name.trim() === "" || stud.name.includes(student.name.trim())) &&
         (student.student_id.trim() === "" || stud.student_id === student.student_id) &&
-        (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim()))
+        (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim())) &&
+        (student.year <= 0 || stud.year_level == student.year)
       );
     });
     setStudents(studentList);
@@ -156,7 +157,9 @@ export default function StudentRecords() {
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
           {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-            <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
+            <div className="ml-[-3rem] flex items-center gap-4 flex-1">
+              <p>Student masterlist</p>
+
               <input
                 type="text"
                 onChange={handleChange}
@@ -236,7 +239,7 @@ export default function StudentRecords() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
+                    <td colSpan={4} className="border border-gray-400 px-4 py-2 text-center">
                       No students found
                     </td>
                   </tr>

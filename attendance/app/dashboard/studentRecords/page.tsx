@@ -43,7 +43,8 @@ export default function Records() {
     student_id: "",
     name: "",
     subject: "",
-    date: ""
+    date: "",
+    year: ""
   });
   const [attendance, setAttendance] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subjects[] | null>(null);
@@ -121,7 +122,7 @@ export default function Records() {
     recordList.forEach((rec) => {
       const row = sheet.addRow([rec.id, rec.student_id, rec.name, rec.year_level, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
       row.alignment = {horizontal: "center"};
-      row.getCell(8).font = rec.attendance === "Present" ? {color: {argb: "FF27B757"}} : {color: {argb: "FFB62424"}};
+      row.getCell(9).font = rec.attendance === "Present" ? {color: {argb: "FF27B757"}} : {color: {argb: "FFB62424"}};
     })
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -160,7 +161,7 @@ export default function Records() {
 
   //Filter function.
   useEffect(() => {
-    if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && !attendance) {
+    if(search.name === "" && search.subject === "" && search.student_id === "" && search.date === "" && !attendance && search.year === "") {
       refreshRecord();
       return;
     }
@@ -170,7 +171,8 @@ export default function Records() {
         (!attendance || att.attendance === attendance) &&
         (search.date === "" || att.date?.trim() === search.date.trim()) &&
         (search.name === "" || att.name?.includes(search.name.trim())) &&
-        (search.student_id === "" || att.student_id?.includes(search.student_id.trim()))
+        (search.student_id === "" || att.student_id?.includes(search.student_id.trim())) &&
+        (search.year === "" || att.year_level == parseInt(search.year))
       );
     });
     if(studentList.length === 0) {
@@ -277,6 +279,14 @@ export default function Records() {
               onChange={handleChange}
               placeholder="Enter student name"
               className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
+            />
+
+            <input
+              type="text"
+              name="year"
+              placeholder="Enter course year"
+              onChange={handleChange}
+              className="p-1.5 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray"
             />
             
             <button className="px-4 py-2 text-gray-600 hover:text-green-500" onClick={handleExport}>
