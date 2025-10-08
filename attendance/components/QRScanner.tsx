@@ -115,7 +115,7 @@ export default function QRScanner() {
             (student_id == stud.student_id) &&
             (stud.subjects?.includes(subject))
         )});
-        alert(`${{found}}`);
+        alert({found});
         if(found) {
             setStudent(found);
         } else {
