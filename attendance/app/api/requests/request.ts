@@ -2,12 +2,14 @@ type Student = {
     name: string | null;
     student_id: string | null;
     subjects: string | null;
+    year: number | 0;
 }
 
 type Profile = {
   student_id: string | null;
   name: string | null;
   subjects: string[]; 
+  year: number | 0;
 };
 
 //Request to add student record.

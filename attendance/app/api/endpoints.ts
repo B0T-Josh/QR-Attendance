@@ -22,6 +22,7 @@ type Student = {
     name: string | null;
     student_id: string | null;
     subjects: string[] | [];
+    year: number| 0;
 }
 
 type AccountProf = {
@@ -64,9 +65,9 @@ export async function getVerification(id: string | null) {
 }
 
 //Adds attendance record for students aftter scanning the QR.
-export async function addRecord(student_id: string, subjects: string, name: string) {
+export async function addRecord(student_id: string, subjects: string, name: string, year: number) {
     if(await validateSubject(subjects)) {
-        const {error} = await supabase.from('attendance').insert({student_id: student_id, name: name, subject: [subjects], date: getDate(), time_in: getTime()});
+        const {error} = await supabase.from('attendance').insert({student_id: student_id, name: name, subject: [subjects], date: getDate(), time_in: getTime(), year_level: year});
         if(!error) {
             return({success: `Attendance recorded for student ${name}`});
         } else {
@@ -231,7 +232,7 @@ export async function getStudent(subject: string) {
 
 //Get selected students.
 export async function getStudentByTeacherSubject(subjects: string[]) {
-    const {data} = await supabase.from("students").select("id, student_id, name, subjects").overlaps("subjects", subjects);
+    const {data} = await supabase.from("students").select("*").overlaps("subjects", subjects);
     if(data) {
         return ({data});
     } else {
@@ -254,7 +255,8 @@ export async function addStudent(info: Student[]) {
     const payload = info.map((stud) => ({
         student_id: stud.student_id,
         name: stud.name,
-        subjects: stud.subjects
+        subjects: stud.subjects,
+        year_level: stud.year
     }));
 
     const {error} = await supabase.from("students").insert(payload);

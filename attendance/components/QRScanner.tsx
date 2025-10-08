@@ -13,6 +13,7 @@ type Student = {
     student_id: string | null;
     name: string | null;
     subjects: string[];
+    year: number | 0;
 }
 
 export default function QRScanner() {
@@ -129,7 +130,7 @@ export default function QRScanner() {
             return;
         }
         const handleAdd = async () => {
-            const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject });
+            const { message, error } = await scanned({ name: student.name, student_id: student.student_id, subjects: subject, year: student.year });
             setContent(message ? <p className="text-green-300">{message}</p> : <p className="text-red-500">{error}</p>);
             setLoading(false);
         };

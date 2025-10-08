@@ -28,6 +28,7 @@ type Students = {
   student_id: string;  
   name: string;        
   subjects: string[] | [];     
+  year_level: number | 0;
 };
 
 export default function HomePage() {

@@ -7,6 +7,7 @@ type Profile = {
   student_id: string | null;
   name: string | null;
   subjects: string[] | [];
+  year: number | 0;
 }
 
 // GET: fetch all students for a user
