@@ -19,12 +19,14 @@ type Students = {
   student_id: string;  // school/student number
   name: string;        // student name
   subjects: string;     // subject they’re enrolled in
+  year_level: number;
 };
 
 type Uploaded = {
   student_id: string | null;
   name: string | null;
   subjects: string | null;
+  year: number | 0;
 }
 
 type Student = {
@@ -32,6 +34,7 @@ type Student = {
   student_id: string | null;
   name: string | null;
   subjects: string[] | [];
+  year: number | 0;
 }
 
 export default function StudentRecords() {
@@ -41,7 +44,8 @@ export default function StudentRecords() {
   const [student, setStudent] = useState({
     student_id: "",
     name: "",
-    subjects: ""
+    subjects: "",
+    year: 0
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [duplicatedError, setDuplicatedError] = useState<React.ReactElement | null>(null);
@@ -144,22 +148,22 @@ export default function StudentRecords() {
             setLoading(false);
             setContent(<p className="text-red-500">Invalid name format</p>);
         } else if(formatted.formatted) {
-            const formattedName = formatted.formatted;
-            const { success, error } = await handleAddStudent([{student_id: student.student_id, name: formattedName, subjects: subjArray}]);
-            if(success) {
-                setLoading(false);
-                setContent(<p className="text-green-300">Student is added</p>);
-                resetInput();
-                getAllStudents();
-            } else {
-                setLoading(false);
-                setContent(<p className="text-red-500">{error}</p>);
-            }
-            } else if(formatted.error) {
-                setLoading(false);
-                setContent(<p className="text-red-500">{formatted.error}</p>);
-                return;
-            }
+          const formattedName = formatted.formatted;
+          const { success, error } = await handleAddStudent([{student_id: student.student_id, name: formattedName, subjects: subjArray, year: student.year}]);
+          if(success) {
+              setLoading(false);
+              setContent(<p className="text-green-300">Student is added</p>);
+              resetInput();
+              getAllStudents();
+          } else {
+              setLoading(false);
+              setContent(<p className="text-red-500">{error}</p>);
+          }
+          } else if(formatted.error) {
+            setLoading(false);
+            setContent(<p className="text-red-500">{formatted.error}</p>);
+            return;
+        }
       }
     }
   }
@@ -192,7 +196,8 @@ export default function StudentRecords() {
       return (
         (student.name.trim() === "" || stud.name.includes(student.name.trim())) &&
         (student.student_id.trim() === "" || stud.student_id === student.student_id) &&
-        (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim()))
+        (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim())) &&
+        (student.year === 0 || stud.year_level == student.year)
       );
     });
     setStudents(studentList);
@@ -274,7 +279,8 @@ export default function StudentRecords() {
               id: String(index+1),
               student_id: data.student_id,
               name: formatted.formatted,
-              subjects: subjectArray
+              subjects: subjectArray,
+              year: data.year
             }]);
           }
         }
@@ -351,6 +357,15 @@ export default function StudentRecords() {
                 name="subjects"
                 value={student.subjects}
               />
+
+              <input
+                type="number"
+                onChange={handleChange}
+                placeholder="Enter course year"
+                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                name="year"
+                value={student.year}
+              />
             </div>
           </div>
 
@@ -397,6 +412,7 @@ export default function StudentRecords() {
                   <th className="border border-gray-400 px-4 py-2">Student ID</th>
                   <th className="border border-gray-400 px-4 py-2">Name</th>
                   <th className="border border-gray-400 px-4 py-2">Subject</th>
+                  <th className="border border-gray-400 px-4 py-2">Year</th>
                 </tr>
               </thead>
               <tbody>
@@ -406,6 +422,7 @@ export default function StudentRecords() {
                       <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
                       <td className="border border-gray-400 px-4 py-2">{s.name}</td>
                       <td className="border border-gray-400 px-4 py-2">{s.subjects.toString().replace(/,\s*/g, ", ")}</td>
+                      <td className="border border-gray-400 px-4 py-2">{s.year_level}</td>
                     </tr>
                   ))
                 ) : (

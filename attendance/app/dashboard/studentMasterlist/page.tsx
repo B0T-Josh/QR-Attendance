@@ -14,6 +14,7 @@ type Students = {
   student_id: string;  // school/student number
   name: string;        // student name
   subjects: string;     // subject they’re enrolled in
+  year_level: number | 0;
 };
 
 type Subject = {
@@ -28,7 +29,8 @@ export default function StudentRecords() {
   const [student, setStudent] = useState({
     student_id: "",
     name: "",
-    subjects: ""
+    subjects: "",
+    year: 0
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
@@ -182,6 +184,15 @@ export default function StudentRecords() {
                 value={student.subjects}
               />
             </div>
+
+            <input
+                type="number"
+                onChange={handleChange}
+                placeholder="Enter student ID"
+                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                name="year"
+                value={student.year}
+              />
           </div>
 
           <div className="flex flex-row justify-between ">
@@ -210,6 +221,7 @@ export default function StudentRecords() {
                   <th className="border border-gray-400 px-4 py-2">Student ID</th>
                   <th className="border border-gray-400 px-4 py-2">Name</th>
                   <th className="border border-gray-400 px-4 py-2">Subject</th>
+                  <th className="border border-gray-400 px-4 py-2">Year</th>
                 </tr>
               </thead>
               <tbody>
@@ -219,6 +231,7 @@ export default function StudentRecords() {
                       <td className="border border-gray-400 px-4 py-2">{s.student_id}</td>
                       <td className="border border-gray-400 px-4 py-2">{s.name}</td>
                       <td className="border border-gray-400 px-4 py-2">{s.subjects.toString().replace(/,\s*/g, ", ")}</td>
+                      <td className="border border-gray-400 px-4 py-2">{s.year_level}</td>
                     </tr>
                   ))
                 ) : (

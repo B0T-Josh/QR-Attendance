@@ -16,6 +16,7 @@ type Record = {
   subject: string[] | [];
   time_in: string | null | undefined;
   time_out: string | null | undefined;
+  year_level: number | 0;
 }
 
 type RecordList = Record & {attendance: string | null | undefined};
@@ -113,12 +114,12 @@ export default function Records() {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("Student Records");
 
-    const header = sheet.addRow(["ID", "Student ID", "Student Name", "Subject", "Date", "Time In", "Time Out", "Attendance"]);
+    const header = sheet.addRow(["ID", "Student ID", "Student Name", "Year Level", "Subject", "Date", "Time In", "Time Out", "Attendance"]);
     header.font = {bold: true};
     header.alignment = {horizontal: "center"};
 
     recordList.forEach((rec) => {
-      const row = sheet.addRow([rec.id, rec.student_id, rec.name, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
+      const row = sheet.addRow([rec.id, rec.student_id, rec.name, rec.year_level, rec.subject?.join(", "), rec.date, rec.time_in, rec.time_out, rec.attendance]);
       row.alignment = {horizontal: "center"};
       row.getCell(8).font = rec.attendance === "Present" ? {color: {argb: "FF27B757"}} : {color: {argb: "FFB62424"}};
     })
@@ -290,6 +291,7 @@ export default function Records() {
                       <th className="border border-gray-400 px-4 py-2">ID</th>
                       <th className="border border-gray-400 px-4 py-2">Student ID</th>
                       <th className="border border-gray-400 px-4 py-2">Student Name</th>
+                      <th className="border border-gray-400 px-4 py-2">Year</th>
                       <th className="border border-gray-400 px-4 py-2">Subject</th>
                       <th className="border border-gray-400 px-4 py-2">Date</th>
                       <th className="border border-gray-400 px-4 py-2">Time In</th>
@@ -304,6 +306,7 @@ export default function Records() {
                           <td className="border border-gray-400 px-4 py-2">{rec.id}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.student_id}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.name}</td>
+                          <td className="border border-gray-400 px-4 py-2">{rec.year_level}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.subject}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.date}</td>
                           <td className="border border-gray-400 px-4 py-2">{rec.time_in}</td>
@@ -319,7 +322,7 @@ export default function Records() {
                       ))
                     ) : (
                     <tr>
-                      <td colSpan={8} className="border border-gray-400 px-4 py-2 text-center">
+                      <td colSpan={9} className="border border-gray-400 px-4 py-2 text-center">
                         No data found
                       </td>
                     </tr>
