@@ -11,7 +11,6 @@ import {
   verifyUser
 } from "@/app/api/requests/request";
 import format from "@/tools/format";
-import ToggleSidebar from "@/components/ToggleSidebar";
 import * as XLSX from 'xlsx';
 
 type Students = {
@@ -53,7 +52,6 @@ export default function StudentRecords() {
   const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
-  const [hidden, setHidden] = useState(false);
   const [uploaded, setUploaded] = useState<Uploaded[] | []>([]);
   const [profile, setProfile] = useState<Student[] | []>([]);
 
@@ -308,15 +306,6 @@ export default function StudentRecords() {
         setContent(null);
       }, 3000);
   }, [content]);
-
-  //Set hide to navbar.
-  function hide() {
-      if(!hidden) {
-          setHidden(true);
-      } else {
-          setHidden(false);
-      }
-  }
 
   return (
     <div className="flex h-screen">
