@@ -123,7 +123,7 @@ export default function StudentRecords() {
 
   //Handles search function 
   async function handleSearch() {
-    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "" && student.year <= 0) {
+    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "" && student.year === "") {
       setContent(<p className="text-red-500">No input values</p>);
       setStudents(tempStudents);
       return;
