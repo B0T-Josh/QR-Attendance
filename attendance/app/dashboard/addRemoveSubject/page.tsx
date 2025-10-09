@@ -104,7 +104,7 @@ export default function StudentRecords() {
     }, [content]);
 
     return (
-        <div className="flex min-h-[52rem] overflow-y-auto">
+        <div className="flex min-h-screen">
             <Sidebar />
             {loaded ? (
                 <div className="flex-1 flex flex-col">
@@ -114,7 +114,7 @@ export default function StudentRecords() {
 
                     <div className="p-4 flex flex-col justify-center items-center ml-auto mr-auto mt-4 w-1/2">
                         {loading ? (
-                            <h2 className="p-2 text-gray-600">Loading</h2>
+                            <h2 className="p-2 text-gray-400">Loading</h2>
                         ) : (
                             <h2 className="p-2 font-medium">Add Subject:</h2>
                         )}
@@ -131,14 +131,14 @@ export default function StudentRecords() {
 
                         <div className="p-4">
                             <button
-                                className="px-4 py-2 text-gray-600 hover:text-green-500"
+                                className="px-4 py-2 text-gray-400 hover:text-green-500"
                                 onClick={handleAdd}
                             >
                                 Add
                             </button>
 
                             <button
-                                className="px-4 py-2 text-gray-600 hover:text-red-500"
+                                className="px-4 py-2 text-gray-400 hover:text-red-500"
                                 onClick={handleRemove}
                             >
                                 Remove
