@@ -124,7 +124,7 @@ export default function HomePage() {
                             <Link href={"/dashboard/studentMasterlist"}>
                                 <div className="p-4 h-full">
                                     <h2 className="mb-4">Students Masterlist:</h2>
-                                    <div className="text-left overflow-auto max-h-[300px]">
+                                    <div className="text-left overflow-auto max-h-full">
                                         <table className="w-full">
                                             <thead>
                                                 <tr>
@@ -156,7 +156,7 @@ export default function HomePage() {
                             <Link href={"/dashboard/addRemoveSubject"}>
                                 <div className="p-4 h-full">
                                     <h2 className="mb-4">Subjects:</h2>
-                                    <div className="text-left max-h-[300px]">
+                                    <div className="text-left max-h-full">
                                         <table className="w-full">
                                             <tbody>
                                                 {subjects.length > 0 ? (
@@ -182,7 +182,7 @@ export default function HomePage() {
                         <Link href={"/dashboard/studentRecords"}>
                             <div className="p-4 h-full">
                                 <h2 className="mb-4">Students Records:</h2>
-                                <div className="text-left overflow-auto max-h-[50rem]">
+                                <div className="text-left overflow-auto max-h-full">
                                     <table className="w-full">
                                         <thead className="justify-center text-center">
                                             <tr>
