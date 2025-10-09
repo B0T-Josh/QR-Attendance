@@ -1,7 +1,7 @@
 'use client';
 
 import Sidebar from "@/components/Sidebar";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   getSubjects,
@@ -18,8 +18,8 @@ type Students = {
 };
 
 type Subject = {
-  id: string | null;
-  name: string | null;
+  id: string;
+  name: string;
 }
 
 export default function StudentRecords() {
@@ -38,14 +38,27 @@ export default function StudentRecords() {
   const [loading, setLoading] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [subjects, setSubjects] = useState<Subject[] | []>([]);
+  const typeTimeout = useRef<NodeJS.Timeout | null>(null);
 
   //Handle inputs
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setStudent({
-      ...student,
-      [e.target.name]: e.target.name === "subjects" ? e.target.value.toUpperCase(): e.target.value
-    });
+    if(typeTimeout.current) {
+      clearTimeout(typeTimeout.current);
+    }
+    typeTimeout.current = setTimeout(() => {
+      setStudent({
+        ...student,
+        [e.target.name]: e.target.name === "subjects" ? e.target.value.toUpperCase(): e.target.value
+      });
+    }, 1000);
   }
+
+  function handleSelect(e: ChangeEvent<HTMLSelectElement>) {
+      setStudent({
+        ...student,
+        subjects: e.target.value
+      });
+    }
 
   //Makes a copy of students values after students got the value
   useEffect(() => {
@@ -110,33 +123,31 @@ export default function StudentRecords() {
     validate();
   }, []);
 
-  //Resets the input values.
-  function resetInput() {
-    setStudent({
-      ...student,
-      student_id: "",
-      name: "",
-      subjects: ""
-    });
+  useEffect(() => {
+    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "" && student.year === "") {
+      resetStudentList();
+      return;
+    }
+    handleSearch()
+  }, [student]);
+
+
+  function resetStudentList() {
     setStudents(tempStudents);
   }
 
   //Handles search function 
-  async function handleSearch() {
-    if(student.student_id.trim() === "" && student.name.trim() === "" && student.subjects.trim() === "" && student.year === "") {
-      setContent(<p className="text-red-500">No input values</p>);
-      setStudents(tempStudents);
-      return;
-    }
+  function handleSearch() {
     setLoading(true);
     const studentList: Students[] | [] = tempStudents.filter((stud) => {
       return (
-        (student.name.trim() === "" || stud.name.includes(student.name.trim())) &&
-        (student.student_id.trim() === "" || stud.student_id === student.student_id) &&
+        (student.name.trim() === "" || stud.name.toLowerCase().includes(student.name.trim().toLowerCase())) &&
+        (student.student_id.trim() === "" || stud.student_id.trim() === student.student_id.trim()) &&
         (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim())) &&
-        (student.year === "" || stud.year_level == parseInt(student.year))
+        (student.year === "" || stud.year_level == parseInt(student.year.trim()))
       );
     });
+    console.log(studentList);
     setStudents(studentList);
     setLoading(false);
   }
@@ -162,55 +173,37 @@ export default function StudentRecords() {
                 <input
                   type="text"
                   onChange={handleChange}
-                  placeholder="Enter student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
+                  placeholder="Enter Student ID"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
                   name="student_id"
-                  value={student.student_id}
                 />
 
                 <input
                   type="text"
                   onChange={handleChange}
                   placeholder="SURNAME, Firstname M.I."
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
                   name="name"
-                  value={student.name}
                 />
+
+                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]" value={student.subjects} name="subject" onChange={handleSelect}>
+                  {subjects && subjects.length == 0 ? (null) : (<option value="">Select Subject</option>)}  
+                  {subjects && subjects.length > 0 ? (
+                    subjects.map(subject => (
+                      <option key={subject.id} value={subject.name}>{subject.name}</option>
+                    ))
+                  ) : <option value="">No subject</option>}
+                </select>
 
                 <input
                   type="text"
                   onChange={handleChange}
-                  placeholder="Enter subject"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
-                  name="subjects"
-                  value={student.subjects}
-                />
-                <input
-                  type="text"
-                  onChange={handleChange}
-                  placeholder="Enter student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
+                  placeholder="Enter Year"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
                   name="year"
                 />
               </div>
             </div>
-          </div>
-          <div className="flex flex-row justify-between">
-            <button
-              className="px-4 py-2 text-gray-600 hover:text-yellow-500"
-              onClick={handleSearch}
-              disabled={loading}
-            >
-              Search
-            </button>
-
-            <button
-              className="px-4 py-2 text-gray-600 hover:text-red-500"
-              onClick={resetInput}
-              disabled={loading}
-            >
-              Reset
-            </button>
           </div>
 
           {/* Students Table */}

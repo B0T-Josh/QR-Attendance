@@ -114,7 +114,7 @@ export default function HomePage() {
     }, [id]);
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex max-h-screen overflow-hidden">
             <Sidebar />
             {loaded ? hasVerification ? (
                 <div className="flex-1 p-6">

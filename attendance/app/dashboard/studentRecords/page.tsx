@@ -169,10 +169,10 @@ export default function Records() {
       return (
         (search.subject === "" || att.subject[0] === search.subject) &&
         (!attendance || att.attendance === attendance) &&
-        (search.date === "" || att.date?.trim() === search.date.trim()) &&
-        (search.name === "" || att.name?.includes(search.name.trim())) &&
-        (search.student_id === "" || att.student_id?.includes(search.student_id.trim())) &&
-        (search.year === "" || att.year_level == parseInt(search.year))
+        (search.date === "" || att.date?.trim().toLowerCase() === search.date.trim()) &&
+        (search.name === "" || att.name?.toLowerCase().includes(search.name.trim().toLowerCase())) &&
+        (search.student_id === "" || att.student_id?.toLowerCase().includes(search.student_id.trim().toLowerCase())) &&
+        (search.year === "" || att.year_level == parseInt(search.year.trim()))
       );
     });
     if(studentList.length === 0) {
