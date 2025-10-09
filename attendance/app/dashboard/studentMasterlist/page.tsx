@@ -161,7 +161,7 @@ export default function StudentRecords() {
   }, [content]);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-[52rem] overflow-y-auto">
       <Sidebar />
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
@@ -169,12 +169,12 @@ export default function StudentRecords() {
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<p>Student Masterlist</p>)}
           <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center gap-4">
             <div className="flex flex-wrap items-center gap-4"> 
-              <div className="flex flex-wrap">
+              <div className="flex flex-wrap gap-4">
                 <input
                   type="text"
                   onChange={handleChange}
                   placeholder="Enter Student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] ml-auto mr-auto placeholder-gray flex-[1_1] max-w-[15rem] min-w-[10rem] w-[15rem]"
                   name="student_id"
                 />
 
@@ -182,11 +182,11 @@ export default function StudentRecords() {
                   type="text"
                   onChange={handleChange}
                   placeholder="SURNAME, Firstname M.I."
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] ml-auto mr-auto placeholder-gray flex-[1_1] max-w-[15rem] min-w-[10rem] w-[15rem]"
                   name="name"
                 />
 
-                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]" value={student.subjects} name="subject" onChange={handleSelect}>
+                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] ml-auto mr-auto placeholder-gray flex-[1_1] max-w-[15rem] min-w-[10rem] w-[15rem]" value={student.subjects} name="subject" onChange={handleSelect}>
                   {subjects && subjects.length == 0 ? (null) : (<option value="">Select Subject</option>)}  
                   {subjects && subjects.length > 0 ? (
                     subjects.map(subject => (
@@ -199,7 +199,7 @@ export default function StudentRecords() {
                   type="text"
                   onChange={handleChange}
                   placeholder="Enter Year"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_1] max-w-[15rem] w-[15rem]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray ml-auto mr-auto flex-[1_1] min-w-[10rem] max-w-[15rem] w-[15rem]"
                   name="year"
                 />
               </div>

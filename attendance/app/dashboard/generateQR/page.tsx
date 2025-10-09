@@ -36,7 +36,7 @@ export default function StudentRecords() {
     }, []);
     
     return (
-        <div className="flex">
+        <div className="flex min-h-[52rem] overflow-y-auto">
             <div className="z-50">
                 <Sidebar />
             </div>

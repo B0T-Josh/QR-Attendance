@@ -104,7 +104,7 @@ export default function StudentRecords() {
     }, [content]);
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-[52rem] overflow-y-auto">
             <Sidebar />
             {loaded ? (
                 <div className="flex-1 flex flex-col">

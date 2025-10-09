@@ -222,7 +222,7 @@ export default function Records() {
   }, [content]);
 
   return (
-    <div className="flex w-screen h-screen">
+    <div className="flex w-screen min-h-[52rem] overflow-y-auto">
       <Sidebar />
       {loaded ? (
         <div className="flex flex-col items-center flex-[1_0] p-4 gap-4">
@@ -259,7 +259,7 @@ export default function Records() {
                   type="date"
                   name="date"
                   onChange={handleChange}
-                  className="p-1.5 m-1 rounded-lg min-w-[1rem] max-w-[75rem] max-w-[10.5rem] bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg min-w-[1rem] max-w-[75rem] max-w-[10.5rem] bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
                 />
 
                 <input
