@@ -320,10 +320,7 @@ export default function StudentRecords() {
 
   return (
     <div className="flex">
-      <div className="z-50">
-          <ToggleSidebar onToggle={hide}/>
-      </div>
-      {hidden ? <div className="w-10"></div> : <Sidebar />}
+      <Sidebar />
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
@@ -405,7 +402,7 @@ export default function StudentRecords() {
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl rounded-lg overflow-auto">
+          <div className="w-full max-w-5xl rounded-lg overflow-auto border-2">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
               <thead>
                 <tr>
@@ -427,7 +424,7 @@ export default function StudentRecords() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={3} className="border border-gray-400 px-4 py-2 text-center">
+                    <td colSpan={4} className="border border-gray-400 px-4 py-2 text-center">
                       No students found
                     </td>
                   </tr>

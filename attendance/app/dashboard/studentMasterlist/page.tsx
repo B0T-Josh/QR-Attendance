@@ -157,45 +157,46 @@ export default function StudentRecords() {
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
           {content}
           <p>Student Masterlist</p>
-          <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-            <div className="ml-[0.5rem] flex items-center gap-4 flex-1"> 
-              <input
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter student ID"
-                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
-                name="student_id"
-                value={student.student_id}
-              />
+          <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center gap-4">
+            <div className="flex flex-row items-center gap-4 flex-1"> 
+              <div>
+                <input
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="Enter student ID"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  name="student_id"
+                  value={student.student_id}
+                />
 
-              <input
-                type="text"
-                onChange={handleChange}
-                placeholder="SURNAME, Firstname M.I."
-                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
-                name="name"
-                value={student.name}
-              />
+                <input
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="SURNAME, Firstname M.I."
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  name="name"
+                  value={student.name}
+                />
 
-              <input
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter subject"
-                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
-                name="subjects"
-                value={student.subjects}
-              />
-              <input
-                type="text"
-                onChange={handleChange}
-                placeholder="Enter student ID"
-                className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
-                name="year"
-              />
+                <input
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="Enter subject"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  name="subjects"
+                  value={student.subjects}
+                />
+                <input
+                  type="text"
+                  onChange={handleChange}
+                  placeholder="Enter student ID"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  name="year"
+                />
+              </div>
             </div>
           </div>
-
-          <div className="flex flex-row justify-between ">
+          <div className="flex flex-row justify-between">
             <button
               className="px-4 py-2 text-gray-600 hover:text-yellow-500"
               onClick={handleSearch}
@@ -214,7 +215,7 @@ export default function StudentRecords() {
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl border-sm rounded-lg overflow-auto">
+          <div className="w-full max-w-5xl border-sm rounded-lg overflow-auto border-2">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
               <thead>
                 <tr>

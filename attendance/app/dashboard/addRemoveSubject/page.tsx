@@ -113,12 +113,14 @@ export default function StudentRecords() {
                     </div>
 
                     <div className="p-4 flex flex-col justify-center items-center m-auto w-1/2">
-                        <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-wrap gap-4 items-center">
-                            {loading ? (
-                                <h2 className="ml-[10rem] p-2 text-gray-600">Loading</h2>
-                            ) : (
-                                <h2 className="ml-[10rem] p-2 font-medium">Add Subject:</h2>
-                            )}
+                        <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-wrap gap-4 items-center justify-center">
+                            <div>
+                                {loading ? (
+                                    <h2 className="p-2 text-gray-600">Loading</h2>
+                                ) : (
+                                    <h2 className="p-2 font-medium">Add Subject:</h2>
+                                )}
+                            </div>
 
                             <input
                                 type="text"
@@ -145,7 +147,7 @@ export default function StudentRecords() {
                         </div>
 
                     
-                        <div className="mt-4 flex-1 w-full border-2 rounded-lg overflow-y-auto border-[#c7c7c79f]">
+                        <div className="mt-4 flex flex-col w-full border-2 rounded-lg overflow-y-auto ">
                             <table className="table-auto border-collapse border w-full h-full">
                                 <thead>
                                     <tr>
