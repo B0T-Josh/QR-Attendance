@@ -114,8 +114,8 @@ export default function HomePage() {
     }, [id]);
 
     return (
-        <div className="flex max-h-screen">
-            <div className="z-50 h-full-1">
+        <div className="flex min-h-[480px]">
+            <div className="z-50 h-full">
                 <Sidebar />
             </div>
             {loaded ? hasVerification ? (
