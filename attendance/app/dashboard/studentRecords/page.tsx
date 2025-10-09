@@ -227,11 +227,11 @@ export default function Records() {
       {loaded ? (
         <div className="p-4 flex flex-col justify-center items-center m-auto">
           {content}
-          <div className="w-full max-w-5xl py-4 border-b border-[#c7c7c79f] flex flex-row gap-4 items-center">
+          <div className="w-full max-w-7xl py-4 border-b border-[#c7c7c79f] flex flex-row gap-4 items-center">
             {loading ? (
-              <h2 className="p-2 font-medium">Loading...</h2>
+              <h2 className="ml-[-1rem] p-2 font-medium">Loading...</h2>
             ) : (
-              <h2 className="p-2 font-medium">Search:</h2>
+              <h2 className="ml-[-1rem] p-2 font-medium">Search:</h2>
             )}
 
             <select className="p-2 rounded-lg w-[12rem] bg-[#3B3B3B] placeholder-gray" name="attendance" value={attendance || ""} onChange={handleAttendees}>

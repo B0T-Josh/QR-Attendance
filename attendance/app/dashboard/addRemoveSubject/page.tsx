@@ -115,9 +115,9 @@ export default function StudentRecords() {
                     <div className="p-4 flex flex-col justify-center items-center m-auto w-1/2">
                         <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-wrap gap-4 items-center">
                             {loading ? (
-                                <h2 className="p-2 text-gray-600">Loading</h2>
+                                <h2 className="ml-[10rem] p-2 text-gray-600">Loading</h2>
                             ) : (
-                                <h2 className="p-2 font-medium">Add Subject:</h2>
+                                <h2 className="ml-[10rem] p-2 font-medium">Add Subject:</h2>
                             )}
 
                             <input

@@ -30,7 +30,7 @@ export default function StudentRecords() {
     student_id: "",
     name: "",
     subjects: "",
-    year: 0
+    year: ""
   })
   const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
@@ -134,7 +134,7 @@ export default function StudentRecords() {
         (student.name.trim() === "" || stud.name.includes(student.name.trim())) &&
         (student.student_id.trim() === "" || stud.student_id === student.student_id) &&
         (student.subjects.trim() === "" || stud.subjects.includes(student.subjects.trim())) &&
-        (student.year <= 0 || stud.year_level == student.year)
+        (student.year === "" || stud.year_level == parseInt(student.year))
       );
     });
     setStudents(studentList);
@@ -156,10 +156,9 @@ export default function StudentRecords() {
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
           {content}
+          <p>Student Masterlist</p>
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-            <div className="ml-[-3rem] flex items-center gap-4 flex-1">
-              <p>Student masterlist</p>
-
+            <div className="ml-[0.5rem] flex items-center gap-4 flex-1"> 
               <input
                 type="text"
                 onChange={handleChange}
@@ -186,16 +185,14 @@ export default function StudentRecords() {
                 name="subjects"
                 value={student.subjects}
               />
-            </div>
-
-            <input
-                type="number"
+              <input
+                type="text"
                 onChange={handleChange}
                 placeholder="Enter student ID"
                 className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                 name="year"
-                value={student.year}
               />
+            </div>
           </div>
 
           <div className="flex flex-row justify-between ">
