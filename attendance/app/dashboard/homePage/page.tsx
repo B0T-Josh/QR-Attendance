@@ -114,113 +114,115 @@ export default function HomePage() {
     }, [id]);
 
     return (
-        <div className="flex max-h-screen overflow-hidden">
-            <Sidebar />
+        <div className="flex max-h-screen">
+            <div className="z-50 h-full-1">
+                <Sidebar />
+            </div>
             {loaded ? hasVerification ? (
                 <div className="flex-1 p-6">
-                <div className="flex flex-col md:flex-row gap-6 h-full">
-                    <div className="flex-1 flex flex-col gap-6">
-                        <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
-                            <Link href={"/dashboard/studentMasterlist"}>
-                                <div className="p-4 h-full">
-                                    <h2 className="mb-4">Students Masterlist:</h2>
-                                    <div className="text-left overflow-auto max-h-full">
-                                        <table className="w-full">
-                                            <thead>
-                                                <tr>
-                                                    <th className="px-4 py-2 text-left">Name</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-                                                {students.length > 0 ? (
-                                                    students.map(stud => (
-                                                        <tr key={stud.id}>
-                                                            <td>{stud.name}</td>
-                                                        </tr>
-                                                    ))
-                                                ) : (
+                    <div className="flex flex-col md:flex-row gap-6 h-full">
+                        <div className="flex-1 flex flex-col gap-6">
+                            <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
+                                <Link href={"/dashboard/studentMasterlist"}>
+                                    <div className="p-4 h-full">
+                                        <h2 className="mb-4">Students Masterlist:</h2>
+                                        <div className="text-left overflow-auto max-h-full">
+                                            <table className="w-full">
+                                                <thead>
                                                     <tr>
-                                                        <td>No records</td>
+                                                        <th className="px-4 py-2 text-left">Name</th>
                                                     </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
+                                                </thead>
 
-                        
-                        <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
-                            <Link href={"/dashboard/addRemoveSubject"}>
-                                <div className="p-4 h-full">
-                                    <h2 className="mb-4">Subjects:</h2>
-                                    <div className="text-left max-h-full">
-                                        <table className="w-full">
-                                            <tbody>
-                                                {subjects.length > 0 ? (
-                                                    subjects.map(sub => (
-                                                        <tr key={sub.id}>
-                                                            <td>{sub.name}</td>
+                                                <tbody>
+                                                    {students.length > 0 ? (
+                                                        students.map(stud => (
+                                                            <tr key={stud.id}>
+                                                                <td>{stud.name}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td>No records</td>
                                                         </tr>
-                                                    ))
-                                                ) : (
-                                                    <tr>
-                                                        <td>No records</td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-                        </div>
-                    </div>
-
-                    <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
-                        <Link href={"/dashboard/studentRecords"}>
-                            <div className="p-4 h-full">
-                                <h2 className="mb-4">Students Records:</h2>
-                                <div className="text-left overflow-auto max-h-full">
-                                    <table className="w-full">
-                                        <thead className="justify-center text-center">
-                                            <tr>
-                                                <th className="px-4 py-2">Attendance</th>
-                                                <th className="px-4 py-2">Name</th>
-                                                <th className="px-4 py-2">Date</th>
-                                            </tr>
-                                        </thead>
-
-                                        <tbody className="justify-center text-center">
-                                            {record.length > 0 ? (
-                                                record.map(att => (
-                                                    <tr key={att.id}>
-                                                        <td className="flex justify-center items-center">{
-                                                            att.time_out ? 
-                                                            <IoCheckmarkCircle color="#27B757" size={24} />
-                                                            : 
-                                                            <IoCloseCircle color="#B62424" size={24} />
-                                                            }
-                                                        </td>
-                                                        <td>{att.name}</td>
-                                                        <td>{att.date}</td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td>No records</td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                </Link>
                             </div>
-                        </Link>
+
+                            
+                            <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
+                                <Link href={"/dashboard/addRemoveSubject"}>
+                                    <div className="p-4 h-full">
+                                        <h2 className="mb-4">Subjects:</h2>
+                                        <div className="text-left max-h-full">
+                                            <table className="w-full">
+                                                <tbody>
+                                                    {subjects.length > 0 ? (
+                                                        subjects.map(sub => (
+                                                            <tr key={sub.id}>
+                                                                <td>{sub.name}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td>No records</td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
+                            <Link href={"/dashboard/studentRecords"}>
+                                    <div className="p-4 h-full">
+                                        <h2 className="mb-4">Students Records:</h2>
+                                        <div className="text-left overflow-auto max-h-full">
+                                            <table className="w-full">
+                                                <thead className="justify-center text-center">
+                                                    <tr>
+                                                        <th className="px-4 py-2">Attendance</th>
+                                                        <th className="px-4 py-2">Name</th>
+                                                        <th className="px-4 py-2">Date</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody className="justify-center text-center">
+                                                    {record.length > 0 ? (
+                                                        record.map(att => (
+                                                            <tr key={att.id}>
+                                                                <td className="flex justify-center items-center">{
+                                                                    att.time_out ? 
+                                                                    <IoCheckmarkCircle color="#27B757" size={24} />
+                                                                    : 
+                                                                    <IoCloseCircle color="#B62424" size={24} />
+                                                                    }
+                                                                </td>
+                                                                <td>{att.name}</td>
+                                                                <td>{att.date}</td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td>No records</td>
+                                                        </tr>
+                                                    )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
                     </div>
                 </div>
-            </div>
-        ) : (<Popup />) : (<></>)}
+            ) : (<Popup />) : (<></>)}
         </div>
     );
 }

@@ -40,7 +40,7 @@ export default function Sidebar() {
         {hide ? (<div className="p-[2rem]"></div>) : (
             <div className={`bg-purple-900 text-white h-screen transition-all duration-300 flex flex-col ${expanded ? "w-32" : "w-24"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
                 <div className="flex items-center justify-center flex-col gap-8 h-screen">
-                    <div className="py-[7rem] mt-[-20rem] z-50">
+                    <div className="py-[7rem] mt-[-6.1rem] z-50">
                         <ToggleSidebar onToggle={hideSidebar}/>
                     </div>
                     <div className="relative group flex items-center">
