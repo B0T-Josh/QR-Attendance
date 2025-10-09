@@ -2,7 +2,7 @@
 
 import QRGenerator from "@/components/QRGenerator";
 
-export default function StudentRecords() {
+export default function Qrgenerator() {
     return (
         <div className="flex">
             <div>

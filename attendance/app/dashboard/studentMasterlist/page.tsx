@@ -214,7 +214,7 @@ export default function StudentRecords() {
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl rounded-lg overflow-auto">
+          <div className="w-full max-w-5xl border-sm rounded-lg overflow-auto">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
               <thead>
                 <tr>
