@@ -117,13 +117,16 @@ export default function QRGenerator() {
                 {errorBool ? error : ""}
                 <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
                 <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
-                <div className="flex flex-col items-center justify-center align-center rounded-lg p-4 w-[17rem]">
-                    <QRCodeCanvas value={(finalProfile.name) + " | " + (finalProfile.student_id)} size={200} />
-                </div>
-                <div className="rounded-lg p-1 w-[17rem] bg-[#cfcfcf] text-center">
-                        <p className="text-sm text-gray-600">
-                            {content}
-                        </p>
+                {(finalProfile.name && finalProfile.student_id) != "" ? (<p className="text-black">Screenshot your QR within the border</p>) : (null)}
+                <div className="border-2 border-gray-500">   
+                    <div className="flex flex-col items-center justify-center align-center rounded-lg p-4 w-[17rem]">
+                        <QRCodeCanvas value={(finalProfile.name) + " | " + (finalProfile.student_id)} size={200} />
+                    </div>
+                    <div className="w-[17rem] text-center p-4">
+                            <p className="text-sm rounded-lg text-gray-600 bg-[#cfcfcf] h-[3rem]">
+                                {content}
+                            </p>
+                    </div>
                 </div>
             </div>
         </div>

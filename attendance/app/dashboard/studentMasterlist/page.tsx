@@ -150,21 +150,20 @@ export default function StudentRecords() {
   }, [content]);
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar />
       {loaded ? (
         <div className="flex flex-col items-center flex-1 p-8 gap-8">
-          {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
           {content}
-          <p>Student Masterlist</p>
+          {loading ? (<p className="text-gray-300">Loading...</p>) : (<p>Student Masterlist</p>)}
           <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center gap-4">
-            <div className="flex flex-row items-center gap-4 flex-1"> 
-              <div>
+            <div className="flex flex-wrap items-center gap-4"> 
+              <div className="flex flex-wrap">
                 <input
                   type="text"
                   onChange={handleChange}
                   placeholder="Enter student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
                   name="student_id"
                   value={student.student_id}
                 />
@@ -173,7 +172,7 @@ export default function StudentRecords() {
                   type="text"
                   onChange={handleChange}
                   placeholder="SURNAME, Firstname M.I."
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
                   name="name"
                   value={student.name}
                 />
@@ -182,7 +181,7 @@ export default function StudentRecords() {
                   type="text"
                   onChange={handleChange}
                   placeholder="Enter subject"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
                   name="subjects"
                   value={student.subjects}
                 />
@@ -190,7 +189,7 @@ export default function StudentRecords() {
                   type="text"
                   onChange={handleChange}
                   placeholder="Enter student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] placeholder-gray flex-[1_2_3rem]"
                   name="year"
                 />
               </div>
@@ -215,7 +214,7 @@ export default function StudentRecords() {
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl border-sm rounded-lg overflow-auto border-2">
+          <div className="w-full max-w-5xl max-h-full min-h-3 border-sm rounded-lg overflow-auto border-2">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
               <thead>
                 <tr>

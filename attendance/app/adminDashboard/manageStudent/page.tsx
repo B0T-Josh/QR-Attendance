@@ -319,15 +319,15 @@ export default function StudentRecords() {
   }
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar />
       {loaded ? (
-        <div className="flex flex-col items-center flex-1 p-8 gap-8">
+        <div className="h-full min-h-[7rem] flex flex-col items-center flex-1 p-8 gap-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<></>)}
           {duplicatedError}
           {content}
           <div className="w-full max-w-5xl p-4 flex flex-row border-b border-[#8d8a8a] items-center justify-between gap-4">
-            <div className="ml-[7.7rem] flex items-center gap-4 flex-1">
+            <div className="flex items-center gap-4 flex-1">
               <input
                 type="text"
                 onChange={handleChange}
@@ -367,12 +367,12 @@ export default function StudentRecords() {
           </div>
 
           <div className="flex flex-row justify-between ">
-            <button className="p-3 text-gray-600 hover:text-green-300" onClick={handleAdd} disabled={loading}>
+            <button className="p-3 text-gray-400 hover:text-green-300" onClick={handleAdd} disabled={loading}>
                 Add
             </button>
 
             <button
-              className="px-4 py-2 text-gray-600 hover:text-yellow-500"
+              className="px-4 py-2 text-gray-400 hover:text-yellow-500"
               onClick={handleSearch}
               disabled={loading}
             >
@@ -380,7 +380,7 @@ export default function StudentRecords() {
             </button>
 
             <button
-              className="px-4 py-2 text-gray-600 hover:text-red-500"
+              className="px-4 py-2 text-gray-400 hover:text-red-500"
               onClick={handleRemove}
               disabled={loading}
             >
@@ -388,7 +388,7 @@ export default function StudentRecords() {
             </button>
 
             <button
-              className="px-4 py-2 text-gray-600 hover:text-green-300"
+              className="px-4 py-2 text-gray-400 hover:text-green-300"
               onClick={handleUpdate}
               disabled={loading}
             >
@@ -396,13 +396,13 @@ export default function StudentRecords() {
             </button>
 
             <label htmlFor="upload"
-            className="cursor-pointer text-gray-600 mt-3 hover:text-green-300">Choose File</label>
+            className="cursor-pointer text-gray-400 mt-3 hover:text-green-300">Choose File</label>
 
             <input className="hidden" id="upload" type="file" accept=".xlsx, .xls" onChange={handleUpload}/>
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl rounded-lg overflow-auto border-2">
+          <div className="w-full max-w-5xl rounded-lg max-h-full min-h-3 overflow-auto border-2">
             <table className="table-auto border-collapse border-[#8d8a8a] w-full">
               <thead>
                 <tr>

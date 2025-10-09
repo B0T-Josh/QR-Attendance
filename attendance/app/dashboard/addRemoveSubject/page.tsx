@@ -112,16 +112,13 @@ export default function StudentRecords() {
                         {content}
                     </div>
 
-                    <div className="p-4 flex flex-col justify-center items-center m-auto w-1/2">
+                    <div className="p-4 flex flex-col justify-center items-center ml-auto mr-auto mt-4 w-1/2">
+                        {loading ? (
+                            <h2 className="p-2 text-gray-600">Loading</h2>
+                        ) : (
+                            <h2 className="p-2 font-medium">Add Subject:</h2>
+                        )}
                         <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-wrap gap-4 items-center justify-center">
-                            <div>
-                                {loading ? (
-                                    <h2 className="p-2 text-gray-600">Loading</h2>
-                                ) : (
-                                    <h2 className="p-2 font-medium">Add Subject:</h2>
-                                )}
-                            </div>
-
                             <input
                                 type="text"
                                 name="subject"
@@ -130,7 +127,9 @@ export default function StudentRecords() {
                                 className="p-2 rounded-lg bg-[#3B3B3B] placeholder-gray"
                                 value={subject || ""}
                             />
+                        </div>
 
+                        <div className="p-4">
                             <button
                                 className="px-4 py-2 text-gray-600 hover:text-green-500"
                                 onClick={handleAdd}
@@ -146,9 +145,8 @@ export default function StudentRecords() {
                             </button>
                         </div>
 
-                    
-                        <div className="mt-4 flex flex-col w-full border-2 rounded-lg overflow-y-auto ">
-                            <table className="table-auto border-collapse border w-full h-full">
+                        <div className="mt-4 flex flex-col w-full min-w-[14.7rem] border-2 rounded-lg overflow-y-auto">
+                            <table className="table-auto border-collapse border w-full h-full min-w-[14.5rem]">
                                 <thead>
                                     <tr>
                                         <th className="border border-gray-400 px-4 py-2">ID</th>

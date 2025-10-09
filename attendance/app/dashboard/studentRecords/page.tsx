@@ -176,7 +176,7 @@ export default function Records() {
       );
     });
     if(studentList.length === 0) {
-      setContent(<p className="text-red-500 p-2">No record found</p>);
+      setContent(<p className="text-red-500">No record found</p>);
     } else {
       setRecordList(studentList);
     }
@@ -222,126 +222,126 @@ export default function Records() {
   }, [content]);
 
   return (
-    <div className="flex min-h-screen min-w-screen">
+    <div className="flex w-screen h-screen">
       <Sidebar />
       {loaded ? (
-        <div className="p-4 flex flex-wrap m-auto">
+        <div className="flex flex-col items-center flex-[1_0] p-4 gap-4">
           {content}
-          <div className="w-full max-w-8xl py-4 border-b border-[#c7c7c79f] flex">
-            {loading ? (
-              <h2 className="p-2 font-medium">Loading...</h2>
-            ) : (
-              <h2 className="p-2 font-medium">Search:</h2>
-            )}
-            <div className="flex flex-wrap justify-center">
-              <select className="p-2 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
-                <option value="">Select attendance</option>
-                <option value="Present">Present</option>
-                <option value="Absent">Absent</option>
-              </select>
+          {loading ? (<p className="text-gray-300">Loading...</p>) : (<p>Student Records</p>)}
+          <div className="w-full max-w-6xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center">
+            <div className="flex flex-wrap gap-4"> 
+              <div className="flex flex-wrap items-center justify-center">
+                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
+                  <option value="">Select attendance</option>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                </select>
 
-              <select
-                className="p-2 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]"
-                value={search.subject}
-                name="subject"
-                onChange={handleSelect}
-              >
-                <option value="">Select a subject</option>
-                {subjects && subjects.length > 0 ? (
-                  subjects.map((subject) => (
-                    <option key={subject.id} value={subject.name}>
-                      {subject.name}
-                    </option>
-                  ))
-                ) : (
-                  <option value="">No subject</option>
-                )}
-              </select>
-
-              <input
-                type="date"
-                name="date"
-                onChange={handleChange}
-                className="p-1.5 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]"
-              />
-
-              <input
-                type="text"
-                name="student_id"
-                onChange={handleChange}
-                placeholder="Enter student ID"
-                className="p-2 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]"
-              />
-
-              <input
-                type="text"
-                name="name"
-                onChange={handleChange}
-                placeholder="Enter student name"
-                className="p-2 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]"
-              />
-
-              <input
-                type="text"
-                name="year"
-                placeholder="Enter course year"
-                onChange={handleChange}
-                className="p-2 m-1 rounded-lg min-w-[1rem] bg-[#3B3B3B] placeholder-gray flex-[1_0_1rem]"
-              />
-              
-              <button className="px-4 text-gray-600 hover:text-green-500 " onClick={handleExport}>
-                Export
-              </button>
-            </div>
-
-            
-
-          </div>
-          <div className="w-full mt-4 border-2 rounded-lg max-h-[550px] overflow-auto flex flex-wrap">
-            <table className="w-full table-auto border-collapse w-[65rem] flex-[1_2_1rem]">
-              <thead className="sticky top-0 bg-[#222222]">
-                  <tr>
-                    <th className="border border-gray-400 px-4 py-2">ID</th>
-                    <th className="border border-gray-400 px-4 py-2">Student ID</th>
-                    <th className="border border-gray-400 px-4 py-2">Student Name</th>
-                    <th className="border border-gray-400 px-4 py-2">Year</th>
-                    <th className="border border-gray-400 px-4 py-2">Subject</th>
-                    <th className="border border-gray-400 px-4 py-2">Date</th>
-                    <th className="border border-gray-400 px-4 py-2">Time In</th>
-                    <th className="border border-gray-400 px-4 py-2">Time Out</th>
-                    <th className="border border-gray-400 px-4 py-2">Attendance</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {recordList?.length > 0 ? (
-                    recordList.map((rec) => (
-                    <tr key={rec.id} className="text-center">
-                        <td className="border border-gray-400 px-4 py-2">{rec.id}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.student_id}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.name}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.year_level}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.subject}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.date}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.time_in}</td>
-                        <td className="border border-gray-400 px-4 py-2">{rec.time_out}</td>
-                        <td className="border border-gray-400 px-4 py-2 flex justify-center items-center">
-                          {rec.attendance === "Present" ? 
-                          <IoCheckmarkCircle color="#27B757" size={24} />
-                          : 
-                          <IoCloseCircle color="#B62424" size={24} />
-                          }
-                        </td>
-                    </tr> 
+                <select
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  value={search.subject}
+                  name="subject"
+                  onChange={handleSelect}
+                >
+                  {subjects && subjects.length == 0 ? (null) : (<option value="">Select a subject</option>)}
+                  {subjects && subjects.length > 0 ? (
+                    subjects.map((subject) => (
+                      <option key={subject.id} value={subject.name}>
+                        {subject.name}
+                      </option>
                     ))
                   ) : (
-                  <tr>
-                    <td colSpan={9} className="border border-gray-400 px-4 py-2 text-center">
-                      No data found
-                    </td>
-                  </tr>
-              )}
-              </tbody>
-            </table>
+                    <option value="">No subject</option>
+                  )}
+                </select>
+
+                <input
+                  type="date"
+                  name="date"
+                  onChange={handleChange}
+                  className="p-1.5 m-1 rounded-lg min-w-[1rem] max-w-[75rem] max-w-[10.5rem] bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                />
+
+                <input
+                  type="text"
+                  name="student_id"
+                  onChange={handleChange}
+                  placeholder="Enter student ID"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                />
+
+                <input
+                  type="text"
+                  name="name"
+                  onChange={handleChange}
+                  placeholder="Enter student name"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                />
+
+                <input
+                  type="text"
+                  name="year"
+                  placeholder="Enter course year"
+                  onChange={handleChange}
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="py-4 text-center">
+            <button className="px-4 text-gray-600 hover:text-green-500" onClick={handleExport}>
+              Export
+            </button>
+          </div>
+
+          <div className="flex flex-wrap justify-center w-full">
+            <div className="max-w-[75rem] max-h-full min-h-3 mt-4 border-2 rounded-lg flex-[1_0]">
+              <table className="table-auto border-collapse overflow-auto w-full min-w-[55rem] max-w-[75rem] text-center">
+                <thead className="sticky top-0 bg-[#222222]">
+                    <tr className="flex flex-wrap">
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">ID</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Student ID</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Student Name</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Year</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Subject</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Date</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Time In</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Time Out</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Attendance</th>
+                    </tr>
+                </thead>
+                <tbody className="">
+                    {recordList?.length > 0 ? (
+                      recordList.map((rec) => (
+                      <tr key={rec.id} className="flex flex-wrap">
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.id}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.student_id}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.name}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.year_level}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.subject}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.date}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.time_in}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.time_out}</td>
+                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] flex justify-center items-center">
+                            {rec.attendance === "Present" ? 
+                            <IoCheckmarkCircle color="#27B757" size={24} />
+                            : 
+                            <IoCloseCircle color="#B62424" size={24} />
+                            }
+                          </td>
+                      </tr> 
+                      ))
+                    ) : (
+                    <tr>
+                      <td colSpan={9} className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] text-center">
+                        No data found
+                      </td>
+                    </tr>
+                )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       ) : <p></p>}

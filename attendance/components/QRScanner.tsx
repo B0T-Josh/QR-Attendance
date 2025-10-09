@@ -150,7 +150,7 @@ export default function QRScanner() {
             <div className="flex flex-col items-center p-4 w-50">
                 {loading ? <p className="text-gray-600 p-4">Loading...</p> : <p className=" text-gray-600 p-4">Scanning...</p>}
                 <select className="rounded-lg p-2 bg-[#3B3B3B] placeholder-gray" value={subject} name="subject" onChange={handleChange}>
-                  <option value="">Select a subject</option>
+                  {subjects && subjects.length == 0 ? (null) : (<option value="">Select Subject</option>)}  
                   {subjects && subjects.length > 0 ? (
                     subjects.map(subject => (
                       <option key={subject.id} value={subject.name}>{subject.name}</option>
