@@ -121,7 +121,7 @@ export default function HomePage() {
                 <div className="flex flex-col md:flex-row gap-6 h-full">
                     <div className="flex-1 flex flex-col gap-6">
                         <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
-                            <Link href={"/dashboard/addRemoveStudent"}>
+                            <Link href={"/dashboard/studentMasterlist"}>
                                 <div className="p-4 h-full">
                                     <h2 className="mb-4">Students Masterlist:</h2>
                                     <div className="text-left overflow-auto max-h-[300px]">
