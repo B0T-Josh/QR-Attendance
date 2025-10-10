@@ -225,20 +225,20 @@ export default function Records() {
     <div className="flex w-screen min-h-[52rem] overflow-y-auto">
       <Sidebar />
       {loaded ? (
-        <div className="flex flex-col items-center flex-[1_0] p-4 gap-4">
+        <div className="flex flex-col items-center flex-1 p-4 gap-4 w-full">
           {content}
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<p>Student Records</p>)}
           <div className="w-full max-w-6xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center">
-            <div className="flex flex-wrap gap-4"> 
-              <div className="flex flex-wrap items-center justify-center">
-                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
+            <div className="flex flex-wrap"> 
+              <div className="flex flex-wrap">
+                <select className="p-2 m-1 rounded-lg bg-[#3B3B3B] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]" name="attendance" value={attendance || ""} onChange={handleAttendees}>
                   <option value="">Select attendance</option>
                   <option value="Present">Present</option>
                   <option value="Absent">Absent</option>
                 </select>
 
                 <select
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]"
                   value={search.subject}
                   name="subject"
                   onChange={handleSelect}
@@ -259,7 +259,7 @@ export default function Records() {
                   type="date"
                   name="date"
                   onChange={handleChange}
-                  className="p-2 m-1 rounded-lg min-w-[1rem] max-w-[75rem] max-w-[10.5rem] bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]"
                 />
 
                 <input
@@ -267,7 +267,7 @@ export default function Records() {
                   name="student_id"
                   onChange={handleChange}
                   placeholder="Enter student ID"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]"
                 />
 
                 <input
@@ -275,7 +275,7 @@ export default function Records() {
                   name="name"
                   onChange={handleChange}
                   placeholder="Enter student name"
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]"
                 />
 
                 <input
@@ -283,7 +283,7 @@ export default function Records() {
                   name="year"
                   placeholder="Enter course year"
                   onChange={handleChange}
-                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[75rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_0]"
+                  className="p-2 m-1 rounded-lg bg-[#3B3B3B] w-[10.5rem] min-w-[1rem] max-w-[10.5rem] placeholder-gray-400 flex-[1_5rem]"
                 />
               </div>
             </div>
@@ -295,35 +295,35 @@ export default function Records() {
             </button>
           </div>
 
-          <div className="flex flex-wrap justify-center w-full">
-            <div className="max-w-[75rem] max-h-full min-h-3 mt-4 border-2 rounded-lg flex-[1_0]">
-              <table className="table-auto border-collapse overflow-auto w-full min-w-[55rem] max-w-[75rem] text-center">
+          <div className="flex flex-wrap justify-center min-w-[20rem] w-full">
+            <div className="max-w-[75rem] min-w-[1rem] overflow-auto max-h-full min-h-3 mt-4 border-2 rounded-lg flex-[1_0]">
+              <table className="table-auto border-collapse overflow-auto w-full max-w-[75rem] text-center">
                 <thead className="sticky top-0 bg-[#222222]">
                     <tr className="flex flex-wrap">
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">ID</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Student ID</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Student Name</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Year</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Subject</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Date</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Time In</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Time Out</th>
-                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">Attendance</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">ID</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Student ID</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Student Name</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Year</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Subject</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Date</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Time In</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Time Out</th>
+                      <th className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] overflow-hidden">Attendance</th>
                     </tr>
                 </thead>
                 <tbody className="">
                     {recordList?.length > 0 ? (
                       recordList.map((rec) => (
                       <tr key={rec.id} className="flex flex-wrap">
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.id}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.student_id}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.name}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.year_level}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.subject}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.date}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.time_in}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0]">{rec.time_out}</td>
-                          <td className="border border-gray-400 min-w-[1rem] max-w-[75rem] flex-[1_0] flex justify-center items-center">
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.id}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.student_id}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.name}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.year_level}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.subject}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.date}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.time_in}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] overflow-auto">{rec.time_out}</td>
+                          <td className="border border-gray-400 min-w-[2rem] max-w-[75rem] flex-[1_0] flex justify-center items-center">
                             {rec.attendance === "Present" ? 
                             <IoCheckmarkCircle color="#27B757" size={24} />
                             : 

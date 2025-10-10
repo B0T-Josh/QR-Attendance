@@ -35,9 +35,9 @@ export default function Sidebar() {
                 <ToggleSidebar onToggle={hideSidebar}/>
             </div>
         ) : (
-            <></>
+            (null)
         )}
-        {hide ? (<div className="p-[2rem]"></div>) : (
+        {hide ? (<div className="ml-[3rem]"></div>) : (
             <div className={`bg-purple-900 text-white min-h-[880px] max-h-full transition-all duration-300 flex flex-col ${expanded ? "w-[7rem]" : "w-[6rem]"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
                 <div className="flex items-center justify-center flex-col gap-8 h-screen">
                     <div className="py-[7rem] mt-[-6.1rem] z-50">
