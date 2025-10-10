@@ -90,7 +90,7 @@ export default function LogIn() {
         </h1>
         <input className={`shadow-xl bg-zinc-800 transition-opacity ease-out duration-1000 w-full px-4 py-2 rounded-lg focus:outline-none ${loaded ? "animate-fadeInUp delay-[400ms]" : "opacity-0"}`}type="password" disabled={loading} onChange={handleChange} name="password"/>
 
-        <div className="flex justify-end">
+        <div className="flex justify-left">
           <Link href="/authPages/forgotPassword" className={`mb-2 transition-opacity ease-out duration-1000 text-purple-800 hover:text-purple-600 ${loaded ? "animate-fadeInUp delay-[500ms]" : "opacity-0"}`}>
             Forgot Password?
           </Link>

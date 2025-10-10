@@ -177,7 +177,7 @@ export async function login(email: string, password: string) {
     if(data) {
         return ({data: {id: data.id, password: data.password, admin: data.admin}});
     } else {
-        return ({error: "Invlid credentials."});
+        return ({error: "Invalid credentials."});
     }
 }
 
