@@ -52,7 +52,7 @@ export default function LogIn() {
     setLoading(true);
     if(credentials.email && credentials.password) {
       const { data, error } = await logIn({email: credentials.email, password: credentials.password});
-      if(data.success) {
+      if(data?.success) {
         if(data.admin) {
           route.push("/adminDashboard/manageStudent");
         } else {

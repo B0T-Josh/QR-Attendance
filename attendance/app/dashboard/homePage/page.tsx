@@ -41,6 +41,7 @@ export default function HomePage() {
     const [record, setRecord] = useState<Record[] | []>([]);
     const [students, setStudents] = useState<Students[]>([]);
     const [subjectNames, setSubjectNames] = useState<string[] | []>([]);
+    const [hidden, setHidden] = useState(false);
 
     //Get subjects.
     const get = async () => {
@@ -113,13 +114,21 @@ export default function HomePage() {
         }
     }, [id]);
 
+    function hide() {
+        if(hidden) {
+            setHidden(false);
+        } else {
+            setHidden(true);
+        }
+    }
+
     return (
-        <div className="flex min-h-[52rem] overflow-y-auto">
-            <div className="z-50 h-full">
-                <Sidebar />
+        <div className="flex overflow-hidden max-h-screen">
+            <div className={`z-50 h-full ${hidden ? "ml-[4rem]" : ""}`}>
+                <Sidebar onToggle={hide}/>
             </div>
             {loaded ? hasVerification ? (
-                <div className="flex-1 p-6">
+                <div className="flex-1 p-6 overflow-auto w-screen">
                     <div className="flex flex-col md:flex-row gap-6 h-full min-h-[52rem]">
                         <div className="flex-1 flex flex-col gap-6">
                             <div className="bg-[#2e2e2ec0] rounded-lg flex-1 min-h-[200px] transition-all duration-500 hover:flex-[3] overflow-hidden">
@@ -158,7 +167,7 @@ export default function HomePage() {
                                 <Link href={"/dashboard/addRemoveSubject"}>
                                     <div className="p-4 h-full">
                                         <h2 className="mb-4">Subjects:</h2>
-                                        <div className="text-left max-h-full">
+                                        <div className="text-left max-h-full overflow-auto">
                                             <table className="w-full">
                                                 <tbody>
                                                     {subjects.length > 0 ? (

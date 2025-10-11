@@ -67,9 +67,9 @@ export async function getSubjects(info: {id: string | null}) {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(info)
     });
-    const data = await res.json();
+    const {data, error} = await res.json();
     if(res.ok) {
-        return (data);
+        return (data ? {data: data} : {error: error});
     }
     return ({error: data.error});
 }

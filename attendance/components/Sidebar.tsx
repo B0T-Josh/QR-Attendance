@@ -6,7 +6,7 @@ import { logOut } from "@/app/api/requests/request";
 import ToggleSidebar from "./ToggleSidebar";
 
 
-export default function Sidebar() {
+export default function Sidebar({onToggle} : {onToggle? : () => void}) {
     const route = useRouter();
     const [expanded, setExpanded] = useState(false);
     const [hide, setHide] = useState(false);
@@ -29,18 +29,18 @@ export default function Sidebar() {
     }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen z-[0]">
         {hide ? (
-            <div className="fixed left-[2rem] top-[1.7rem]">
-                <ToggleSidebar onToggle={hideSidebar}/>
+            <div className="fixed left-[2rem] top-[1.7rem]" onClick={onToggle}>
+                <ToggleSidebar onToggle={hideSidebar} />
             </div>
         ) : (
             (null)
         )}
-        {hide ? (<div className="ml-[3rem]"></div>) : (
+        {hide ? (null) : (
             <div className={`bg-purple-900 text-white min-h-[880px] max-h-full transition-all duration-300 flex flex-col ${expanded ? "w-[7rem]" : "w-[6rem]"}`} onMouseEnter={() => setExpanded(true)} onMouseLeave={() => setExpanded(false)}>
                 <div className="flex items-center justify-center flex-col gap-8 h-screen">
-                    <div className="py-[7rem] mt-[-6.1rem] z-50">
+                    <div className="py-[7rem] mt-[-6.1rem] z-50" onClick={onToggle}>
                         <ToggleSidebar onToggle={hideSidebar}/>
                     </div>
                     <div className="relative group flex items-center">

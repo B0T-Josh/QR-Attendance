@@ -21,10 +21,10 @@ export async function POST(req: Request) {
         if(decoded) {
             const {id} = await req.json();
             const data = await getAllSubjects(id);
-            if(data) {
+            if(data && data.length > 0) {
                 return NextResponse.json({data}, {status: 200});
             } else {
-                return NextResponse.json({error: "There is an error fetching data"}, {status: 400});
+                return NextResponse.json({error: "No Subjects"}, {status: 200});
             }
         }
     } catch {

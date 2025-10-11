@@ -108,7 +108,7 @@ export default function StudentRecords() {
             <Sidebar />
             {loaded ? (
                 <div className="flex-1 flex flex-col">
-                    <div className="absolute top-1 left-1/2 -translate-x-1/2">
+                    <div className="mt-2 text-center">
                         {content}
                     </div>
 
@@ -129,7 +129,7 @@ export default function StudentRecords() {
                             />
                         </div>
 
-                        <div className="p-4">
+                        <div className="p-2 flex justify-center">
                             <button
                                 className="px-4 py-2 text-gray-400 hover:text-green-500"
                                 onClick={handleAdd}
@@ -145,7 +145,7 @@ export default function StudentRecords() {
                             </button>
                         </div>
 
-                        <div className="mt-4 flex flex-col w-full min-w-[14.7rem] border-2 rounded-lg overflow-y-auto">
+                        <div className="z-[1] mt-4 flex flex-col w-full min-w-[14.7rem] border-2 rounded-lg overflow-y-auto">
                             <table className="table-auto border-collapse border w-full h-full min-w-[14.5rem]">
                                 <thead>
                                     <tr>

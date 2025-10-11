@@ -1,3 +1,4 @@
+
 @zxing/browser
 qrcode.react
 react-icons

@@ -32,7 +32,6 @@ export default function StudentRecords() {
     subjects: "",
     year: ""
   })
-  const [content, setContent] = useState<React.ReactElement | null>(null);
   const [students, setStudents] = useState<Students[]>([]);
   const [tempStudents, setTempStudents] = useState<Students[]>([]);
   const [loading, setLoading] = useState(false);
@@ -83,14 +82,11 @@ export default function StudentRecords() {
     if(!id) return;
     if(students.length > 0) return;
     async function getSubject() {
-      const res = await getSubjects({id: id});
-      if(res) {
-        if(res.data.length > 0) {
-          setSubjects(res.data || []);
-        } else {
-          setContent(<p className="text-yellow-500">{res.error}</p>);
-          return;
-        }
+      const {data} = await getSubjects({id: id});
+      if(data) {
+        if(data.length > 0) {
+          setSubjects(data || []);
+        } 
       }
     }
     getSubject();
@@ -152,24 +148,15 @@ export default function StudentRecords() {
     setLoading(false);
   }
 
-  //Reset content value.
-  useEffect(() => {
-    if(!content) return;
-    setTimeout(() => {
-        setContent(null);
-      }, 2000);
-  }, [content]);
-
   return (
-    <div className="flex min-h-[52rem] overflow-y-auto">
+    <div className="flex overflow-y-auto">
       <Sidebar />
       {loaded ? (
-        <div className="flex flex-col items-center flex-1 p-8 gap-8">
-          {content}
+        <div className="flex flex-col items-center h-screen w-screen flex-1 gap-8 p-8">
           {loading ? (<p className="text-gray-300">Loading...</p>) : (<p>Student Masterlist</p>)}
-          <div className="w-full max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center gap-4">
-            <div className="flex flex-wrap items-center gap-4"> 
-              <div className="flex flex-wrap gap-4">
+          <div className="max-w-5xl p-4 border-b border-[#8d8a8a] flex flex-col items-center justify-center">
+            <div className="flex flex-wrap items-center"> 
+              <div className="flex flex-wrap justify-center gap-2">
                 <input
                   type="text"
                   onChange={handleChange}
@@ -207,8 +194,8 @@ export default function StudentRecords() {
           </div>
 
           {/* Students Table */}
-          <div className="w-full max-w-5xl max-h-full min-h-3 border-sm rounded-lg overflow-auto border-2">
-            <table className="table-auto border-collapse border-[#8d8a8a] w-full">
+          <div className="z-[1] w-full min-w-[5rem] max-w-6xl max-h-full min-h-3 rounded-lg overflow-auto border-2">
+            <table className="table-auto border-collapse border-[#8d8a8a] h-full w-full">
               <thead>
                 <tr>
                   <th className="border border-gray-400 px-4 py-2">Student ID</th>

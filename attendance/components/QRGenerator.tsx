@@ -113,7 +113,7 @@ export default function QRGenerator() {
     return (
         <div className="fixed inset-0 flex flex-col items-center justify-center min-h-screen space-y-8 bg-white">
             <div className="flex flex-col justify-center items-center w-[25rem] h-[35rem] space-y-6">
-                <h2 className="text-xl font-bold mb-4 text-black">QR Code Generator</h2>
+                <h2 className="text-xl font-bold mb-4 text-black text-center">QR Code Generator</h2>
                 {errorBool ? error : ""}
                 <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="Student ID" onChange={handleIDChange} name="student_id"/>
                 <input className="pl-2  rounded-lg p-1 w-[17rem] bg-[#cfcfcf] placeholder-[#808080be] text-black" type="text" placeholder="SURNAME, Firstname M.I." onChange={handleNameChange} name="name"/>
